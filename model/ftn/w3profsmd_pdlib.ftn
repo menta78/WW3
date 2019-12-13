@@ -5615,7 +5615,7 @@
       USE YOWNODEPOOL, ONLY: PDLIB_SI, PDLIB_NNZ, PDLIB_CCON
       use yowDatapool, ONLY: rtype
       use YOWNODEPOOL, ONLY: npa, iplg
-      use yowExchangeModule, ONLY : PDLIB_exchange2DREAL
+      use yowExchangeModule, ONLY : PDLIB_exchange2Dreal_zero, PDLIB_exchange2Dreal
       USE W3ADATMD, ONLY: WN
       USE MPI, ONLY : MPI_SUM, MPI_INT
       USE W3ADATMD, ONLY: MPI_COMM_WCMP
@@ -6052,9 +6052,10 @@
 !/DEBUGSOLVERCOH      CALL CHECK_ARRAY_INTEGRAL_NX_R8(PRE_VA, "PRE_VA(np) just check", np)
 !/DEBUGSOLVERCOH      CALL CHECK_ARRAY_INTEGRAL_NX_R8(VA, "VA(np) before exchanges", np)
         IF (B_JGS_BLOCK_GAUSS_SEIDEL) THEN
-          extmp = VA(:,1:NPA)
-          CALL PDLIB_exchange2DREAL(extmp)
-          VA(:,1:NPA) = extmp
+          CALL PDLIB_exchange2DREAL_zero(VA)
+          !extmp = VA(:,1:NPA)
+          !CALL PDLIB_exchange2DREAL(extmp)
+          !VA(:,1:NPA) = extmp
         ELSE
           CALL PDLIB_exchange2DREAL(U_JAC)
           VA(:,1:NPA) = U_JAC
