@@ -110,6 +110,8 @@
       INTEGER, ALLOCATABLE  :: IS0_pdlib(:)
       INTEGER               :: FreqShiftMethod = 2
       LOGICAL               :: FSGEOADVECT
+      INTEGER               :: POS_TRICK(3,2)
+
 !/DEBUGSRC        INTEGER  :: TESTNODE = 1
 !
 !/ ------------------------------------------------------------------- /
@@ -118,84 +120,6 @@
 !
 !/ ------------------------------------------------------------------- /
 !
-      SUBROUTINE VA_SETUP_IOBPD
-!/
-!/                  +-----------------------------------+
-!/                  | WAVEWATCH III           NOAA/NCEP |
-!/                  |                                   |  
-!/                  | Aron Roland (BGS IT&E GmbH)       |
-!/                  | Mathieu Dutour-Sikiric (IRB)      |
-!/                  |                                   |
-!/                  |                        FORTRAN 90 |
-!/                  | Last update :         01-Mai-2018 |
-!/                  +-----------------------------------+
-!/
-!/    01-Mai-2018 : Origination.                        ( version 6.04 )
-!/
-!  1. Purpose : Setup boundary pointer 
-!  2. Method :
-!  3. Parameters :
-!
-!     Parameter list
-!     ----------------------------------------------------------------
-!     ----------------------------------------------------------------
-!
-!  4. Subroutines used :
-!
-!      Name      Type  Module   Description
-!     ----------------------------------------------------------------
-!      STRACE    Subr. W3SERVMD Subroutine tracing.
-!     ----------------------------------------------------------------
-!
-!  5. Called by :
-!
-!      Name      Type  Module   Description
-!     ----------------------------------------------------------------
-!     ----------------------------------------------------------------
-!
-!  6. Error messages :
-!  7. Remarks
-!  8. Structure :
-!  9. Switches :
-!
-!     !/S  Enable subroutine tracing.
-!
-! 10. Source code :
-!
-!/ ------------------------------------------------------------------- /
-!/S      USE W3SERVMD, ONLY: STRACE
-!
-      USE W3GDATMD, ONLY: IOBPD, GTYPE, UNGTYPE
-      USE W3GDATMD, ONLY: NSPEC, NTH, NSEAL
-      USE W3WDATMD, ONLY: VA
-      USE YOWNODEPOOL, ONLY: iplg
-!/
-      IMPLICIT NONE
-!/
-!/ ------------------------------------------------------------------- /
-!/ Parameter list
-!/
-!/ ------------------------------------------------------------------- /
-!/ Local PARAMETERs
-!/
-!/S      INTEGER, SAVE           :: IENT = 0
-!/
-!/ ------------------------------------------------------------------- /
-!/
-!
-      INTEGER JSEA, IP, IP_glob, ITH, ISP
-!/S      CALL STRACE (IENT, 'VA_SETUP_IOBPD')
-      IF (GTYPE .eq. UNGTYPE) THEN
-        DO JSEA=1,NSEAL
-          IP      = JSEA
-          IP_glob = iplg(IP)
-          DO ISP=1,NSPEC
-            ITH    = 1 + MOD(ISP-1,NTH)
-            VA(ISP,JSEA) = VA(ISP,JSEA)*IOBPD(ITH,IP_glob)
-          END DO
-        END DO
-      END IF
-      END SUBROUTINE
 !/ ------------------------------------------------------------------- /
       SUBROUTINE PDLIB_STYLE_INIT(IMOD)
 !/
@@ -3678,7 +3602,6 @@
       INTEGER :: I1, I2, I3, NI(3)
       INTEGER :: counter
 !/REF1      INTEGER :: eIOBPDR
-      INTEGER :: POS_TRICK(3,2)
       REAL :: DTK, TMP3
       REAL  :: LAMBDA(2)
       REAL  :: FL11, FL12
@@ -3694,12 +3617,6 @@
       REAL  :: TRIA03, SIDT, CCOS, CSIN
       REAL  :: SPEC(NSPEC), DEPTH
 
-      POS_TRICK(1,1) = 2
-      POS_TRICK(1,2) = 3
-      POS_TRICK(2,1) = 3
-      POS_TRICK(2,2) = 1
-      POS_TRICK(3,1) = 1
-      POS_TRICK(3,2) = 2
 
 !/DEBUGSOLVER     WRITE(740+IAPROC,*) 'calcARRAY_JACOBI, begin'
 !/DEBUGSOLVER     FLUSH(740+IAPROC)
@@ -3888,7 +3805,7 @@
       INTEGER :: I1, I2, I3, NI(3), NI_GLOB(3), NI_ISEA(3)
       INTEGER :: counter
 !/REF1      INTEGER :: eIOBPDR
-      INTEGER :: POS_TRICK(3,2), IP1, IP2, IPP1, IPP2
+      INTEGER :: IP1, IP2, IPP1, IPP2
       REAL  :: DTK, TMP3
       REAL  :: LAMBDA(2)
       REAL  :: FL11, FL12
@@ -3908,13 +3825,6 @@
 !/MEMCHECK      write(740+IAPROC,*) 'memcheck_____:', 'WW3_JACOBI SECTION 0'
 !/MEMCHECK      call getMallocInfo(mallinfos)
 !/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
-
-      POS_TRICK(1,1) = 2
-      POS_TRICK(1,2) = 3
-      POS_TRICK(2,1) = 3
-      POS_TRICK(2,2) = 1
-      POS_TRICK(3,1) = 1
-      POS_TRICK(3,2) = 2
 
       J = 0
       DO IP = 1, npa
@@ -4079,7 +3989,6 @@
       INTEGER :: I1, I2, I3, NI(3), NI_GLOB(3), NI_ISEA(3)
       INTEGER :: counter
 !/REF1      INTEGER :: eIOBPDR
-      INTEGER :: POS_TRICK(3,2)
       REAL*8  :: DTK, TMP3
       REAL*8  :: LAMBDA(2)
       REAL*8  :: FL11, FL12
@@ -4095,13 +4004,6 @@
       REAL*8  :: NM
       REAL*8  :: TRIA03, SIDT, CCOS, CSIN
       REAL*8  :: DEPTH
-
-      POS_TRICK(1,1) = 2
-      POS_TRICK(1,2) = 3
-      POS_TRICK(2,1) = 3
-      POS_TRICK(2,2) = 1
-      POS_TRICK(3,1) = 1
-      POS_TRICK(3,2) = 2
 
       ASPAR_DIAG_LOCAL     = 0.d0
       B_JAC_LOCAL          = 0.d0
@@ -4266,7 +4168,6 @@
       INTEGER :: ISP, IP_glob, IPP1, IPP2
       INTEGER :: counter
 !/REF1      INTEGER :: eIOBPDR
-      INTEGER :: POS_TRICK(3,2)
       REAL*8  :: DTK, TMP3
       REAL*8 :: LAMBDA(2)
       REAL*8  :: CRFS(3), K(3)
@@ -4282,13 +4183,6 @@
       REAL*8  :: FL11_X, FL12_X, FL21_X, FL22_X, FL31_X, FL32_X
       REAL*8  :: FL11_Y, FL12_Y, FL21_Y, FL22_Y, FL31_Y, FL32_Y
       REAL*8  :: FL11_U, FL12_U, FL21_U, FL22_U, FL31_U, FL32_U
-
-      POS_TRICK(1,1) = 2
-      POS_TRICK(1,2) = 3
-      POS_TRICK(2,1) = 3
-      POS_TRICK(2,2) = 1
-      POS_TRICK(3,1) = 1
-      POS_TRICK(3,2) = 2
  
       ASPAR_DIAG_LOCAL     = ZERO
       B_JAC_LOCAL          = ZERO
@@ -4479,7 +4373,6 @@
       INTEGER :: ISP, IP_glob, IPP1, IPP2
       INTEGER :: counter
 !/REF1      INTEGER :: eIOBPDR
-      INTEGER :: POS_TRICK(3,2)
       REAL  :: DTK(3), TMP3(NSPEC,3)
       REAL  :: LAMBDA(2)
       REAL  :: CRFS(3), K(3)
@@ -4495,13 +4388,6 @@
       REAL  :: FL11_X, FL12_X, FL21_X, FL22_X, FL31_X, FL32_X
       REAL  :: FL11_Y, FL12_Y, FL21_Y, FL22_Y, FL31_Y, FL32_Y
       REAL  :: FL11_U, FL12_U, FL21_U, FL22_U, FL31_U, FL32_U
-
-      POS_TRICK(1,1) = 2
-      POS_TRICK(1,2) = 3
-      POS_TRICK(2,1) = 3
-      POS_TRICK(2,2) = 1
-      POS_TRICK(3,1) = 1
-      POS_TRICK(3,2) = 2
  
       TRIA03    = ONETHIRD * PDLIB_TRIA(IE)
       IEN_LOCAL = PDLIB_IEN(:,IE)
@@ -6637,6 +6523,13 @@
 !/
       INTEGER ISP, ITH, IK, ISPprevFreq, ISPnextFreq
       INTEGER NewISP, JTH, istat
+
+      POS_TRICK(1,1) = 2
+      POS_TRICK(1,2) = 3
+      POS_TRICK(2,1) = 3
+      POS_TRICK(2,2) = 1
+      POS_TRICK(3,1) = 1
+      POS_TRICK(3,2) = 2
 
 !/DEBUGINIT    WRITE(740+IAPROC,*) 'BLOCK_SOLVER_INIT, step 1'
 !/DEBUGINIT    FLUSH(740+IAPROC)
