@@ -1025,15 +1025,15 @@
             WRITE(740+IAPROC,*) 'min/max/sum(DeltaDS)=', minval(DeltaSRC), maxval(DeltaSRC), sum(DeltaSRC)
           END IF
      
-            IF (optionCall .eq. 1) THEN
-              CALL SIGN_VSD_PATANKAR_WW3(SPEC,VS,VD)
-            ELSE IF (optionCall .eq. 2) THEN
-              CALL SIGN_VSD_SEMI_IMPLICIT_WW3(SPEC,VS,VD)
-            ELSE IF (optionCall .eq. 3) THEN
-              CALL SIGN_VSD_SEMI_IMPLICIT_WW3(SPEC,VS,VD)
-            ENDIF
-            VSIO=VS
-            VDIO=VD
+          IF (optionCall .eq. 1) THEN
+            CALL SIGN_VSD_PATANKAR_WW3(SPEC,VS,VD)
+          ELSE IF (optionCall .eq. 2) THEN
+            CALL SIGN_VSD_SEMI_IMPLICIT_WW3(SPEC,VS,VD)
+          ELSE IF (optionCall .eq. 3) THEN
+            CALL SIGN_VSD_SEMI_IMPLICIT_WW3(SPEC,VS,VD)
+          ENDIF
+          VSIO=VS
+          VDIO=VD
 !!/DEBUGSRC          IF (IX == DEBUG_NODE) WRITE(44,'(10EN15.4)') SUM(VS), SUM(VD), SUM(VSIN), SUM(VDIN), SUM(VSDS), SUM(VDDS), SUM(VSNL), SUM(VDNL)
 !/DEBUGSRC          IF (IX == DEBUG_NODE) THEN
 !/DEBUGSRC            WRITE(740+IAPROC,*) '     srce_imp_pre : SHAVE = ', SHAVE

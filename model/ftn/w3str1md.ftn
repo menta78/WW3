@@ -330,7 +330,11 @@
 !
 ! 1.  Integral over directions
 !
-      IF (DEPTH .LT. TINY(1.) .or. SUM(A) .LT. TINY(1.)) RETURN
+      IF (DEPTH .LT. TINY(1.) .or. SUM(A) .LT. TINY(1.)) THEN
+        S = 0
+        D = 0
+        RETURN
+      ENDIF
 
       SIGM01 = 0.
       EMEAN  = 0.
