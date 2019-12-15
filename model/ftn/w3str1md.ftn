@@ -465,6 +465,7 @@
               AUX2 = WN0 * DEP * ( GRAV * DEP + &     
                                    (2./15.) * GRAV * DEP_3 * WN0**2 - &
                                    (2./ 5.) * W0**2 * DEP_2)
+              RINT = AUX1 / AUX2
               FT   = PTRIAD(1) * C0 * CG(IK) * RINT**2 * SINBPH 
               SA(ITH,IK) = MAX(0.,FT * ( EM * EM - 2. * EM * E0)) ! 1/(m²*s²) * m4 = m²/s² !!! [m²/s]
            END DO
