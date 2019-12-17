@@ -5000,8 +5000,138 @@
       END DO
 !!/DEBUGSOLVER     CALL PrintTotalOffContrib("Offdiag after the refraction")
       END SUBROUTINE
+!/ ------------------------------------------------------------------- /
+      SUBROUTINE CALCARRAY_JACOBI_SOURCE_1(DTG,ASPAR_DIAG_LOCAL)
+!/
+!/                  +-----------------------------------+
+!/                  | WAVEWATCH III           NOAA/NCEP |
+!/                  |                                   |
+!/                  | Aron Roland (BGS IT&E GmbH)       |
+!/                  | Mathieu Dutour-Sikiric (IRB)      |
+!/                  |                                   |
+!/                  |                        FORTRAN 90 |
+!/                  | Last update :        01-June-2018 |
+!/                  +-----------------------------------+
+!/
+!/    01-June-2018 : Origination.                        ( version 6.04 )
+!/
+!  1. Purpose : Compute matrix coefficients for source part
+!  2. Method :
+!  3. Parameters :
+!
+!     Parameter list
+!     ----------------------------------------------------------------
+!     ----------------------------------------------------------------
+!
+!  4. Subroutines used :
+!
+!      Name      Type  Module   Description
+!     ----------------------------------------------------------------
+!      STRACE    Subr. W3SERVMD Subroutine tracing.
+!     ----------------------------------------------------------------
+!
+!  5. Called by :
+!
+!      Name      Type  Module   Description
+!     ----------------------------------------------------------------
+!     ----------------------------------------------------------------
+!
+!  6. Error messages :
+!  7. Remarks
+!  8. Structure :
+!  9. Switches :
+!
+!     !/S  Enable subroutine tracing.
+!
+! 10. Source code :
+!
+!/ ------------------------------------------------------------------- /
+!/S      USE W3SERVMD, ONLY: STRACE
+!
+      USE W3ODATMD, ONLY : IAPROC
+      USE YOWNODEPOOL, ONLY: iplg, PDLIB_SI, PDLIB_I_DIAG, NPA, NP
+      USE W3ADATMD, ONLY: CG, DW, WN
+      USE W3WDATMD, ONLY: UST, USTDIR
+      USE W3GDATMD, ONLY: NK, NTH, NSPEC, MAPFS, optionCall, DMIN
+      USE W3GDATMD, ONLY: IOBP, MAPSTA, FACP, SIG, IOBPD, IOBPA, IOBDP
+      USE W3PARALL, ONLY: IMEM
+      USE W3GDATMD, ONLY: NSEAL, CLATS
+!/DB1      USE W3SDB1MD
+      USE W3WDATMD, ONLY: VA, VSTOT, VDTOT, SHAVETOT
+      USE constants, ONLY : TPI, TPIINV, GRAV
+      IMPLICIT NONE
+      REAL, INTENT(in) :: DTG
+      REAL, INTENT(inout) :: ASPAR_DIAG_LOCAL(:,:)!NSPEC,NSEAL)
+      REAL, PARAMETER :: COEF4 = 5.0E-07
+      REAL, PARAMETER :: FACDAM = 1
+      INTEGER JSEA, IP, IP_glob, ISEA
+      INTEGER IK, ITH, ISP, IS0
+      LOGICAL :: LBREAK
+      REAL ::  eSI, eVS, eVD, SIDT
+      REAL :: DEPTH, DAM(NSPEC), RATIO, MAXDAC, VSDB(NSPEC), VDDB(NSPEC)
+      REAL :: PreVS, eDam, DVS, FREQ, EMEAN, FMEAN, WNMEAN, AMAX, CG1(NK),WN1(NK),SPEC_VA(NSPEC)
+      REAL TheFactor
 
-      SUBROUTINE CALCARRAY_JACOBI_SOURCE(DTG,ASPAR_DIAG_LOCAL)
+      DO JSEA = 1, NP
+
+        IP      = JSEA
+        IP_glob = iplg(IP)
+        ISEA    = MAPFS(1,IP_glob)
+
+        IF (IOBP(IP_glob).eq.1..and.IOBDP(IP_glob).eq.1.and.IOBPA(IP_glob).eq.0) THEN
+          DO IK=1, NK
+            DAM(1+(IK-1)*NTH) = FACP / ( SIG(IK) * WN(IK,ISEA)**3 )
+          END DO
+          DO IK=1, NK
+            IS0    = (IK-1)*NTH
+            DO ITH=2, NTH
+              DAM(ITH+IS0) = DAM(1+IS0)
+            END DO
+          END DO
+          eSI    = PDLIB_SI(IP)
+          SIDT   = eSI * DTG
+          DEPTH  = DW(ISEA)
+!/DB1          VSDB   = 0.
+!/DB1          VDDB   = 0.
+!/DB1          CG1 = CG(1:NK,ISEA)
+!/DB1          WN1 = WN(1:NK,ISEA)
+!/DB1          DO IK=1,NK
+!/DB1            DO ITH=1,NTH
+!/DB1              ISP=ITH + (IK-1)*NTH
+!/DB1              SPEC_VA(ISP) = VA(ISP,JSEA) * CG(IK,ISEA) / CLATS(ISEA)
+!/DB1            ENDDO
+!/DB1          ENDDO
+!/DB1          CALL COMPUTE_MEAN_PARAM(SPEC_VA, CG1, WN1, EMEAN, FMEAN, WNMEAN, AMAX)
+!/DB1          CALL W3SDB1 ( JSEA, SPEC_VA, DEPTH, EMEAN, FMEAN, WNMEAN, CG1, LBREAK, VSDB, VDDB )
+!          IF (JSEA == 10000) WRITE(*,'(2I20,10F20.10)') JSEA, ISEA, SUM(VSTOT(:,JSEA)), SUM(VDTOT(:,JSEA)), SUM(VSDB),SUM(VDDB), DEPTH, EMEAN, FMEAN, WNMEAN
+          DO IK=1,NK
+            DO ITH=1,NTH
+              ISP=ITH + (IK-1)*NTH
+              IF (SHAVETOT(JSEA)) THEN ! Limit ONLY the source term part ...
+                MAXDAC    = FACDAM * DAM(ISP)
+                TheFactor = DTG / MAX ( 1. , (1.-DTG*VDTOT(ISP,JSEA)))
+                DVS       = VSTOT(ISP,JSEA) * TheFactor
+                DVS       = SIGN(MIN(MAXDAC,ABS(DVS)),DVS)
+                PreVS     = DVS / TheFactor
+              ELSE
+                PreVS     = VSTOT(ISP,JSEA)
+              END IF
+              eVS = PreVS / CG(IK,ISEA) * CLATS(ISEA)
+              eVD = DBLE(VDTOT(ISP,JSEA))
+!/DB1            eVS = eVS + DBLE(VSDB(ISP)) / CG(IK,ISEA) * CLATS(ISEA)
+!/DB1            eVD = evD + DBLE(VDDB(ISP))
+              B_JAC(ISP,IP)                   = B_JAC(ISP,IP) + SIDT * (eVS - eVD*VA(ISP,JSEA))
+              ASPAR_JAC(ISP,PDLIB_I_DIAG(IP)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(IP)) - SIDT * eVD
+            END DO
+          END DO
+        END IF
+      END DO
+!!/DEBUGSOLVER     CALL PrintTotalOffContrib("Offdiag after the source terms") !AR: Need to rewrite for IMEM == 2
+!!/DEBUGSOLVER     WRITE(740+IAPROC,*) 'Before frequency shifting business'
+!!/DEBUGSOLVER     FLUSH(740+IAPROC)
+      END SUBROUTINE
+!/ ------------------------------------------------------------------- /
+      SUBROUTINE CALCARRAY_JACOBI_SOURCE_2(DTG,ASPAR_DIAG_LOCAL)
 !/
 !/                  +-----------------------------------+
 !/                  | WAVEWATCH III           NOAA/NCEP |
@@ -5121,141 +5251,12 @@
 !/DB1            eVS = eVS + DBLE(VSDB(ISP)) / CG(IK,ISEA) * CLATS(ISEA)
 !/DB1            eVD = evD + DBLE(VDDB(ISP))
               B_JAC(ISP,IP)                   = B_JAC(ISP,IP) + SIDT * (eVS - eVD*VA(ISP,JSEA))
-              IF (IMEM == 1) THEN
-                ASPAR_JAC(ISP,PDLIB_I_DIAG(IP)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(IP)) - SIDT * eVD
-              ELSE IF (IMEM == 2) THEN
-                ASPAR_DIAG_LOCAL(ISP,IP) = ASPAR_DIAG_LOCAL(ISP,IP) - SIDT * eVD
-              ENDIF
+              ASPAR_DIAG_LOCAL(ISP,IP) = ASPAR_DIAG_LOCAL(ISP,IP) - SIDT * eVD
             END DO
           END DO
         END IF
       END DO
 !!/DEBUGSOLVER     CALL PrintTotalOffContrib("Offdiag after the source terms") !AR: Need to rewrite for IMEM == 2
-!!/DEBUGSOLVER     WRITE(740+IAPROC,*) 'Before frequency shifting business'
-!!/DEBUGSOLVER     FLUSH(740+IAPROC)
-      END SUBROUTINE
-!/ ------------------------------------------------------------------- /
-      SUBROUTINE calcARRAY_JACOBI_SOURCE_LOCAL(DTG,ASPAR_DIAG_SOURCE, B_JAC_SOURCE)
-!/
-!/                  +-----------------------------------+
-!/                  | WAVEWATCH III           NOAA/NCEP |
-!/                  |                                   |  
-!/                  | Aron Roland (BGS IT&E GmbH)       |
-!/                  | Mathieu Dutour-Sikiric (IRB)      |
-!/                  |                                   |
-!/                  |                        FORTRAN 90 |
-!/                  | Last update :        01-June-2018 |
-!/                  +-----------------------------------+
-!/
-!/    01-June-2018 : Origination.                        ( version 6.04 )
-!/
-!  1. Purpose : Compute matrix coefficients for source part
-!  2. Method :
-!  3. Parameters :
-!
-!     Parameter list
-!     ----------------------------------------------------------------
-!     ----------------------------------------------------------------
-!
-!  4. Subroutines used :
-!
-!      Name      Type  Module   Description
-!     ----------------------------------------------------------------
-!      STRACE    Subr. W3SERVMD Subroutine tracing.
-!     ----------------------------------------------------------------
-!
-!  5. Called by :
-!
-!      Name      Type  Module   Description
-!     ----------------------------------------------------------------
-!     ----------------------------------------------------------------
-!
-!  6. Error messages :
-!  7. Remarks
-!  8. Structure :
-!  9. Switches :
-!
-!     !/S  Enable subroutine tracing.
-!
-! 10. Source code :
-!
-!/ ------------------------------------------------------------------- /
-!/S      USE W3SERVMD, ONLY: STRACE
-!
-      USE W3ODATMD, ONLY : IAPROC
-      USE YOWNODEPOOL, ONLY: iplg, PDLIB_SI, PDLIB_I_DIAG
-      USE W3ADATMD, ONLY: CG, DW, WN
-      USE W3WDATMD, ONLY: UST, USTDIR
-      USE W3GDATMD, ONLY: NK, NTH, NSPEC, MAPFS, optionCall, DMIN
-      USE W3GDATMD, ONLY: IOBP, MAPSTA, FACP, SIG, IOBPD, IOBPA, IOBDP
-      USE W3GDATMD, ONLY: NSEAL, CLATS
-      USE W3WDATMD, ONLY: VA, VSTOT, VDTOT, SHAVETOT
-!/DB1      USE W3SDB1MD 
-      USE constants, ONLY : TPI, TPIINV, GRAV
-      IMPLICIT NONE
-      REAL, INTENT(in) :: DTG
-      REAL, INTENT(out) :: ASPAR_DIAG_SOURCE(NSPEC), B_JAC_SOURCE(NSPEC)
-      REAL, PARAMETER :: COEF4 = 5.0E-07
-      REAL, PARAMETER :: FACDAM = 1
-      INTEGER JSEA, IP, IP_glob, ISEA
-      LOGICAL :: LBREAK
-      INTEGER IK, ITH, ISP, IS0
-      REAL ::  eSI, eVS, eVD, SIDT
-      REAL :: DEPTH, DAM(NSPEC), RATIO, MAXDAC, VSDB(NSPEC), VDDB(NSPEC)
-      REAL :: PreVS, eDam, DVS, FREQ, EMEAN, FMEAN, WNMEAN, AMAX, CG1(NSPEC),WN1(NSPEC),SPEC_VA(NSPEC)
-      REAL TheFactor
-
-      DO JSEA=1,NSEAL
-        IP      = JSEA
-        IP_glob = iplg(IP)
-        ISEA=MAPFS(1,IP_glob)
-        IF (IOBP(IP_glob).eq.1.and.MAPSTA(1,IP_glob).eq.1.and.IOBDP(IP_glob).eq.1.and.IOBPA(IP_glob).eq.0) THEN
-          DO IK=1, NK
-            DAM(1+(IK-1)*NTH) = FACP / ( SIG(IK) * WN(IK,ISEA)**3 )
-          END DO
-          DO IK=1, NK
-            IS0    = (IK-1)*NTH
-            DO ITH=2, NTH
-              DAM(ITH+IS0) = DAM(1+IS0)
-            END DO
-          END DO
-          eSI    = PDLIB_SI(IP)
-          SIDT   = eSI * DTG
-          DEPTH  = DW(ISEA)
-!/DB1     CG1 = CG(1:NK,ISEA)
-!/DB1     WN1 = WN(1:NK,ISEA)
-!/DB1     DO IK=1,NK
-!/DB1       DO ITH=1,NTH
-!/DB1         ISP=ITH + (IK-1)*NTH
-!/DB1         SPEC_VA(ISP) = VA(ISP,JSEA) * CG(IK,ISEA) / CLATS(ISEA)
-!/DB1       ENDDO
-!/DB1     ENDDO
-!/DB1     SPEC_VA = VA(:,JSEA)
-!/DB1     CALL COMPUTE_MEAN_PARAM(SPEC_VA, CG1, WN1, EMEAN, FMEAN, WNMEAN, AMAX)
-!/DB1     CALL W3SDB1 ( JSEA, SPEC_VA, DEPTH, EMEAN, FMEAN, WNMEAN, CG1, LBREAK, VSDB, VDDB )
-          DO IK=1,NK
-            DO ITH=1,NTH
-              ISP=ITH + (IK-1)*NTH
-              IF (SHAVETOT(JSEA)) THEN ! Limit ONLY the source term part ...
-                MAXDAC    = FACDAM * DAM(ISP)
-                TheFactor = DTG / MAX ( 1. , (1.-DTG*VDTOT(ISP,JSEA)))
-                DVS       = VSTOT(ISP,JSEA) * TheFactor
-                DVS       = SIGN(MIN(MAXDAC,ABS(DVS)),DVS)
-                PreVS     = DVS / TheFactor
-              ELSE
-                PreVS=VSTOT(ISP,JSEA)
-              END IF
-              eVS = DBLE(PreVS) / CG(IK,ISEA) * CLATS(ISEA)
-              eVD = DBLE(VDTOT(ISP,JSEA))
-!/DB1            eVS = eVS + DBLE(VSDB(ISP)) / CG(IK,ISEA) * CLATS(ISEA)
-!/DB1            eVD = eVD + DBLE(VDDB(ISP))
-              B_JAC_SOURCE(ISP) = B_JAC_SOURCE(ISP) + SIDT * (eVS - eVD*VA(ISP,IP))
-              ASPAR_DIAG_SOURCE(ISP) = ASPAR_DIAG_SOURCE(ISP) - SIDT * eVD
-            END DO
-          END DO
-        END IF
-      END DO
-!!/DEBUGSOLVER     CALL PrintTotalOffContrib("Offdiag after the source terms")
 !!/DEBUGSOLVER     WRITE(740+IAPROC,*) 'Before frequency shifting business'
 !!/DEBUGSOLVER     FLUSH(740+IAPROC)
       END SUBROUTINE
@@ -6015,7 +6016,11 @@
         IF (B_JGS_SOURCE_NONLINEAR) THEN
           call ADD_SOURCE_TERMS_NONLINEAR(DTG)
         ELSE
-          call CALCARRAY_JACOBI_SOURCE(DTG,ASPAR_DIAG_ALL)
+          IF (IMEM == 1) THEN 
+            call CALCARRAY_JACOBI_SOURCE_1(DTG,ASPAR_DIAG_ALL)
+          ELSE IF (IMEM == 2) THEN
+            call CALCARRAY_JACOBI_SOURCE_2(DTG,ASPAR_DIAG_ALL)
+          ENDIF
         ENDIF
       END IF
 
