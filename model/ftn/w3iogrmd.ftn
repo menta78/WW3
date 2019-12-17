@@ -612,11 +612,19 @@
               !Init COUNTCON to zero, it needs to be set somewhere or
               !removed
               COUNTCON=0
-              WRITE (NDSM)                                            &
+#ifndef PDLIB 
+                WRITE (NDSM)                                            &
                 X0, Y0, SX, SY, DXYMAX, XYB, TRIGP, TRIA,             &
                 LEN, IEN, ANGLE0, ANGLE, SI, MAXX, MAXY,   &
                 DXYMAX, INDEX_CELL, CCON, COUNTCON, IE_CELL,  &
                 POS_CELL, IOBP, IOBPA, IOBDP, IOBPD, IAA, JAA, POSI
+#else 
+                WRITE (NDSM)                                            &
+                X0, Y0, SX, SY, DXYMAX, XYB, TRIGP, TRIA,             &
+                MAXX, MAXY,   &
+                DXYMAX, &
+                IOBP, IOBPA, IOBDP, IOBPD
+#endif
             END SELECT !GTYPE
 !
           WRITE (NDSM)                                                &
@@ -718,11 +726,21 @@
 !/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.6'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
-              READ (NDSM,END=801,ERR=802,IOSTAT=IERR)                 &
+
+#ifndef PDLIB 
+                READ (NDSM,END=801,ERR=802,IOSTAT=IERR)                 &
                 X0, Y0, SX, SY, DXYMAX, XYB, TRIGP, TRIA,             &
                 LEN, IEN, ANGLE0, ANGLE, SI, MAXX, MAXY,   &
                 DXYMAX, INDEX_CELL, CCON, COUNTCON, IE_CELL,  &
                 POS_CELL, IOBP, IOBPA, IOBDP, IOBPD, IAA, JAA, POSI
+#else 
+                READ (NDSM,END=801,ERR=802,IOSTAT=IERR)                 &
+                X0, Y0, SX, SY, DXYMAX, XYB, TRIGP, TRIA,             &
+                MAXX, MAXY,   &
+                DXYMAX, &
+                IOBP, IOBPA, IOBDP, IOBPD
+#endif
+
 
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.6.4'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
