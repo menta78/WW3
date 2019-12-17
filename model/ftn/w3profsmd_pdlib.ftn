@@ -3784,7 +3784,7 @@
 !/S      USE W3SERVMD, ONLY: STRACE
 !
       USE W3GDATMD, ONLY: NK, NK2, NTH, NSPEC, FACHFA, IOBPD, DMIN
-      USE W3GDATMD, ONLY: NSEAL, IOBDP, IOBPA, CLATS
+      USE W3GDATMD, ONLY: NSEAL, IOBDP, IOBPA, CLATS, IOBPA_LOC, IOBPD_LOC
       USE W3GDATMD, ONLY: MAPSTA
       USE W3WDATMD, ONLY: VA
       USE W3ADATMD, ONLY: CG, DW, WN, CX, CY
@@ -3796,7 +3796,7 @@
       USE YOWNODEPOOL,    ONLY: PDLIB_IEN, PDLIB_TRIA,                  &
            PDLIB_IE_CELL2, PDLIB_POS_CELL2, PDLIB_CCON, NP, NPA,          &
            PDLIB_IA_P, PDLIB_POSI, PDLIB_IA, PDLIB_NNZ, iplg,           &
-           PDLIB_I_DIAG, PDLIB_JA
+           PDLIB_I_DIAG, PDLIB_JA, PDLIB_SI
       USE W3GDATMD, ONLY: IOBP_LOC
 
       USE W3ODATMD, ONLY : IAPROC
@@ -3906,15 +3906,17 @@
             I1    =  PDLIB_POSI(1,J)
             I2    =  PDLIB_POSI(2,J)
             I3    =  PDLIB_POSI(3,J)
-!/DEBUGSRC      WRITE(740+IAPROC,*) 'I1=', I1, ' PDLIB_I_DIAG=', PDLIB_I_DIAG(IP)
+!/DEBUGSRC    WRITE(740+IAPROC,*) 'I1=', I1, ' PDLIB_I_DIAG=', PDLIB_I_DIAG(IP)
             K1    =  KP(POS,IE)
-!/REF1            eIOBPDR=(1-IOBP(IP_glob))*(1-IOBPD(ITH,IP_glob))
-!/REF1            IF (eIOBPDR .eq. 1) THEN
-!/REF1              K1=ZERO
-!/REF1            END IF
+!/REF1          eIOBPDR=(1-IOBP(IP_glob))*(1-IOBPD(ITH,IP_glob))
+!/REF1          IF (eIOBPDR .eq. 1) THEN
+!/REF1            K1=ZERO
+!/REF1          END IF
             TRIA03        =  1./3. * PDLIB_TRIA(IE)
-            DTK           =  K1 * DTG * IOBDP(IP_glob) * (1-IOBPA(IP_glob)) * IOBPD(ITH,IP_glob)
-            B_JAC(ISP,IP) =  B_JAC(ISP,IP) + TRIA03 * VA(ISP,IP) * IOBDP(IP_glob) * IOBPD(ITH,ip_glob)
+            DTK           =  K1 * DTG * (1-IOBPA_LOC(IP)) * IOBPD_LOC(ITH,IP)
+            B_JAC(ISP,IP) =  B_JAC(ISP,IP) + TRIA03 * VA(ISP,IP) * IOBPD_LOC(ITH,IP)
+            !DTK           =  K1 * DTG * (1-IOBPA(IP_glob)) * IOBPD(ITH,IP_glob)
+            !B_JAC(ISP,IP) =  B_JAC(ISP,IP) + TRIA03 * VA(ISP,IP) * IOBPD(ITH,IP_glob)
             TMP3          =  DTK * NM(IE)
             ASPAR_JAC(ISP,I1) = ASPAR_JAC(ISP,I1) + TRIA03 + DTK - TMP3*DELTAL(POS,IE)
             ASPAR_JAC(ISP,I2) = ASPAR_JAC(ISP,I2)                - TMP3*DELTAL(POS_TRICK(POS,1),IE)
