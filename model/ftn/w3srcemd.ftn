@@ -49,7 +49,7 @@
 !/
       CONTAINS
 !/ ------------------------------------------------------------------- /
-      SUBROUTINE W3SRCE ( srce_call, IT, JSEA, IX, IY, IMOD,          &
+      SUBROUTINE W3SRCE ( srce_call, IT, ISEA, JSEA, IX, IY, IMOD,          &
                           SPECOLD, SPEC, VSIO, VDIO, SHAVEIO,         &
                           ALPHA, WN1, CG1,                            &
                           D_INP, U10ABS, U10DIR, AS, USTAR, USTDIR,   &
@@ -423,7 +423,7 @@
 !/PDLIB    USE yowNodepool,    ONLY: PDLIB_CCON, NPA, PDLIB_I_DIAG, PDLIB_JA, PDLIB_IA_P
 !/PDLIB    USE W3GDATMD, ONLY: CLATS
 !/PDLIB    USE W3WDATMD, ONLY: VA
-!/PDLIB    USE W3PARALL, ONLY: ONESIXTH, ZERO, THR, IMEM 
+!/PDLIB    USE W3PARALL, ONLY: ONESIXTH, ZERO, THR, IMEM, LSLOC
 !/
       IMPLICIT NONE
 !/
@@ -518,10 +518,11 @@
       LOGICAL                 :: LBREAK
       LOGICAL, SAVE           :: FIRST = .TRUE.
       LOGICAL                 :: PrintDeltaSmDA
-      REAL                    :: eInc1, eInc2
-      REAL                    :: DeltaSRC(NSPEC), MAXDAC(NSPEC)
-!/PDLIB  REAL                 :: PreVS, eVS, eVD, FAK, DVS, SIDT
-!/PDLIB  INTEGER              :: ISP, IP, ISEA
+      REAL                    :: eInc1, eInc2, eVS, eVD, JAC
+      REAL                    :: DeltaSRC(NSPEC)
+      REAL, PARAMETER         :: DTMINTOT = 0.01
+      LOGICAL                 :: LNEWLIMITER = .FALSE. 
+!/PDLIB  REAL                 :: PreVS, FAK, DVS, SIDT, FAKS, MAXDAC
 
 !/NNT      CHARACTER(LEN=17), SAVE :: FNAME = 'test_data_nnn.ww3'
 !/
@@ -826,11 +827,9 @@
 !/STX        CALL W3SDSX
 !
 !/PDLIB    IF (.NOT. FSSOURCE) THEN
-!/PDLIB      IF (.NOT. B_JGS_SOURCE_NONLINEAR) THEN
-!/DB1          CALL W3SDB1 ( IX, SPEC, DEPTH, EMEAN, FMEAN, WNMEAN, CG1,       &
-!/DB1                                                   LBREAK, VSDB, VDDB )
-!/DBX          CALL W3SDBX
-!/PDLIB      ENDIF
+!/DB1        CALL W3SDB1 ( IX, SPEC, DEPTH, EMEAN, FMEAN, WNMEAN, CG1,       &
+!/DB1                                                 LBREAK, VSDB, VDDB )
+!/DBX        CALL W3SDBX
 !/PDLIB    ENDIF
 !
 ! 2.c2   optional dissipation parameterisations
@@ -996,9 +995,44 @@
 !/DEBUGSRC               WRITE(740+IAPROC,*) 'min/max/sum(VSBT)=', minval(VSBT), maxval(VSBT), sum(VSBT)
 !/DEBUGSRC               WRITE(740+IAPROC,*) 'min/max/sum(VDBT)=', minval(VDBT), maxval(VDBT), sum(VDBT)
 !/DEBUGSRC        END IF
-
-
-        IF (srce_call .eq. srce_imp_pre) THEN
+         IF (srce_call .eq. srce_imp_pre) THEN
+!/PDLIB           SIDT   = PDLIB_SI(JSEA) * DTG 
+!                 write(*,*) (IOBP(ISEA).eq.3.or.IOBP(ISEA).eq.1).and.IOBDP(ISEA).eq.1.and.IOBPA(ISEA).eq.0, & 
+!                              & IOBP(ISEA), IOBDP(ISEA), IOBPA(ISEA)
+!!/PDLIB             write(*,'(3I10,L10,I10,10F20.10)') JSEA, NK, NTH, LNEWLIMITER, PDLIB_I_DIAG(JSEA), &
+!!/PDLIB                                                       & DTG, SUM(VS), SUM(VD), SIDT
+!/PDLIB           DO IK=1,NK
+!/PDLIB             JAC = CLATSL/CG1(IK) 
+!/PDLIB             DO ITH=1,NTH
+!/PDLIB               ISP=ITH + (IK-1)*NTH
+!/PDLIB               VD(ISP) = MIN(0., VD(ISP))
+!!/PDLIB               IF (.true.) THEN!SHAVE) THEN ! Limit ONLY the source term part ...
+!/PDLIB                 IF (LNEWLIMITER) THEN
+!/PDLIB                   MAXDAC    = MAX(DAM(ISP),DAM2(ISP))
+!/PDLIB                 ELSE
+!/PDLIB                   MAXDAC    = DAM(ISP)
+!/PDLIB                 ENDIF
+!/PDLIB                 FAKS      = DTG / MAX ( 1. , (1.-DTG*VD(ISP)))
+!/PDLIB                 DVS       = VS(ISP) * FAKS
+!/PDLIB                 DVS       = SIGN(MIN(MAXDAC,ABS(DVS)),DVS)
+!/PDLIB                 PreVS     = DVS / FAKS
+!!/PDLIB               ELSE
+!!/PDLIB                 PreVS     = VS(ISP)
+!!/PDLIB               END IF
+!/PDLIB               eVS = PreVS / CG1(IK) * CLATSL
+!/PDLIB               eVD = VD(ISP)
+!/DB1                 eVS = eVS + DBLE(VSDB(ISP)) * JAC
+!/DB1                 eVD = evD + MIN(0.,DBLE(VDDB(ISP)))
+!/TR1                 eVS = eVS + DBLE(VSTR(ISP)) * JAC 
+!/TR1                 eVD = evD + MIN(0.,DBLE(VDTR(ISP)))
+!/VEG1                eVS = eVS + DBLE(VSVG(ISP)) * JAC 
+!/VEG1                eVD = evD + MIN(0.,DBLE(VDVG(ISP)))
+!/PDLIB               B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * (eVS - eVD*VA(ISP,JSEA)*JAC)
+!/PDLIB               ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
+!!/PDLIB               IF (JSEA == 300)  WRITE(*,'(2I10,10F20.10)') JSEA, ISP, B_JAC(ISP,JSEA), ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)), &
+!!/PDLIB                                                  & VA(ISP,JSEA), VS(ISP), VD(ISP), evS, evD
+!/PDLIB             END DO
+!/PDLIB           END DO
           PrintDeltaSmDA=.FALSE.
           IF (PrintDeltaSmDA .eqv. .TRUE.) THEN
             DO IS=1,NSPEC
@@ -1024,16 +1058,18 @@
 !            END DO
             WRITE(740+IAPROC,*) 'min/max/sum(DeltaDS)=', minval(DeltaSRC), maxval(DeltaSRC), sum(DeltaSRC)
           END IF
-     
-          IF (optionCall .eq. 1) THEN
-            CALL SIGN_VSD_PATANKAR_WW3(SPEC,VS,VD)
-          ELSE IF (optionCall .eq. 2) THEN
-            CALL SIGN_VSD_SEMI_IMPLICIT_WW3(SPEC,VS,VD)
-          ELSE IF (optionCall .eq. 3) THEN
-            CALL SIGN_VSD_SEMI_IMPLICIT_WW3(SPEC,VS,VD)
-          ENDIF
-          VSIO=VS
-          VDIO=VD
+    
+!/PDLIB          IF (.not. LSLOC) THEN 
+!/PDLIB             IF (optionCall .eq. 1) THEN
+!/PDLIB               CALL SIGN_VSD_PATANKAR_WW3(SPEC,VS,VD)
+!/PDLIB             ELSE IF (optionCall .eq. 2) THEN
+!/PDLIB               CALL SIGN_VSD_SEMI_IMPLICIT_WW3(SPEC,VS,VD)
+!/PDLIB             ELSE IF (optionCall .eq. 3) THEN
+!/PDLIB               CALL SIGN_VSD_SEMI_IMPLICIT_WW3(SPEC,VS,VD)
+!/PDLIB             ENDIF
+!/PDLIB             VSIO=VS
+!/PDLIB             VDIO=VD
+!/PDLIB           ENDIF
 !!/DEBUGSRC          IF (IX == DEBUG_NODE) WRITE(44,'(10EN15.4)') SUM(VS), SUM(VD), SUM(VSIN), SUM(VDIN), SUM(VSDS), SUM(VDDS), SUM(VSNL), SUM(VDNL)
 !/DEBUGSRC          IF (IX == DEBUG_NODE) THEN
 !/DEBUGSRC            WRITE(740+IAPROC,*) '     srce_imp_pre : SHAVE = ', SHAVE
