@@ -401,6 +401,8 @@
 !/OASICM      USE W3IGCMMD, ONLY: SND_FIELDS_TO_ICE
 
 !/PDLIB      USE PDLIB_FIELD_VEC, only : DO_OUTPUT_EXCHANGES
+!/PDLIB      USE PDLIB_W3PROFSMD, ONLY: ASPAR_JAC, ASPAR_DIAG_ALL, B_JAC
+!/PDLIB      USE W3PARALL, only : LSLOC
 !/TIMINGS    USE W3PARALL, only : PRINT_MY_TIME
 !
       IMPLICIT NONE
@@ -1944,6 +1946,13 @@
 ! 3.7 Calculate and integrate source terms.
 !
   370     CONTINUE
+!
+!
+!/PDLIB     IF (LSLOC) THEN
+!/PDLIB       B_JAC = 0.
+!/PDLIB       ASPAR_JAC= 0.
+!/PDLIB     ENDIF
+
           IF ( FLSOU ) THEN
 !
             D50=0.0002

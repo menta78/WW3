@@ -5996,12 +5996,14 @@
 !/MEMCHECK      call getMallocInfo(mallinfos)
 !/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
 !
-      IF (IMEM == 1) THEN
-        ASPAR_JAC = ZERO
-      ELSE IF (IMEM == 2) THEN
-        ASPAR_DIAG_ALL = ZERO
+      IF (.not. LSLOC) THEN
+        IF (IMEM == 1) THEN
+          ASPAR_JAC = ZERO
+        ELSE IF (IMEM == 2) THEN
+          ASPAR_DIAG_ALL = ZERO
+        ENDIF
+        B_JAC = ZERO
       ENDIF
-      B_JAC = ZERO
 
 !/DEBUGSOLVER     !WRITE(740+IAPROC,'(A20,20E20.10)') 'SUM BJAC INIT', sum(B_JAC), SUM(ASPAR_JAC)
 
