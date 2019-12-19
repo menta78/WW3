@@ -51,7 +51,7 @@
 !/ ------------------------------------------------------------------- /
       SUBROUTINE W3SRCE ( srce_call, IT, ISEA, JSEA, IX, IY, IMOD,          &
                           SPECOLD, SPEC, VSIO, VDIO, SHAVEIO,         &
-                          ALPHA, WN1, CG1,                            &
+                          ALPHA, WN1, CG1, CLATSL,                    &
                           D_INP, U10ABS, U10DIR, AS, USTAR, USTDIR,   &
                           CX, CY,  ICE, ICEH, ICEF, ICEDMAX,          &
                           REFLEC, REFLED, DELX, DELY, DELA, TRNX,     &
@@ -419,8 +419,8 @@
 !/S      USE W3SERVMD, ONLY: STRACE
 !/NNT      USE W3SERVMD, ONLY: EXTCDE
 !/UOST      USE W3UOSTMD, ONLY : UOST_SRCTRMCOMPUTE
-!/PDLIB    USE PDLIB_W3PROFSMD, ONLY : B_JAC, ASPAR_JAC, ASPAR_DIAG_SOURCES
-!/PDLIB    USE yowNodepool,    ONLY: PDLIB_CCON, NPA, PDLIB_I_DIAG, PDLIB_JA, PDLIB_IA_P
+!/PDLIB    USE PDLIB_W3PROFSMD, ONLY : B_JAC, ASPAR_JAC, ASPAR_DIAG_SOURCES, ASPAR_DIAG_ALL 
+!/PDLIB    USE yowNodepool,    ONLY: PDLIB_CCON, NPA, PDLIB_I_DIAG, PDLIB_JA, PDLIB_IA_P, PDLIB_SI
 !/PDLIB    USE W3GDATMD, ONLY: CLATS
 !/PDLIB    USE W3WDATMD, ONLY: VA
 !/PDLIB    USE W3PARALL, ONLY: ONESIXTH, ZERO, THR, IMEM, LSLOC
@@ -430,8 +430,8 @@
 !/ ------------------------------------------------------------------- /
 !/ Parameter list
 !/
-      INTEGER, INTENT(IN)     :: srce_call, IT, JSEA, IX, IY, IMOD
-      REAL, intent(in)        :: SPECOLD(NSPEC)
+      INTEGER, INTENT(IN)     :: srce_call, IT, ISEA, JSEA, IX, IY, IMOD
+      REAL, intent(in)        :: SPECOLD(NSPEC), CLATSL
       REAL, INTENT(OUT)       :: VSIO(NSPEC), VDIO(NSPEC)
       LOGICAL, INTENT(OUT)    :: SHAVEIO
       REAL, INTENT(IN)        :: D_INP, U10ABS,     &
@@ -455,7 +455,7 @@
 !/ Local parameters
 !/
       INTEGER                 :: IK, ITH, IS, IS0, NSTEPS,  NKH, NKH1,&
-                                 IKS1, IS1, NSPECH, IDT, IERR, NKI, NKD
+                                 IKS1, IS1, NSPECH, IDT, IERR, NKI, NKD, ISP
 !/S      INTEGER, SAVE           :: IENT = 0
 !/NNT      INTEGER, SAVE           :: NDSD = 89, NDSD2 = 88, J
       REAL                    :: DTTOT, FHIGH, DT, AFILT, DAMAX, AFAC,&
@@ -482,7 +482,7 @@
                                  MWXFINISH, MWYFINISH, A1BAND, B1BAND,     &
                                  COSI(2)
       REAL                    :: SPECINIT(NSPEC), SPEC2(NSPEC)
-      REAL                    :: DAM (NSPEC), WN2 (NSPEC),            &
+      REAL                    :: DAM (NSPEC), DAM2(NSPEC), WN2 (NSPEC),            &
                                  VSLN(NSPEC),                         &
                                  VSIN(NSPEC), VDIN(NSPEC),            &
                                  VSNL(NSPEC), VDNL(NSPEC),            &
@@ -996,43 +996,67 @@
 !/DEBUGSRC               WRITE(740+IAPROC,*) 'min/max/sum(VDBT)=', minval(VDBT), maxval(VDBT), sum(VDBT)
 !/DEBUGSRC        END IF
          IF (srce_call .eq. srce_imp_pre) THEN
-!/PDLIB           SIDT   = PDLIB_SI(JSEA) * DTG 
-!                 write(*,*) (IOBP(ISEA).eq.3.or.IOBP(ISEA).eq.1).and.IOBDP(ISEA).eq.1.and.IOBPA(ISEA).eq.0, & 
-!                              & IOBP(ISEA), IOBDP(ISEA), IOBPA(ISEA)
-!!/PDLIB             write(*,'(3I10,L10,I10,10F20.10)') JSEA, NK, NTH, LNEWLIMITER, PDLIB_I_DIAG(JSEA), &
-!!/PDLIB                                                       & DTG, SUM(VS), SUM(VD), SIDT
-!/PDLIB           DO IK=1,NK
-!/PDLIB             JAC = CLATSL/CG1(IK) 
-!/PDLIB             DO ITH=1,NTH
-!/PDLIB               ISP=ITH + (IK-1)*NTH
-!/PDLIB               VD(ISP) = MIN(0., VD(ISP))
-!!/PDLIB               IF (.true.) THEN!SHAVE) THEN ! Limit ONLY the source term part ...
-!/PDLIB                 IF (LNEWLIMITER) THEN
-!/PDLIB                   MAXDAC    = MAX(DAM(ISP),DAM2(ISP))
-!/PDLIB                 ELSE
-!/PDLIB                   MAXDAC    = DAM(ISP)
-!/PDLIB                 ENDIF
-!/PDLIB                 FAKS      = DTG / MAX ( 1. , (1.-DTG*VD(ISP)))
-!/PDLIB                 DVS       = VS(ISP) * FAKS
-!/PDLIB                 DVS       = SIGN(MIN(MAXDAC,ABS(DVS)),DVS)
-!/PDLIB                 PreVS     = DVS / FAKS
-!!/PDLIB               ELSE
-!!/PDLIB                 PreVS     = VS(ISP)
-!!/PDLIB               END IF
-!/PDLIB               eVS = PreVS / CG1(IK) * CLATSL
-!/PDLIB               eVD = VD(ISP)
-!/DB1                 eVS = eVS + DBLE(VSDB(ISP)) * JAC
-!/DB1                 eVD = evD + MIN(0.,DBLE(VDDB(ISP)))
-!/TR1                 eVS = eVS + DBLE(VSTR(ISP)) * JAC 
-!/TR1                 eVD = evD + MIN(0.,DBLE(VDTR(ISP)))
-!/VEG1                eVS = eVS + DBLE(VSVG(ISP)) * JAC 
-!/VEG1                eVD = evD + MIN(0.,DBLE(VDVG(ISP)))
-!/PDLIB               B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * (eVS - eVD*VA(ISP,JSEA)*JAC)
-!/PDLIB               ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
-!!/PDLIB               IF (JSEA == 300)  WRITE(*,'(2I10,10F20.10)') JSEA, ISP, B_JAC(ISP,JSEA), ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)), &
-!!/PDLIB                                                  & VA(ISP,JSEA), VS(ISP), VD(ISP), evS, evD
-!/PDLIB             END DO
+!/PDLIB      IF (LSLOC) THEN
+!/PDLIB        IF (IMEM == 1) THEN
+!/PDLIB          SIDT   = PDLIB_SI(JSEA) * DTG 
+!/PDLIB          DO IK=1,NK
+!/PDLIB           JAC = CLATSL/CG1(IK) 
+!/PDLIB           DO ITH=1,NTH
+!/PDLIB             ISP=ITH + (IK-1)*NTH
+!/PDLIB             VD(ISP) = MIN(0., VD(ISP))
+!/PDLIB             IF (LNEWLIMITER) THEN
+!/PDLIB               MAXDAC    = MAX(DAM(ISP),DAM2(ISP))
+!/PDLIB             ELSE
+!/PDLIB               MAXDAC    = DAM(ISP)
+!/PDLIB             ENDIF
+!/PDLIB             FAKS      = DTG / MAX ( 1. , (1.-DTG*VD(ISP)))
+!/PDLIB             DVS       = VS(ISP) * FAKS
+!/PDLIB             DVS       = SIGN(MIN(MAXDAC,ABS(DVS)),DVS)
+!/PDLIB             PreVS     = DVS / FAKS
+!/PDLIB             eVS = PreVS / CG1(IK) * CLATSL
+!/PDLIB             eVD = VD(ISP)
+!/DB1               eVS = eVS + DBLE(VSDB(ISP)) * JAC
+!/DB1               eVD = evD + MIN(0.,DBLE(VDDB(ISP)))
+!/TR1               eVS = eVS + DBLE(VSTR(ISP)) * JAC 
+!/TR1               eVD = evD + MIN(0.,DBLE(VDTR(ISP)))
+!/VEG1              eVS = eVS + DBLE(VSVG(ISP)) * JAC 
+!/VEG1              eVD = evD + MIN(0.,DBLE(VDVG(ISP)))
+!/PDLIB             B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * (eVS - eVD*VA(ISP,JSEA)*JAC)
+!/PDLIB             ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
+!/PDLIB            END DO
+!/PDLIB          END DO
+!/PDLIB        ELSEIF (IMEM == 2) THEN
+!/PDLIB         SIDT   = PDLIB_SI(JSEA) * DTG
+!/PDLIB         DO IK=1,NK
+!/PDLIB           JAC = CLATSL/CG1(IK)
+!/PDLIB           DO ITH=1,NTH
+!/PDLIB             ISP=ITH + (IK-1)*NTH
+!/PDLIB             VD(ISP) = MIN(0., VD(ISP))
+!/PDLIB             IF (LNEWLIMITER) THEN
+!/PDLIB               MAXDAC    = MAX(DAM(ISP),DAM2(ISP))
+!/PDLIB             ELSE
+!/PDLIB               MAXDAC    = DAM(ISP)
+!/PDLIB             ENDIF
+!/PDLIB             FAKS      = DTG / MAX ( 1. , (1.-DTG*VD(ISP)))
+!/PDLIB             DVS       = VS(ISP) * FAKS
+!/PDLIB             DVS       = SIGN(MIN(MAXDAC,ABS(DVS)),DVS)
+!/PDLIB             PreVS     = DVS / FAKS
+!/PDLIB             eVS = PreVS / CG1(IK) * CLATSL
+!/PDLIB             eVD = VD(ISP)
+!/DB1               eVS = eVS + DBLE(VSDB(ISP)) * JAC
+!/DB1               eVD = evD + MIN(0.,DBLE(VDDB(ISP)))
+!/TR1               eVS = eVS + DBLE(VSTR(ISP)) * JAC
+!/TR1               eVD = evD + MIN(0.,DBLE(VDTR(ISP)))
+!/VEG1              eVS = eVS + DBLE(VSVG(ISP)) * JAC
+!/VEG1              eVD = evD + MIN(0.,DBLE(VDVG(ISP)))
+!/PDLIB             B_JAC(ISP,JSEA)          = B_JAC(ISP,JSEA) + SIDT * (eVS - eVD*VA(ISP,JSEA))
+!/PDLIB             ASPAR_DIAG_ALL(ISP,JSEA) = ASPAR_DIAG_ALL(ISP,JSEA) - SIDT * eVD
 !/PDLIB           END DO
+!/PDLIB         END DO
+!/PDLIB        ENDIF
+!/PDLIB      ENDIF 
+
+             
           PrintDeltaSmDA=.FALSE.
           IF (PrintDeltaSmDA .eqv. .TRUE.) THEN
             DO IS=1,NSPEC

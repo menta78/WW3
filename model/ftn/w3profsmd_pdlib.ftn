@@ -102,7 +102,7 @@
 !/ Public variables
 !/
       LOGICAL               :: MAPSTA_HACK = .FALSE.
-      REAL, ALLOCATABLE     :: ASPAR_JAC(:,:), ASPAR_DIAG_SOURCES(:,:)
+      REAL, ALLOCATABLE     :: ASPAR_JAC(:,:), ASPAR_DIAG_SOURCES(:,:), ASPAR_DIAG_ALL(:,:) 
       REAL, ALLOCATABLE     :: B_JAC(:,:), CAD_THE(:,:), CAS_SIG(:,:)
       REAL, ALLOCATABLE     :: CWNB_SIG_M2(:,:)
       REAL, ALLOCATABLE     :: U_JAC(:,:)
@@ -5001,7 +5001,7 @@
 !!/DEBUGSOLVER     CALL PrintTotalOffContrib("Offdiag after the refraction")
       END SUBROUTINE
 !/ ------------------------------------------------------------------- /
-      SUBROUTINE CALCARRAY_JACOBI_SOURCE_1(DTG,ASPAR_DIAG_LOCAL)
+      SUBROUTINE CALCARRAY_JACOBI_SOURCE_1(DTG)
 !/
 !/                  +-----------------------------------+
 !/                  | WAVEWATCH III           NOAA/NCEP |
@@ -5061,7 +5061,6 @@
       USE constants, ONLY : TPI, TPIINV, GRAV
       IMPLICIT NONE
       REAL, INTENT(in) :: DTG
-      REAL, INTENT(inout) :: ASPAR_DIAG_LOCAL(:,:)!NSPEC,NSEAL)
       REAL, PARAMETER :: COEF4 = 5.0E-07
       REAL, PARAMETER :: FACDAM = 1
       INTEGER JSEA, IP, IP_glob, ISEA
@@ -5191,7 +5190,7 @@
       USE constants, ONLY : TPI, TPIINV, GRAV
       IMPLICIT NONE
       REAL, INTENT(in) :: DTG
-      REAL, INTENT(inout) :: ASPAR_DIAG_LOCAL(:,:)!NSPEC,NSEAL)
+      REAL, INTENT(inout) :: ASPAR_DIAG_LOCAL(:,:)
       REAL, PARAMETER :: COEF4 = 5.0E-07
       REAL, PARAMETER :: FACDAM = 1
       INTEGER JSEA, IP, IP_glob, ISEA
@@ -6012,16 +6011,12 @@
 !
 !     source terms 
 !
-      IF (FSSOURCE .and. B_JGS_NLEVEL .eq. 0) THEN
-        IF (B_JGS_SOURCE_NONLINEAR) THEN
-          call ADD_SOURCE_TERMS_NONLINEAR(DTG)
-        ELSE
-          IF (LSLOC) THEN
-            IF (IMEM == 1) THEN 
-              call CALCARRAY_JACOBI_SOURCE_1(DTG,ASPAR_DIAG_ALL)
-            ELSE IF (IMEM == 2) THEN
-              call CALCARRAY_JACOBI_SOURCE_2(DTG,ASPAR_DIAG_ALL)
-            ENDIF
+      IF (FSSOURCE) THEN
+        IF (.not. LSLOC) THEN
+          IF (IMEM == 1) THEN 
+            call CALCARRAY_JACOBI_SOURCE_1(DTG)
+          ELSE IF (IMEM == 2) THEN
+            call CALCARRAY_JACOBI_SOURCE_2(DTG,ASPAR_DIAG_ALL)
           ENDIF
         ENDIF
       END IF
@@ -7172,6 +7167,9 @@
 !/DEBUGINIT    FLUSH(740+IAPROC)
       IF (IMEM == 1) THEN
         ALLOCATE(ASPAR_JAC(NSPEC, PDLIB_NNZ), stat=istat)
+        if(istat /= 0) CALL PDLIB_ABORT(9)
+      ELSEIF (IMEM == 2) THEN
+        ALLOCATE(ASPAR_DIAG_ALL(NSPEC, NSEAL ), stat=istat)
         if(istat /= 0) CALL PDLIB_ABORT(9)
       ENDIF
 !/DEBUGINIT    WRITE(740+IAPROC,*) 'JACOBI_INIT, step 2'
