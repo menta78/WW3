@@ -826,10 +826,10 @@
 !/ST6        CALL W3SDS6 ( SPEC, CG1, WN1,                   VSDS, VDDS )
 !/STX        CALL W3SDSX
 !
-!/PDLIB    IF (.NOT. FSSOURCE) THEN
-!/DB1        CALL W3SDB1 ( IX, SPEC, DEPTH, EMEAN, FMEAN, WNMEAN, CG1,       &
+!/PDLIB    IF (.NOT. FSSOURCE .or. LSLOC) THEN
+!/DB1          CALL W3SDB1 ( IX, SPEC, DEPTH, EMEAN, FMEAN, WNMEAN, CG1,       &
 !/DB1                                                 LBREAK, VSDB, VDDB )
-!/DBX        CALL W3SDBX
+!/DBX          CALL W3SDBX
 !/PDLIB    ENDIF
 !
 ! 2.c2   optional dissipation parameterisations
@@ -996,6 +996,8 @@
 !/DEBUGSRC               WRITE(740+IAPROC,*) 'min/max/sum(VDBT)=', minval(VDBT), maxval(VDBT), sum(VDBT)
 !/DEBUGSRC        END IF
          IF (srce_call .eq. srce_imp_pre) THEN
+             VS = 0
+             VD = 0 
 !/PDLIB      IF (LSLOC) THEN
 !/PDLIB        IF (IMEM == 1) THEN
 !/PDLIB          SIDT   = PDLIB_SI(JSEA) * DTG 

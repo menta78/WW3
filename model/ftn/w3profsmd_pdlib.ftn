@@ -102,8 +102,8 @@
 !/ Public variables
 !/
       LOGICAL               :: MAPSTA_HACK = .FALSE.
-      REAL, ALLOCATABLE     :: ASPAR_JAC(:,:), ASPAR_DIAG_SOURCES(:,:), ASPAR_DIAG_ALL(:,:) 
-      REAL, ALLOCATABLE     :: B_JAC(:,:), CAD_THE(:,:), CAS_SIG(:,:)
+      REAL, ALLOCATABLE     :: ASPAR_JAC(:,:), ASPAR_DIAG_SOURCES(:,:), ASPAR_DIAG_ALL(:,:), B_JAC(:,:)
+      REAL, ALLOCATABLE     :: CAD_THE(:,:), CAS_SIG(:,:)
       REAL, ALLOCATABLE     :: CWNB_SIG_M2(:,:)
       REAL, ALLOCATABLE     :: U_JAC(:,:)
       REAL, ALLOCATABLE     :: COFRM4(:)
