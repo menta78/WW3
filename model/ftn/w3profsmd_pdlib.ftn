@@ -5863,8 +5863,9 @@
       USE MPI, ONLY : MPI_SUM, MPI_INT
       USE W3ADATMD, ONLY: MPI_COMM_WCMP
 !/MEMCHECK USE W3ADATMD, ONLY: MALLINFOS
-      USE W3GDATMD, ONLY: IOBP, IOBPD, NSEA, SIG, IOBDP, IOBPA
+      USE W3GDATMD, ONLY: NSEA, SIG, IOBDP, IOBPA
       USE W3GDATMD, ONLY: IOBP_LOC, IOBPD_LOC, NSEA, SIG, IOBDP_LOC, IOBPA_LOC
+      USE W3GDATMD, ONLY: IOBP, IOBPD
       USE W3GDATMD, ONLY: NK, NK2, NTH, ECOS, ESIN, NSPEC, MAPFS
       USE W3WDATMD, ONLY: TIME
       USE W3ODATMD, ONLY: NBI
@@ -6114,19 +6115,19 @@
               !WRITE(*,'(A10,10F20.10)') 'JAC4', SUM(ASPAR_DIAG_LOCAL), SUM(ASPAR_OFF_DIAG_LOCAL), SUM(B_JAC_LOCAL)
               !CALL calcARRAY_JACOBI3(IP,ICOUNT1,DTG,FACX,FACY,VGX,VGY,ASPAR_DIAG_LOCAL,ASPAR_OFF_DIAG_LOCAL,B_JAC_LOCAL)
               !WRITE(*,'(A10,10F20.10)') 'JAC3', SUM(ASPAR_DIAG_LOCAL), SUM(ASPAR_OFF_DIAG_LOCAL), SUM(B_JAC_LOCAL)
-              ASPAR_DIAG = ASPAR_DIAG_LOCAL + ASPAR_DIAG_ALL(:,IP)
+              ASPAR_DIAG = ASPAR_DIAG_LOCAL + ASPAR_DIAG_ALL(1:NSPEC,IP)
               !IF (ANY(ABS(ASPAR_DIAG) .LT. TINY(1.))) THEN
               !  WRITE(*,'(8I10,4F20.10)') IP, JSEA, ISEA, NSEA, NSEAL, np, npa, IP_glob, SUM(ASPAR_DIAG), SUM(ASPAR_DIAG_LOCAL), SUM(ASPAR_DIAG_ALL(:,IP)), SUM(B_JAC(:,IP))
               !  CALL PDLIB_ABORT(25)
               !ENDIF
-              esum       = B_JAC_LOCAL - ASPAR_OFF_DIAG_LOCAL + B_JAC(:,IP)
+              esum       = B_JAC_LOCAL - ASPAR_OFF_DIAG_LOCAL + B_JAC(1:NSPEC,IP)
             ELSEIF (IMEM == 1) THEN
               !CALL calcARRAY_JACOBI4(IP,ICOUNT2,DTG,FACX,FACY,VGX,VGY,ASPAR_DIAG_LOCAL,ASPAR_OFF_DIAG_LOCAL,B_JAC_LOCAL)
               !WRITE(*,'(A10,10F20.10)') 'JAC4', SUM(ASPAR_DIAG_LOCAL), SUM(ASPAR_OFF_DIAG_LOCAL), SUM(B_JAC_LOCAL)
               !CALL calcARRAY_JACOBI3(IP,ICOUNT1,DTG,FACX,FACY,VGX,VGY,ASPAR_DIAG_LOCAL,ASPAR_OFF_DIAG_LOCAL,B_JAC_LOCAL)
               !WRITE(*,'(A10,10F20.10)') 'JAC3', SUM(ASPAR_DIAG_LOCAL), SUM(ASPAR_OFF_DIAG_LOCAL), SUM(B_JAC_LOCAL)
-              eSum       = B_JAC(:,IP)
-              ASPAR_DIAG = ASPAR_JAC(:,PDLIB_I_DIAG(IP))
+              eSum       = B_JAC(1:NSPEC,IP)
+              ASPAR_DIAG = ASPAR_JAC(1:NSPEC,PDLIB_I_DIAG(IP))
 !/DEBUGFREQSHIFT      WRITE(740+IAPROC,*) 'eSI=', eSI
 !/DEBUGFREQSHIFT      WRITE(740+IAPROC,*) 'sum(ASPAR_DIAG)=', sum(ASPAR_DIAG)
 !/DEBUGSRC            WRITE(740+IAPROC,*) 'Step 1: sum(eSum)=', sum(eSum)
@@ -6134,7 +6135,7 @@
               DO i = PDLIB_IA_P(IP)+1, PDLIB_IA_P(IP+1)
                 JP=PDLIB_JA(I)
                 IF (JP .ne. IP) THEN
-                  eProd = ASPAR_JAC(:,i)*VA(:,JP)
+                  eProd = ASPAR_JAC(1:NSPEC,i)*VA(1:NSPEC,JP)
                   eSum  = eSum - eProd
 !/DEBUGSOLVER     WRITE(740+IAPROC,'(A20,3I10,20E20.10)') 'OFF DIAGONAL', IP, i, jp, sum(B_JAC(:,IP)), sum(eSum), SUM(ASPAR_JAC(:,i)), SUM(VA(:,JP))
 !/DEBUGSOLVERCOH              eOff=eOff + abs(ASPAR_JAC(:,i))
@@ -6209,7 +6210,7 @@
             END IF
 !/DEBUGSRC            WRITE(740+IAPROC,*) 'Step 4: sum(eSum)=', sum(eSum)
 !/DEBUGSOLVERCOH          PRE_VA(:, IP)=REAL(eSum)
-            eSum = eSum / ASPAR_DIAG
+            eSum = eSum(1:NSPEC) / ASPAR_DIAG(1:NSPEC)
 !/DEBUGFREQSHIFT        WRITE(740+IAPROC,*) 'JSEA=', JSEA, ' nbIter=', nbIter
 !/DEBUGFREQSHIFT        DO ISP=1,NSPEC
 !/DEBUGFREQSHIFT          IK=MAPWN(ISP)
@@ -6359,10 +6360,9 @@
         !
         IF (B_JGS_TERMINATE_NORM) THEN
           Sum_L2 =0
-          IF (FSSOURCE .and. (B_JGS_NLEVEL .eq. 1) .and. B_JGS_SOURCE_NONLINEAR) CALL ADD_SOURCE_TERMS_NONLINEAR(DTG)
           DO IP = 1, np
             IP_glob=iplg(IP)
-            IF ((MAPSTA(1,IP_glob).eq.1).and.(IOBP(IP_glob).eq.1)) THEN
+            IF (IOBP_LOC(IP).eq.1) THEN
               JSEA=JX_TO_JSEA(IP)
               eSI=PDLIB_SI(IP)
               eSum=B_JAC(:,IP)
@@ -6388,7 +6388,7 @@
                 CP_SIG = MAX(ZERO,CAS)
                 CM_SIG = MIN(ZERO,CAS)
                 DO ITH=1,NTH
-                  IF (IOBPD(ITH,IP_glob) .NE. 0) THEN
+                  IF (IOBPD_LOC(ITH,IP) .NE. 0) THEN
                     DO IK=2,NK
                       ISP  =ITH + (IK  -1)*NTH
                       ISPm1=ITH + (IK-1-1)*NTH
@@ -6429,11 +6429,12 @@
 !/DEBUGSRC        WRITE(740+IAPROC,*) 'IOBPD loop, Before, sum(VA)=', sum(VA(:,IP))
         DO ISP=1,NSPEC
           ITH    = 1 + MOD(ISP-1,NTH)
-          VA(ISP,IP)=MAX(ZERO, VA(ISP,IP))*IOBDP(IP_glob)*DBLE(IOBPD(ITH,IP_glob))
+          !IF (IOBPD_LOC(ITH,IP) .ne. IOBPD(ITH,IP_glob)) STOP 'ERROR IN BOUNDARY'
+          VA(ISP,IP)=MAX(ZERO, VA(ISP,IP))*IOBDP_LOC(IP)*DBLE(IOBPD_LOC(ITH,IP))
         END DO
 !/DEBUGSRC        WRITE(740+IAPROC,*) 'IOBPD loop, After, sum(VA)=', sum(VA(:,IP))
       END DO
-!!/DEBUGSOLVERCOH      CALL CHECK_ARRAY_INTEGRAL_NX_R8(VA, "VA(npa) after loop", npa)
+!/DEBUGSOLVERCOH      CALL CHECK_ARRAY_INTEGRAL_NX_R8(VA, "VA(npa) after loop", npa)
 !/DEBUGSOLVER     WRITE(740+IAPROC,*) 'FLBPI=', FLBPI
 !/DEBUGSOLVER     FLUSH(740+IAPROC)
 
@@ -6546,7 +6547,7 @@
 !
 !/S      USE W3SERVMD, ONLY: STRACE
 !/
-      USE W3GDATMD, ONLY: MAPSTA
+      !USE W3GDATMD, ONLY: MAPSTA
       USE W3GDATMD, ONLY: FSREFRACTION, FSFREQSHIFT, FSSOURCE, NX, DSIP
       USE W3GDATMD, ONLY: B_JGS_NORM_THR, B_JGS_TERMINATE_NORM, B_JGS_PMIN, NTRI
       USE W3GDATMD, ONLY: B_JGS_TERMINATE_DIFFERENCE, B_JGS_MAXITER, B_JGS_LIMITER
@@ -6995,7 +6996,7 @@
 !/ ------------------------------------------------------------------- /
 !/S      USE W3SERVMD, ONLY: STRACE
       USE CONSTANTS, ONLY : LPDLIB
-      USE W3GDATMD, ONLY: MAPSF, NSEAL, DMIN, IOBDP, MAPSTA, IOBP, MAPFS, NX
+      USE W3GDATMD, ONLY: MAPSF, NSEAL, DMIN, IOBDP, MAPSTA, IOBDP_LOC, NX
       USE W3ADATMD, ONLY: DW
       USE W3PARALL, ONLY: INIT_GET_ISEA
       USE YOWNODEPOOL, ONLY: iplg, np
@@ -7016,13 +7017,17 @@
       INTEGER :: JSEA, ISEA, IX, IP, IP_glob
       REAL*8, PARAMETER :: DTHR = 10E-6
 !/S      CALL STRACE (IENT, 'SETDEPTH_PDLIB')
-      IOBDP = 1
       DO JSEA=1,NSEAL
-        IP=JSEA
-        IP_glob=iplg(IP)
-        ISEA=MAPFS(1,IP_glob)
-        IF (DW(ISEA) .LT. DMIN + DTHR) IOBDP(IP_glob) = 0
-        !WRITE(*,*) ip, ip_glob, MAPSTA(1,IP_glob), IOBP(IP_glob), DW(ISEA), DMIN
+        IP = JSEA
+        IP_glob = iplg(IP)
+        IF (DW(IP_glob) .LT. DMIN + DTHR) THEN
+          !IOBDP(IP_glob) = 0
+          IOBDP_LOC(IP)  = 0
+        ELSE
+          !IOBDP(IP_glob) = 1
+          IOBDP_LOC(IP)  = 1
+        ENDIF 
+        !WRITE(*,*) ip, ip_glob, IOBDP_LOC(IP), DW(IP_glob), DMIN
       END DO
 !/
 !/ End of SETDEPTH_PDLIB --------------------------------------------- /
