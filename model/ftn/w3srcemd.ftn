@@ -949,6 +949,7 @@
 !            WRITE(*,'(A20,I10,10F30.10)') 'TIME STEP COMP', IS, DAMAX, DAM(IS), XREL*SPECINIT(IS), AFILT, AFAC, DT
 !          ENDIF
         END DO  ! end of loop on IS 
+
 !
 !        WRITE(*,*) 'NODE_NUMBER', IX
 !        IF (IX == DEBUG_NODE) WRITE(*,*) 'TIMINGS 1', DT 
@@ -996,8 +997,6 @@
 !/DEBUGSRC               WRITE(740+IAPROC,*) 'min/max/sum(VDBT)=', minval(VDBT), maxval(VDBT), sum(VDBT)
 !/DEBUGSRC        END IF
          IF (srce_call .eq. srce_imp_pre) THEN
-             VS = 0
-             VD = 0 
 !/PDLIB      IF (LSLOC) THEN
 !/PDLIB        IF (IMEM == 1) THEN
 !/PDLIB          SIDT   = PDLIB_SI(JSEA) * DTG 
@@ -1057,7 +1056,6 @@
 !/PDLIB         END DO
 !/PDLIB        ENDIF
 !/PDLIB      ENDIF 
-
              
           PrintDeltaSmDA=.FALSE.
           IF (PrintDeltaSmDA .eqv. .TRUE.) THEN
@@ -1093,8 +1091,8 @@
 !/PDLIB             ELSE IF (optionCall .eq. 3) THEN
 !/PDLIB               CALL SIGN_VSD_SEMI_IMPLICIT_WW3(SPEC,VS,VD)
 !/PDLIB             ENDIF
-!/PDLIB             VSIO=VS
-!/PDLIB             VDIO=VD
+!/PDLIB             VSIO = VS
+!/PDLIB             VDIO = VD
 !/PDLIB           ENDIF
 !!/DEBUGSRC          IF (IX == DEBUG_NODE) WRITE(44,'(10EN15.4)') SUM(VS), SUM(VD), SUM(VSIN), SUM(VDIN), SUM(VSDS), SUM(VDDS), SUM(VSNL), SUM(VDNL)
 !/DEBUGSRC          IF (IX == DEBUG_NODE) THEN

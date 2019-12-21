@@ -5054,7 +5054,8 @@
       USE W3ADATMD, ONLY: CG, DW, WN
       USE W3WDATMD, ONLY: UST, USTDIR
       USE W3GDATMD, ONLY: NK, NTH, NSPEC, MAPFS, optionCall, DMIN
-      USE W3GDATMD, ONLY: IOBP, MAPSTA, FACP, SIG, IOBPD, IOBPA, IOBDP
+      USE W3GDATMD, ONLY: MAPSTA, FACP, SIG
+      USE W3GDATMD, ONLY: IOBP_LOC, IOBPD_LOC, IOBPA_LOC, IOBDP_LOC
       USE W3PARALL, ONLY: IMEM
       USE W3GDATMD, ONLY: NSEAL, CLATS
 !/DB1      USE W3SDB1MD
@@ -5078,7 +5079,7 @@
         IP_glob = iplg(IP)
         ISEA    = MAPFS(1,IP_glob)
 
-        IF (IOBP(IP_glob).eq.1..and.IOBDP(IP_glob).eq.1.and.IOBPA(IP_glob).eq.0) THEN
+        IF (IOBP_LOC(IP).eq.1..and.IOBDP_LOC(IP).eq.1.and.IOBPA_LOC(IP).eq.0) THEN
           DO IK=1, NK
             DAM(1+(IK-1)*NTH) = FACP / ( SIG(IK) * WN(IK,ISEA)**3 )
           END DO
