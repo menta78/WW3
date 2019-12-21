@@ -370,7 +370,7 @@
 !---- Temporary parameters (to be replaced by namelists) -----
 
       PTRIAD(1) = 1. 
-      PTRIAD(2) = 1000. 
+      PTRIAD(2) = 5. 
       PTRIAD(3) = 10. ! not used 
       PTRIAD(4) = 0.2
       PTRIAD(5) = 0.01
@@ -483,7 +483,7 @@
           SIGPICG = SIG(IK)*TPI/CG(IK) ! 1/s * s/m = 1/m
           DO ITH = 1, NTH
             STRI =       SA(ITH,IK) - 2 * (WISP * SA(ITH,IK+ISP1) + WISP1 * SA(ITH,IK+ISP)) 
-            IF (A(ITH+(IK-1)*NTH) .gt. 1.E-12) THEN
+            IF (A(ITH+(IK-1)*NTH) .gt. 1.E-18) THEN
               D(ITH+(IK-1)*NTH) = STRI / (A(ITH+(IK-1)*NTH)*SIGPICG)
               S(ITH+(IK-1)*NTH) = STRI / SIGPICG 
             ELSE
