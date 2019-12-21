@@ -60,7 +60,7 @@
       INTEGER, ALLOCATABLE :: ListISPnextDir(:), ListISPprevDir(:)
       INTEGER, ALLOCATABLE :: ListISPnextFreq(:), ListISPprevFreq(:)
 
-      LOGICAL, PARAMETER   :: LSLOC = .true. 
+      LOGICAL, PARAMETER   :: LSLOC = .false. 
       INTEGER, PARAMETER   :: IMEM = 1 
 
       REAL,  PARAMETER     :: ONESIXTH  = 1.0d0/6.0d0

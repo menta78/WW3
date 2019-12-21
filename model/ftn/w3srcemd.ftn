@@ -803,7 +803,7 @@
 !/NL4        CALL W3SNL4 ( SPEC, CG1, WN1, DEPTH,          VSNL, VDNL )
 !/NLX        CALL W3SNLX 
 !
-!/PDLIB    IF (.NOT. B_JGS_SOURCE_NONLINEAR) THEN
+!/PDLIB    IF (.NOT. FSSOURCE .or. LSLOC) THEN
 !/TR1        CALL W3STR1 ( SPEC, CG1, WN1, DEPTH, IX,        VSTR, VDTR )
 !/TRX        CALL W3STRX
 !/PDLIB    ENDIF
@@ -840,7 +840,6 @@
 !
 ! 2.d Bottom interactions.
 !
-!/PDLIB    IF (.NOT. B_JGS_SOURCE_NONLINEAR) THEN
 !/BT1        CALL W3SBT1 ( SPEC, CG1, WN1, DEPTH,            VSBT, VDBT )
 !/BT4        CALL W3SBT4 ( SPEC, CG1, WN1, DEPTH, D50, PSIC, TAUBBL,    &
 !/BT4                      BEDFORM, VSBT, VDBT, IX, IY )
@@ -851,7 +850,6 @@
 !/BS1        CALL W3SBS1 ( SPEC, CG1, WN1, DEPTH, CX, CY,                &
 !/BS1                           TAUSCX, TAUSCY, VSBS, VDBS )
 !/BSX        CALL W3SBSX
-!/PDLIB      ENDIF
 !
 ! 2.e Unresolved Obstacles Source Term
 !
@@ -926,7 +924,6 @@
           VS(IS) = VSLN(IS) + VSIN(IS) + VSNL(IS)  &
                  + VSDS(IS) + VSBT(IS) 
 !/ST6          VS(IS) = VS(IS) + VSWL(IS)
-!/TR1          VS(IS) = VS(IS) + VSTR(IS)
 !/TRX          VS(IS) = VS(IS) + VSTR(IS)
 !/BS1          VS(IS) = VS(IS) + VSBS(IS)
 !/BSX          VS(IS) = VS(IS) + VSBS(IS)
@@ -935,7 +932,6 @@
           VD(IS) =  VDIN(IS) + VDNL(IS)  &
                  + VDDS(IS) + VDBT(IS) 
 !/ST6          VD(IS) = VD(IS) + VDWL(IS)
-!/TR1          VD(IS) = VD(IS) + VDTR(IS)
 !/TRX          VD(IS) = VD(IS) + VDTR(IS)
 !/BS1          VD(IS) = VD(IS) + VDBS(IS)
 !/BSX          VD(IS) = VD(IS) + VDBS(IS)
@@ -1020,8 +1016,8 @@
 !/DB1               eVD = evD + MIN(0.,DBLE(VDDB(ISP)))
 !/TR1               eVS = eVS + DBLE(VSTR(ISP)) * JAC 
 !/TR1               eVD = evD + MIN(0.,DBLE(VDTR(ISP)))
-!/VEG1              eVS = eVS + DBLE(VSVG(ISP)) * JAC 
-!/VEG1              eVD = evD + MIN(0.,DBLE(VDVG(ISP)))
+!!/VEG1              eVS = eVS + DBLE(VSVG(ISP)) * JAC 
+!!/VEG1              eVD = evD + MIN(0.,DBLE(VDVG(ISP)))
 !/PDLIB             B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * (eVS - eVD*VA(ISP,JSEA)*JAC)
 !/PDLIB             ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
 !/PDLIB            END DO
@@ -1046,10 +1042,10 @@
 !/PDLIB             eVD = VD(ISP)
 !/DB1               eVS = eVS + DBLE(VSDB(ISP)) * JAC
 !/DB1               eVD = evD + MIN(0.,DBLE(VDDB(ISP)))
-!/TR1               eVS = eVS + DBLE(VSTR(ISP)) * JAC
-!/TR1               eVD = evD + MIN(0.,DBLE(VDTR(ISP)))
-!/VEG1              eVS = eVS + DBLE(VSVG(ISP)) * JAC
-!/VEG1              eVD = evD + MIN(0.,DBLE(VDVG(ISP)))
+!!/TR1               eVS = eVS + DBLE(VSTR(ISP)) * JAC
+!!/TR1               eVD = evD + MIN(0.,DBLE(VDTR(ISP)))
+!!/VEG1              eVS = eVS + DBLE(VSVG(ISP)) * JAC
+!!/VEG1              eVD = evD + MIN(0.,DBLE(VDVG(ISP)))
 !/PDLIB             B_JAC(ISP,JSEA)          = B_JAC(ISP,JSEA) + SIDT * (eVS - eVD*VA(ISP,JSEA))
 !/PDLIB             ASPAR_DIAG_ALL(ISP,JSEA) = ASPAR_DIAG_ALL(ISP,JSEA) - SIDT * eVD
 !/PDLIB           END DO
@@ -1141,6 +1137,11 @@
 !/DB1       eInc1 = VSDB(IS) * DT / MAX ( 1. , (1.-HDT*VDDB(IS)))
 !/DB1       SPEC(IS) = MAX ( 0. , SPEC(IS)+eInc1 )
 !/DB1     END DO
+!/TR1     DO IS=IS1, NSPECH
+!/TR1       eInc1 = VSTR(IS) * DT / MAX ( 1. , (1.-HDT*VDTR(IS)))
+!/TR1       SPEC(IS) = MAX ( 0. , SPEC(IS)+eInc1 )
+!/TR1     END DO
+
 !          IF (IX == DEBUG_NODE) THEN
 !            WRITE(*,'(A20,I20,F20.10,L20,4F20.10)') 'AFTER', IX, DEPTH, SHAVE, SUM(VS), SUM(VD), SUM(SPEC)
 !          ENDIF
