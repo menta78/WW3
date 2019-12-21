@@ -996,8 +996,6 @@
 !/DEBUGSRC               WRITE(740+IAPROC,*) 'min/max/sum(VDBT)=', minval(VDBT), maxval(VDBT), sum(VDBT)
 !/DEBUGSRC        END IF
          IF (srce_call .eq. srce_imp_pre) THEN
-             VS = 0
-             VD = 0 
 !/PDLIB      IF (LSLOC) THEN
 !/PDLIB        IF (IMEM == 1) THEN
 !/PDLIB          SIDT   = PDLIB_SI(JSEA) * DTG 
