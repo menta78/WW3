@@ -1140,7 +1140,7 @@
 !/ST4                DIKCUMUL, CUMULW
 !/ST4        END IF
 
-!/MEMCHECK       write(740+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 7e'
+!/MEMCHECK       write(740+IAPROC,*) 'memcheck_____:', 'AFTER READING ST4 STUFF'
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
 
