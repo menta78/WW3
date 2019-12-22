@@ -1011,18 +1011,24 @@
 !/PDLIB              DVS       = SIGN(MIN(MAXDAC,ABS(DVS)),DVS)
 !/PDLIB              PreVS     = DVS / FAKS
 !/PDLIB              eVS = PreVS / CG1(IK) * CLATSL
-!/PDLIB              eVD = VD(ISP)
+!/PDLIB              eVD = MIN(0.,DBLE(VD(ISP)))
 !/DB1                eVS = eVS + DBLE(VSDB(ISP)) * JAC
 !/DB1                eVD = evD + MIN(0.,DBLE(VDDB(ISP)))
-!/TR1                eVS = eVS + DBLE(VSTR(ISP)) * JAC 
-!/TR1                eVD = evD + MIN(0.,DBLE(VDTR(ISP)))
-!                      !IF (JSEA == 340) THEN
-!                      !  WRITE(*,*) JSEA, VSDB(ISP), VDDB(ISP), VSTR(ISP), VDTR(ISP)
-!                      !ENDIF
-!!/VEG1              eVS = eVS + DBLE(VSVG(ISP)) * JAC 
-!!/VEG1              eVD = evD + MIN(0.,DBLE(VDVG(ISP)))
 !/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * (eVS - eVD*VA(ISP,JSEA)*JAC)
 !/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
+!/TR1                eVS = DBLE(VSTR(ISP)) * JAC 
+!/TR1                eVD = DBLE(VDTR(ISP))
+!/TR1                IF (eVS .gt. 0.) THEN
+!/TR1                  evS = 2*evS
+!/TR1                  evD = -evD 
+!/TR1                ELSE
+!/TR1                  evS = -evS
+!/TR1                  evD = 2*evD
+!/TR1                ENDIF
+!!/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * eVS
+!!/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
+!!/VEG1              eVS = eVS + DBLE(VSVG(ISP)) * JAC 
+!!/VEG1              eVD = evD + MIN(0.,DBLE(VDVG(ISP)))
 !/PDLIB            END DO
 !/PDLIB          END DO
 !/PDLIB        ELSEIF (IMEM == 2) THEN

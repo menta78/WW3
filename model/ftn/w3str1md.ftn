@@ -386,7 +386,7 @@
         A3 = A2 + JACEPS 
       ELSE
         A2 = A
-        A3 = A3 + JACEPS 
+        A3 = A2 + JACEPS 
       ENDIF 
       URSELL = (GRAV*HS)/(2.*SQRT(2.)*SIGM01**2*DEPTH**2)
 !---------------------------------------------
@@ -507,12 +507,12 @@
             STRI    = SA(ITH,IK)  - 2 * (WISP *  SA(ITH,IK+ISP1) + WISP1 *  SA(ITH,IK+ISP)) 
             STRI2   = SA2(ITH,IK) - 2 * (WISP * SA2(ITH,IK+ISP1) + WISP1 * SA2(ITH,IK+ISP))
             DIFFSTR = STRI2-STRI
-            IF (A(ITH+(IK-1)*NTH) .gt. JACEPS) THEN
+            IF (A2(ITH+(IK-1)*NTH) .gt. JACEPS) THEN
               !D(ITH+(IK-1)*NTH) = DIFFSTR / (JACEPS * SIGPICG)
-              D(ITH+(IK-1)*NTH) = STRI / ((A(ITH+(IK-1)*NTH)) * SIGPICG) 
+              D(ITH+(IK-1)*NTH) = STRI / ((A2(ITH+(IK-1)*NTH)) * SIGPICG) 
               S(ITH+(IK-1)*NTH) = STRI / SIGPICG 
               !D(ITH+(IK-1)*NTH) = DIFFSTR / (JACEPS * SIGPICG)
-              !S(ITH+(IK-1)*NTH) = 0.!DIFFSTR / (JACEPS * SIGPICG) * A(ITH+(IK-1)*NTH)
+              !S(ITH+(IK-1)*NTH) = DIFFSTR / (JACEPS * SIGPICG) * A2(ITH+(IK-1)*NTH)
             ELSE
               D(ITH+(IK-1)*NTH) = 0.
               S(ITH+(IK-1)*NTH) = 0.

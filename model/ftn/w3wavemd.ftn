@@ -890,6 +890,7 @@
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
 
+
           ITIME  = ITIME + 1
           DTG    = REAL(NINT(DTGA+DTRES+0.0001))
           DTRES  = DTRES + DTGA - DTG
@@ -1087,6 +1088,7 @@
                 END DO
 
           END IF
+
 
 !/MEMCHECK       write(740+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 7'
 !/MEMCHECK       call getMallocInfo(mallinfos)
@@ -1315,6 +1317,7 @@
 !
           FLIWND = .FALSE.
           FLFRST = .FALSE.
+
 !
 !/PDLIB!/DEBUGSRC          WRITE(740+IAPROC,*) 'ITIME=', ITIME, ' IT=', IT
 !/PDLIB!/DEBUGSRC          CALL ALL_VA_INTEGRAL_PRINT(IMOD, "VA before W3SRCE_IMP_PRE")
@@ -1414,6 +1417,7 @@
 !/PDLIB            END IF
 !/PDLIB          END DO ! JSEA 
 !/PDLIB        END IF ! PDLIB 
+
 
 !/PDLIB!/DEBUGSRC          WRITE(740+IAPROC,*) 'ITIME=', ITIME, ' IT=', IT
 !/PDLIB!/DEBUGSRC          CALL ALL_VA_INTEGRAL_PRINT(IMOD, "VA after W3SRCE_IMP_PRE")
@@ -1701,6 +1705,8 @@
 !
 !/DEBUGRUN        WRITE(740+IAPROC,*) 'W3WAVE, step 6.14'
 !/DEBUGRUN        FLUSH(740+IAPROC)
+!
+!
 
             IF ( FLOMP ) ALLOCATE ( FIELD(1-NY:NY*(NX+2)) )
 !
@@ -1839,6 +1845,7 @@
 !/DEBUGRUN        WRITE(740+IAPROC,*) 'NTLOC=', NTLOC
 !/DEBUGRUN        WRITE(740+IAPROC,*) 'ITLOCH=', ITLOCH
 !/DEBUGRUN        FLUSH(740+IAPROC)
+
 !
 ! 3.6.4 Intra-spectral part 2
 !
@@ -1945,6 +1952,7 @@
 !/OMPG/!$OMP PARALLEL PRIVATE (JSEA,ISEA,IX,IY,DELA,DELX,DELY,        &
 !/OMPG/!$OMP&                  REFLEC,REFLED,D50,PSIC,TMP1,TMP2,TMP3)
 !/OMPG/!$OMP DO SCHEDULE (DYNAMIC,1)
+
 !
               DO JSEA=1, NSEAL
                 CALL INIT_GET_ISEA(ISEA, JSEA)
@@ -2080,6 +2088,7 @@
 !/SEC1       IF (IT.EQ.0) EXIT
 !/SEC1       END DO
 !/SEC1       IF (IT.GT.0) DTG=DTGTEMP
+
 !
 !/DEBUGRUN        WRITE(740+IAPROC,*) 'W3WAVE, step 6.19'
 !/DEBUGRUN        FLUSH(740+IAPROC)

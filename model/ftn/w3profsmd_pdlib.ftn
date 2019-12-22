@@ -6070,6 +6070,8 @@
 !/MEMCHECK      call getMallocInfo(mallinfos)
 !/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
 
+
+
         DO IP = 1, np
 
           IP_glob=iplg(IP)
@@ -6418,6 +6420,7 @@
 !/MEMCHECK      write(740+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION SOLVER LOOP 6'
 !/MEMCHECK      call getMallocInfo(mallinfos)
 !/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
+
 
       END DO ! Open Do Loop ... End of Time Interval 
 !/DEBUGSOLVER     WRITE(740+IAPROC,*) 'nbIter=', nbIter, ' B_JGS_MAXITER=', B_JGS_MAXITER
