@@ -333,16 +333,19 @@
       !
       ALLOCATE(GRIDS(IMOD)%IOBP_loc(npa), GRIDS(IMOD)%IOBPD_loc(NTH,npa), stat=istat)
       ALLOCATE(GRIDS(IMOD)%IOBPA_loc(npa), GRIDS(IMOD)%IOBDP_loc(npa), stat=istat)
+      IOBP_loc  => GRIDS(IMOD)%IOBP_loc
+      IOBPD_loc => GRIDS(IMOD)%IOBPD_loc
+      IOBPA_loc => GRIDS(IMOD)%IOBPA_loc
+      IOBDP_loc => GRIDS(IMOD)%IOBDP_loc
 
       if(istat /= 0) CALL PDLIB_ABORT(4)
       DO IP=1,npa
         IP_glob=iplg(IP)
-        GRIDS(IMOD)%IOBP_loc(IP) = IOBP(IP_glob)
-        GRIDS(IMOD)%IOBPD_loc(:,IP) = IOBPD(:,IP_glob)
-        GRIDS(IMOD)%IOBPA_loc(IP) = IOBPA(IP_glob)
-        GRIDS(IMOD)%IOBDP_loc(IP) = IOBDP(IP_glob)
+        IOBP_loc(IP)    = IOBP(IP_glob)
+        IOBPD_loc(:,IP) = IOBPD(:,IP_glob)
+        IOBPA_loc(IP)   = IOBPA(IP_glob)
       END DO
-      DEALLOCATE(IOBP,IOBPD,IOBPA,IOBDP)
+      DEALLOCATE(IOBP,IOBPD,IOBPA)
 !/DEBUGINIT     WRITE(740+IAPROC,*) 'ALLOCATEd(ISEA_TO_JSEA)=', allocated(ISEA_TO_JSEA)
 !/DEBUGINIT     WRITE(740+IAPROC,*) 'PDLIB_NSEALM=', PDLIB_NSEALM
 !/DEBUGINIT     FLUSH(740+IAPROC)
@@ -603,8 +606,6 @@
       VLCFLX = 0.
       VLCFLY = 0.
       AC     = 0.
-
-      CALL SETDEPTH_PDLIB
 !
 ! 2.  Calculate velocities ---------------- *
 ! 
@@ -5887,11 +5888,10 @@
       REAL  :: CAD(NSPEC), CAS(NSPEC), ACLOC(NSPEC)
       REAL  :: CP_SIG(NSPEC), CM_SIG(NSPEC)
       REAL  :: eFactM1, eFactP1
-      REAL  :: Sum_Prev, Sum_New
-      REAL  :: prop_conv, eSI, p_is_converged
+      REAL*8  :: Sum_Prev, Sum_New, p_is_converged, DiffNew, prop_conv
+      REAL  :: eSI
       REAL  :: Sum_L2, Sum_L2_GL
       REAL  :: DMM(0:NK2)
-      REAL  :: DiffNew
       REAL  :: eDiff(NSPEC), eProd(NSPEC)
       REAL  :: DWNI_M2(NK), CWNB_M2(1-NTH:NSPEC)
       REAL  :: VAnew(NSPEC), VFLWN(1-NTH:NSPEC)
@@ -5949,10 +5949,6 @@
 !/MEMCHECK      call getMallocInfo(mallinfos)
 !/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
 !
-! 1.b Initialize arrays
-!
-      CALL SETDEPTH_PDLIB
-!
 ! 2.  Convert to Wave Action ---------------- *
 ! 
 !/DEBUGSRC        WRITE(740+IAPROC,*) 'NSEAL =', NSEAL, 'NP    =', NP, 'NPA   =', NPA
@@ -5968,6 +5964,7 @@
         END DO
       END DO
       VAOLD = VA(1:NSPEC,1:NSEAL)
+
 !/DEBUGSRC      DO JSEA=1,NSEAL
 !/DEBUGSRC        WRITE(740+IAPROC,*) 'JSEA=', JSEA
 !/DEBUGSRC        WRITE(740+IAPROC,*) 'min/max/sum(VA)=', minval(VA(:,JSEA)), maxval(VA(:,JSEA)), sum(VA(:,JSEA))
@@ -6066,28 +6063,28 @@
 !
       DO
 
-        IF (B_JGS_TERMINATE_DIFFERENCE) is_converged=0
-        IF (FSSOURCE .and. (B_JGS_NLEVEL .eq. 1) .and. B_JGS_SOURCE_NONLINEAR) CALL ADD_SOURCE_TERMS_NONLINEAR(DTG)
-
-        ICOUNT1 = 0
-        ICOUNT2 = 0
+        IF (B_JGS_TERMINATE_DIFFERENCE) is_converged = 0
 !AR: 
 !ADD LOOP OVER ELEMENTS HERE FOR ALL ASPAR STUFF
 !/MEMCHECK      write(740+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION SOLVER LOOP 1'
 !/MEMCHECK      call getMallocInfo(mallinfos)
 !/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
 
-        DO IP=1,np
+        DO IP = 1, np
+
           IP_glob=iplg(IP)
+
           IF (IOBDP_LOC(IP) .eq. 0) THEN
             is_converged   = is_converged + 1
             lconverged(ip) = .true.
             CYCLE
           ENDIF
-          JSEA=JX_TO_JSEA(IP)
-          ISEA=MAPFS(1,IP_glob)
-          eSI=PDLIB_SI(IP)
-          ACLOC=VA(:,JSEA)
+
+          JSEA  = JX_TO_JSEA(IP)
+          ISEA  = MAPFS(1,IP_glob)
+          eSI   = PDLIB_SI(IP)
+          ACLOC = VA(:,JSEA)
+
           IF (.NOT. LCONVERGED(IP)) THEN
 !/DEBUGFREQSHIFT    	WRITE(740+IAPROC,*) 'Begin loop'
 !/DEBUGFREQSHIFT        WRITE(740+IAPROC,*) 'IP/IP_glob/ISEA/JSEA=', IP, IP_glob, ISEA, JSEA
@@ -6105,7 +6102,9 @@
 !!/DEBUGFREQSHIFT          eVal2 = B_JAC(ISP,IP)
 !!/DEBUGFREQSHIFT          WRITE(740+IAPROC,*) 'eVal12=', eVal1, eVal2
 !!/DEBUGFREQSHIFT        END DO
-            Sum_Prev=sum(ACLOC)
+
+            Sum_Prev = sum(ACLOC)
+
             IF (IMEM == 2) THEN 
               CALL calcARRAY_JACOBI4(IP,DTG,FACX,FACY,VGX,VGY,ASPAR_DIAG_LOCAL,ASPAR_OFF_DIAG_LOCAL,B_JAC_LOCAL)
               !WRITE(*,'(A10,10F20.10)') 'JAC4', SUM(ASPAR_DIAG_L<sOCAL), SUM(ASPAR_OFF_DIAG_LOCAL), SUM(B_JAC_LOCAL)
@@ -6142,7 +6141,7 @@
 !/DEBUGSOLVERCOH          WRITE(740+IAPROC,*) 'Step 2: sum(eSum)=', sum(eSum), ' eOff=', sum(eOff)
             IF (FSREFRACTION) THEN
 !/DEBUGREFRACTION         WRITE(740+IAPROC,*) 'Adding refraction terms to eSum'
-              CAD=CAD_THE(:,IP)
+              CAD = CAD_THE(:,IP)
               DO ISP=1,NSPEC
                 ISPprevDir=ListISPprevDir(ISP)
                 ISPnextDir=ListISPnextDir(ISP)
@@ -6155,7 +6154,7 @@
 !/DEBUGSRC            WRITE(740+IAPROC,*) 'Step 3: sum(eSum)=', sum(eSum)
             IF (FSFREQSHIFT) THEN
               IF (FreqShiftMethod .eq. 1) THEN
-                CAS=CAS_SIG(:,IP)
+                CAS = CAS_SIG(:,IP)
                 CP_SIG = MAX(ZERO,CAS)
                 CM_SIG = MIN(ZERO,CAS)
                 DO IK=0, NK
@@ -6252,25 +6251,28 @@
 !/DEBUGFREQSHIFT          END IF
 !/DEBUGFREQSHIFT        END DO
 !/DEBUGFREQSHIFT        WRITE(740+IAPROC,*) 'sum(eDiff/VAnew/VAold)=', sum(abs(eDiff)), sum(abs(VAnew)), sum(abs(VAold))
+
             Sum_New=sum(eSum)
+
             IF (B_JGS_LIMITER) THEN
               CALL ACTION_LIMITER_LOCAL(IP, eSum, ACLOC, DTG)
             END IF
+
             IF (B_JGS_BLOCK_GAUSS_SEIDEL) THEN
-              VA(:,IP) = eSum
+              VA(1:NSPEC,IP) = eSum !* IOBDP_LOC(IP)*DBLE(IOBPD_LOC(ITH,IP))
             ELSE
-              U_JAC(:,IP) = eSum
+              U_JAC(1:NSPEC,IP) = eSum
             END IF
           ELSE 
-            esum = VA(:,IP) 
+            esum = VA(1:NSPEC,IP) 
           ENDIF ! LCONVERGED
 !
           IF (B_JGS_TERMINATE_DIFFERENCE) THEN
             if (Sum_new .gt. thr8) then
-              DiffNew=sum(abs(ACLOC - eSum))
+              DiffNew = abs(Sum_new-Sum_prev)
 !/DEBUGFREQSHIFT         WRITE(740+IAPROC,*) 'DiffNew=', DiffNew, ' Sum_new=', Sum_new
               !DiffOld=abs(Sum_prev - Sum_new)
-              p_is_converged = DiffNew/Sum_new
+              p_is_converged = DiffNew/Sum_prev
 !/DEBUGSOLVER   write(740+IAPROC,'(10E20.10)') p_is_converged, sum(ASPAR_DIAG), SUM(B_JAC(:,IP)), DiffNew, Sum_new, sum(ACLOC), sum(esum)
             else
               p_is_converged = zero
@@ -6279,6 +6281,9 @@
             IF (p_is_converged .lt. B_JGS_DIFF_THR) then
               is_converged   = is_converged + 1
               lconverged(ip) = .true.
+            ELSE
+              lconverged(ip) = .false.
+              !write(*,*) ip, is_converged, p_is_converged, iobp_loc(ip), iobdp_loc(ip)
             ENDIF
           END IF
             !IF (IP == 2) STOP
@@ -6327,6 +6332,7 @@
         !
         ! Terminate via differences
         !
+
         IF (B_JGS_TERMINATE_DIFFERENCE) THEN
           CALL MPI_ALLREDUCE(is_converged, itmp, 1, MPI_INT, MPI_SUM, MPI_COMM_WCMP, ierr)
           is_converged = itmp
@@ -6412,6 +6418,7 @@
 !/MEMCHECK      write(740+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION SOLVER LOOP 6'
 !/MEMCHECK      call getMallocInfo(mallinfos)
 !/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
+
       END DO ! Open Do Loop ... End of Time Interval 
 !/DEBUGSOLVER     WRITE(740+IAPROC,*) 'nbIter=', nbIter, ' B_JGS_MAXITER=', B_JGS_MAXITER
 !/DEBUGSOLVER     FLUSH(740+IAPROC)
@@ -6622,8 +6629,6 @@
 !/DEBUGSOLVER     FLUSH(740+IAPROC)
 !
 ! 1.b Initialize arrays
-!
-      CALL SETDEPTH_PDLIB
 !
 ! 2.  Calculate velocities ---------------- *
 ! 
@@ -6988,7 +6993,7 @@
 !/ ------------------------------------------------------------------- /
 !/S      USE W3SERVMD, ONLY: STRACE
       USE CONSTANTS, ONLY : LPDLIB
-      USE W3GDATMD, ONLY: MAPSF, NSEAL, DMIN, IOBDP, MAPSTA, IOBDP_LOC, NX
+      USE W3GDATMD, ONLY: MAPSF, NSEAL, DMIN, MAPSTA, IOBDP_LOC, NX
       USE W3ADATMD, ONLY: DW
       USE W3PARALL, ONLY: INIT_GET_ISEA
       USE YOWNODEPOOL, ONLY: iplg, np
