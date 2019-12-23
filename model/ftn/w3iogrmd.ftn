@@ -617,13 +617,13 @@
                 X0, Y0, SX, SY, DXYMAX, XYB, TRIGP, TRIA,             &
                 LEN, IEN, ANGLE0, ANGLE, SI, MAXX, MAXY,   &
                 DXYMAX, INDEX_CELL, CCON, COUNTCON, IE_CELL,  &
-                POS_CELL, IOBP, IOBPA, IOBDP, IOBPD, IAA, JAA, POSI
+                POS_CELL, IOBP, IOBPA, IOBPD, IAA, JAA, POSI
 #else 
                 WRITE (NDSM)                                            &
                 X0, Y0, SX, SY, DXYMAX, XYB, TRIGP, TRIA,             &
-                MAXX, MAXY,   &
+                MAXX, MAXY, &
                 DXYMAX, &
-                IOBP, IOBPA, IOBDP, IOBPD
+                IOBP, IOBPA, IOBPD
 #endif
             END SELECT !GTYPE
 !
@@ -738,7 +738,7 @@
                 X0, Y0, SX, SY, DXYMAX, XYB, TRIGP, TRIA,             &
                 MAXX, MAXY,   &
                 DXYMAX, &
-                IOBP, IOBPA, IOBDP, IOBPD
+                IOBP, IOBPA, IOBPD
 #endif
 
 

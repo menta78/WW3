@@ -735,23 +735,8 @@
 !/TIMINGS         CALL PRINT_MY_TIME("First entry in the TIME LOOP")
 !/DEBUGRUN        WRITE(740+IAPROC,*) 'W3WAVE, step 6.1'
 !/DEBUGRUN        FLUSH(740+IAPROC)
-!      DO JSEA = 1, NSEAL
-!        DO IS = 1, NSPEC
-!          IF (VA(IS, JSEA) .LT. 0.) THEN
-!            WRITE(740+IAPROC,*) 'TEST W3WAVE 2', VA(IS,JSEA)
-!            CALL FLUSH(740+IAPROC)
-!          ENDIF
-!        ENDDO
-!      ENDDO
-!      IF (SUM(VA) .NE. SUM(VA)) THEN
-!        WRITE(740+IAPROC,*) 'NAN in ACTION 2', IX, IY, SUM(VA)
-!        CALL FLUSH(740+IAPROC)
-!        STOP
-!      ENDIF
-
 
 !/PDLIB!/DEBUGCOH          CALL ALL_VA_INTEGRAL_PRINT(IMOD, "W3WAVEMD, step 6.1")
-!
 !
 ! 2.a Pre-calculate table for IC3 ------------------------------------ /
 !/IC3        USE_CHENG=IC3PARS(9)
@@ -776,7 +761,7 @@
 !     from W3SIC3MD module. ------------------------------------------ /
 !     Note: "IF FLFRST" can be added for efficiency, but testing req'd
 
-         JSEA=1 ! no switch (intentional)
+         JSEA = 1 ! no switch (intentional)
 
 !/IC3        USE_CGICE=IC3PARS(12)
 !/IC3        IF ( USE_CGICE==1.0 ) THEN
@@ -888,7 +873,7 @@
 !/DEBUGRUN        WRITE(740+IAPROC,*) 'IT0=', IT0, ' NT=', NT
 !/DEBUGRUN        FLUSH(740+IAPROC)
 !
-        DO IT=IT0, NT
+        DO IT = IT0, NT
 !/TIMINGS         CALL PRINT_MY_TIME("Begin of IT loop")
 !/SETUP     CALL WAVE_SETUP_COMPUTATION
 ! copy old values 
@@ -1213,7 +1198,6 @@
 !
 ! 3.4 Transform grid (if new water level).
 !
-!          write(740+IAPROC,*) 'TEST ARON', FLLEV, DTL0, TLEV(1), IDACT(5:5), DSEC21 ( TIME, TLN ), TIME, TLN
 !/DEBUGRUN        WRITE(740+IAPROC,*) 'FLLEV=', FLLEV, ' DTL0=', DTL0
 !/DEBUGRUN        FLUSH(740+IAPROC)
           IF ( FLLEV .AND. DTL0 .NE.0. ) THEN
@@ -1298,13 +1282,11 @@
 !/SMC !!Li  Use new sub for DDDX and DDDY assignment.  
 !/SMC         CALL SMCDHXY 
 !/SMCT        WRITE (NDST,*) " * SMCDHXY completed IT DTG =", IT, DTG
-!
             ELSE
               CALL UG_GRADIENTS(DW, DDDX, DDDY)
-              END IF 
-              FLDDIR = .FALSE.
+            END IF 
+            FLDDIR = .FALSE.
           END IF
-
 !/MEMCHECK       write(740+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 12'
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
@@ -1354,55 +1336,41 @@
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
 !
-        IF ( FLSOU .and. LPDLIB) THEN
+!/PDLIB        IF ( FLSOU .and. LPDLIB .and. FSSOURCE) THEN
 !
-!/OMP0/!$OMP PARALLEL DO PRIVATE (JSEA,ISEA,IX,IY) SCHEDULE (DYNAMIC,1)
-          D50=0.0002
-          REFLEC(:)=0.
-          REFLED(:)=0
-          PSIC=0.
-!/PDLIB          VSTOT = 0.
-!/PDLIB          VDTOT = 0.
+!/PDLIB          D50=0.0002
+!/PDLIB          REFLEC(:)=0.
+!/PDLIB          REFLED(:)=0
+!/PDLIB          PSIC=0.
 
-          DO JSEA=1, NSEAL
-            CALL INIT_GET_ISEA(ISEA, JSEA)
-            IX     = MAPSF(ISEA,1)
-            IY     = MAPSF(ISEA,2)
-            DELA=1. 
-            DELX=1. 
-            DELY=1. 
-!/REF1                IF (GTYPE.EQ.RLGTYPE) THEN 
-!/REF1                  DELX=SX*CLATS(ISEA)/FACX
-!/REF1                  DELY=SY/FACX
-!/REF1                  DELA=DELX*DELY
-!/REF1                END IF
-!/REF1                IF (GTYPE.EQ.CLGTYPE) THEN 
-!/REF1! Maybe what follows works also for RLGTYPE ... to be verified
-!/REF1                  DELX=HPFAC(IY,IX)/ FACX
-!/REF1                  DELY=HQFAC(IY,IX)/ FACX 
-!/REF1                  DELA=DELX*DELY
-!/REF1                END IF
-!
-!/REF1       REFLEC=REFLC(:,ISEA)
-!/REF1       REFLEC(4)=BERG(ISEA)*REFLEC(4)
-!/REF1       REFLED=REFLD(:,ISEA)
-!/BT4        D50=SED_D50(ISEA)
-!/BT4        PSIC=SED_PSIC(ISEA)
-!/REF1       REFLEC=REFLC(:,ISEA)
-!/REF1       REFLEC(4)=BERG(ISEA)*REFLEC(4)
-!/REF1       REFLED=REFLD(:,ISEA)
-!/BT4        D50=SED_D50(ISEA)
-!/BT4        PSIC=SED_PSIC(ISEA)
-!
+!/PDLIB          IF (.not. LSLOC) THEN
+!/PDLIB            VSTOT = 0.
+!/PDLIB            VDTOT = 0.
+!/PDLIB          ENDIF
+
+!/PDLIB          DO JSEA = 1, NSEAL
+
+!/PDLIB            CALL INIT_GET_ISEA(ISEA, JSEA)
+
+!/PDLIB            IX     = MAPSF(ISEA,1)
+!/PDLIB            IY     = MAPSF(ISEA,2)
+
+!/PDLIB            DELA = 1. 
+!/PDLIB            DELX = 1. 
+!/PDLIB            DELY = 1. 
+
 !/DEBUGRUN        DO IS = 1, NSPEC
 !/DEBUGRUN          IF (VA(IS, JSEA) .LT. 0.) THEN
 !/DEBUGRUN            WRITE(740+IAPROC,*) 'TEST W3WAVE 7', VA(IS,JSEA)
 !/DEBUGRUN            CALL FLUSH(740+IAPROC)
 !/DEBUGRUN          ENDIF
 !/DEBUGRUN        ENDDO
+
 !
-            IF ( MAPSTA(IY,IX) .EQ. 1 .AND. FLAGST(ISEA)) THEN
-              IF (FSSOURCE) THEN
+!/PDLIB    IF ((IOBP_LOC(JSEA) .eq. 1 .or. IOBP_LOC(JSEA) .eq. 3) &
+!/PDLIB       & .and. IOBDP_LOC(JSEA) .eq. 1 .and. IOBPA_LOC(JSEA) .eq. 0) THEN
+
+
 !/PDLIB!/DEBUGSRC         IF (IX .eq. DEBUG_NODE) THEN
 !/PDLIB!/DEBUGSRC           WRITE(740+IAPROC,*) 'NODE_SRCE_IMP_PRE : IX=', IX, ' JSEA=', JSEA
 !/PDLIB!/DEBUGSRC         END IF
@@ -1412,7 +1380,7 @@
 !/PDLIB!/DEBUGSRC      FLUSH(740+IAPROC)
 !/PDLIB                CALL W3SRCE(srce_imp_pre, IT, ISEA, JSEA, IX, IY, IMOD, &
 !/PDLIB                   VAoldDummy, VA(:,JSEA),                        &
-!/PDLIB                   VSTOT(:,JSEA), VDTOT(:,JSEA), SHAVETOT(JSEA),  &
+!/PDLIB                   VSioDummy, VDioDummy, SHAVETOT(JSEA),  &
 !/PDLIB                   ALPHA(1:NK,JSEA), WN(1:NK,ISEA),               &
 !/PDLIB                   CG(1:NK,ISEA), CLATS(ISEA), DW(ISEA), U10(ISEA),            &
 !/PDLIB                   U10D(ISEA), AS(ISEA), UST(ISEA),               &
@@ -1429,20 +1397,24 @@
 !/PDLIB                   TWS(JSEA), PHIOC(JSEA), TMP1, D50, PSIC, TMP2, &
 !/PDLIB                   PHIBBL(JSEA), TMP3, TMP4, PHICE(JSEA),         &
 !/PDLIB                   ASF(ISEA))
+!/PDLIB                IF (.not. LSLOC) THEN
+!/PDLIB                  VSTOT(:,JSEA) = VSioDummy
+!/PDLIB                  VDTOT(:,JSEA) = VDioDummy
+!/PDLIB                ENDIF
 !/PDLIB!/DEBUGSRC      WRITE(740+IAPROC,*) 'After sum(VA)=', sum(VA(:,JSEA))
 !/PDLIB!/DEBUGSRC      WRITE(740+IAPROC,*) '   sum(VSTOT)=', sum(VSTOT(:,JSEA))
 !/PDLIB!/DEBUGSRC      WRITE(740+IAPROC,*) '   sum(VDTOT)=', sum(VDTOT(:,JSEA))
 !/PDLIB!/DEBUGSRC      WRITE(740+IAPROC,*) '     SHAVETOT=', SHAVETOT(JSEA)
 !/PDLIB!/DEBUGSRC      FLUSH(740+IAPROC)
-              ENDIF
-            ELSE
-              UST   (ISEA) = UNDEF
-              USTDIR(ISEA) = UNDEF
-              DTDYN (JSEA) = UNDEF
-              FCUT  (JSEA) = UNDEF
-            END IF
-          END DO ! JSEA 
-        END IF ! PDLIB 
+!/PDLIB            ELSE
+!/PDLIB              UST   (ISEA) = UNDEF
+!/PDLIB              USTDIR(ISEA) = UNDEF
+!/PDLIB              DTDYN (JSEA) = UNDEF
+!/PDLIB              FCUT  (JSEA) = UNDEF
+!/PDLIB            END IF
+!/PDLIB          END DO ! JSEA 
+!/PDLIB        END IF ! PDLIB 
+
 !/PDLIB!/DEBUGSRC          WRITE(740+IAPROC,*) 'ITIME=', ITIME, ' IT=', IT
 !/PDLIB!/DEBUGSRC          CALL ALL_VA_INTEGRAL_PRINT(IMOD, "VA after W3SRCE_IMP_PRE")
 !/PDLIB!/DEBUGSRC          CALL ALL_FIELD_INTEGRAL_PRINT(VSTOT, "VSTOT after W3SRCE_IMP_PRE")
@@ -1949,8 +1921,8 @@
 !
 !
 !/PDLIB     IF (LSLOC) THEN
-!/PDLIB       B_JAC = 0.
-!/PDLIB       ASPAR_JAC= 0.
+!/PDLIB       B_JAC     = 0.
+!/PDLIB       ASPAR_JAC = 0.
 !/PDLIB     ENDIF
 
           IF ( FLSOU ) THEN
@@ -2007,9 +1979,9 @@
                      TMP3   = TAUBBL(JSEA,1:2)
                      TMP4   = TAUICE(JSEA,1:2)
 !/PDLIB              IF (FSSOURCE) THEN
-!/PDLIB                   CALL W3SRCE(srce_imp_post,IT,ISEA,JSEA,IX,IY,IMOD,  &
+!/PDLIB                 CALL W3SRCE(srce_imp_post,IT,ISEA,JSEA,IX,IY,IMOD,  &
 !/PDLIB                      VAOLD(:,JSEA), VA(:,JSEA),                  &
-!/PDLIB                      VSTOT(:,JSEA),VDTOT(:,JSEA),SHAVETOT(JSEA), &
+!/PDLIB                      VSioDummy,VDioDummy,SHAVETOT(JSEA), &
 !/PDLIB                      ALPHA(1:NK,JSEA), WN(1:NK,ISEA),            &
 !/PDLIB                      CG(1:NK,ISEA), CLATS(ISEA), DW(ISEA), U10(ISEA),         &
 !/PDLIB                      U10D(ISEA), AS(ISEA), UST(ISEA),            &

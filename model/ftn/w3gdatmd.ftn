@@ -2020,10 +2020,6 @@
       IOBPD     => GRIDS(IMOD)%IOBPD
       IOBDP     => GRIDS(IMOD)%IOBDP
       IOBPA     => GRIDS(IMOD)%IOBPA
-!/PDLIB      IOBP_loc     => GRIDS(IMOD)%IOBP_loc
-!/PDLIB      IOBPD_loc     => GRIDS(IMOD)%IOBPD_loc
-!/PDLIB      IOBPA_loc     => GRIDS(IMOD)%IOBPA_loc
-!/PDLIB      IOBDP_loc     => GRIDS(IMOD)%IOBDP_loc
       TRIA     => GRIDS(IMOD)%TRIA
       CROSSDIFF => GRIDS(IMOD)%CROSSDIFF
       MAXX     => GRIDS(IMOD)%MAXX
