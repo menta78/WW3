@@ -918,6 +918,18 @@
 !/ST4        NKI    = MAX ( 2 , MIN ( NKH1 ,                           &
 !/ST4                 INT ( FACTI2 + FACTI1*LOG(MAX(1.E-7,FFXFI* FMEAN1)) ) ) )
 
+        IF (LNEWLIMITER) THEN
+          DO IK=1, NK
+            DAM2(1+(IK-1)*NTH) = 5.0E-07*DTMIN*GRAV/(SIG(IK)*TPIINV)**4*USTAR*MAX(FMEANWS,FMEAN)/TPI/SIG(IK)*CG1(IK)
+          END DO
+          DO IK=1, NK
+            IS0    = (IK-1)*NTH
+            DO ITH=2, NTH
+              DAM2(ITH+IS0) = DAM2(1+IS0)
+            END DO
+          END DO
+        ENDIF
+
         VS = 0
         VD = 0
         DO IS=IS1, NSPECH
@@ -1012,10 +1024,21 @@
 !/PDLIB              PreVS     = DVS / FAKS
 !/PDLIB              eVS = PreVS / CG1(IK) * CLATSL
 !/PDLIB              eVD = MIN(0.,DBLE(VD(ISP)))
-!/DB1                eVS = eVS + DBLE(VSDB(ISP)) * JAC
-!/DB1                eVD = evD + MIN(0.,DBLE(VDDB(ISP)))
 !/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * (eVS - eVD*VA(ISP,JSEA)*JAC)
 !/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
+
+!/DB1                eVS = eVS + DBLE(VSDB(ISP)) * JAC
+!/DB1                eVD = evD + DBLE(VDDB(ISP))
+!/DB1                IF (eVS .gt. 0.) THEN
+!/DB1                  evS = 2*evS
+!/DB1                  evD = -evD 
+!/DB1                ELSE
+!/DB1                  evS = -evS
+!/DB1                  evD = 2*evD
+!/DB1                ENDIF
+!/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * eVS
+!/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
+
 !/TR1                eVS = DBLE(VSTR(ISP)) * JAC 
 !/TR1                eVD = DBLE(VDTR(ISP))
 !/TR1                IF (eVS .gt. 0.) THEN
@@ -1025,10 +1048,9 @@
 !/TR1                  evS = -evS
 !/TR1                  evD = 2*evD
 !/TR1                ENDIF
-!!/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * eVS
-!!/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
-!!/VEG1              eVS = eVS + DBLE(VSVG(ISP)) * JAC 
-!!/VEG1              eVD = evD + MIN(0.,DBLE(VDVG(ISP)))
+!/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * eVS
+!/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
+
 !/PDLIB            END DO
 !/PDLIB          END DO
 !/PDLIB        ELSEIF (IMEM == 2) THEN
@@ -1053,10 +1075,8 @@
 !/DB1                eVD = evD + MIN(0.,DBLE(VDDB(ISP)))
 !!/TR1                eVS = eVS + DBLE(VSTR(ISP)) * JAC
 !!/TR1                eVD = evD + MIN(0.,DBLE(VDTR(ISP)))
-!!/VEG1              eVS = eVS + DBLE(VSVG(ISP)) * JAC
-!!/VEG1              eVD = evD + MIN(0.,DBLE(VDVG(ISP)))
-!/PDLIB              B_JAC(ISP,JSEA)          = B_JAC(ISP,JSEA) + SIDT * (eVS - eVD*VA(ISP,JSEA))
-!/PDLIB              ASPAR_DIAG_ALL(ISP,JSEA) = ASPAR_DIAG_ALL(ISP,JSEA) - SIDT * eVD
+!!/PDLIB              B_JAC(ISP,JSEA)          = B_JAC(ISP,JSEA) + SIDT * (eVS - eVD*VA(ISP,JSEA))
+!!/PDLIB              ASPAR_DIAG_ALL(ISP,JSEA) = ASPAR_DIAG_ALL(ISP,JSEA) - SIDT * eVD
 !/PDLIB            END DO
 !/PDLIB          END DO
 !/PDLIB        ENDIF

@@ -5884,12 +5884,11 @@
       ! for the exchange
       REAL  :: CCOS, CSIN, CCURX, CCURY
       REAL  :: eSum(NSPEC)
-      REAL  :: eA_THE, eC_THE, eA_SIG, eC_SIG
+      REAL  :: eA_THE, eC_THE, eA_SIG, eC_SIG, eSI 
       REAL  :: CAD(NSPEC), CAS(NSPEC), ACLOC(NSPEC)
       REAL  :: CP_SIG(NSPEC), CM_SIG(NSPEC)
       REAL  :: eFactM1, eFactP1
       REAL*8  :: Sum_Prev, Sum_New, p_is_converged, DiffNew, prop_conv
-      REAL  :: eSI
       REAL  :: Sum_L2, Sum_L2_GL
       REAL  :: DMM(0:NK2)
       REAL  :: eDiff(NSPEC), eProd(NSPEC)
@@ -5907,7 +5906,6 @@
 !/DEBUGSRC      REAL    :: VAsolve(NSPEC)
 !/DEBUGSRC      REAL*8  :: ACsolve
 !/DEBUGSRC      REAL    :: eB
-      REAL  :: ASPAR_DIAG_ALL(NSPEC,NSEAL)
 !/DEBUGSOLVERCOH      REAL :: TheARR(NSPEC, npa)
 !/DEBUGSOLVERCOH      REAL :: PRE_VA(NSPEC, npa)
 !/DEBUGSOLVERCOH      REAL :: OffDIAG(NSPEC, npa)
@@ -6271,10 +6269,10 @@
 !
           IF (B_JGS_TERMINATE_DIFFERENCE) THEN
             if (Sum_new .gt. thr8) then
-              DiffNew = abs(Sum_new-Sum_prev)
+              DiffNew = sum(abs(ACLOC - eSum))!abs(Sum_new-Sum_prev)
+              !write(*,'(4F20.10)') Sum_new, Sum_prev, DiffNew, abs(Sum_new-Sum_prev)
 !/DEBUGFREQSHIFT         WRITE(740+IAPROC,*) 'DiffNew=', DiffNew, ' Sum_new=', Sum_new
-              !DiffOld=abs(Sum_prev - Sum_new)
-              p_is_converged = DiffNew/Sum_prev
+              p_is_converged = DiffNew/Sum_new
 !/DEBUGSOLVER   write(740+IAPROC,'(10E20.10)') p_is_converged, sum(ASPAR_DIAG), SUM(B_JAC(:,IP)), DiffNew, Sum_new, sum(ACLOC), sum(esum)
             else
               p_is_converged = zero
