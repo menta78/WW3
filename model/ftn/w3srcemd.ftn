@@ -1033,8 +1033,8 @@
 !/PDLIB              eVD = MIN(0.,VD(ISP))
 !/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * (eVS - eVD*VA(ISP,JSEA)*JAC)
 !/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
-!/DB1                eVS = eVS + VSDB(ISP) * JAC
-!/DB1                eVD = evD + MIN(0.,VDDB(ISP))
+!/DB1                eVS = VSDB(ISP) * JAC
+!/DB1                eVD = MIN(0.,VDDB(ISP))
 !/DB1                IF (eVS .gt. 0.) THEN
 !/DB1                  evS = 2*evS
 !/DB1                  evD = -evD 
