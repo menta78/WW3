@@ -472,6 +472,9 @@
 !/SMC        INTEGER, POINTER      :: MAPX2(:), MAPY2(:), MAPAXY(:),       &
 !/SMC                                 MAPXY(:), MAPTH2(:), MAPWN2(:)
 !
+!/PDLIB      INTEGER, POINTER      :: IOBP_LOC(:), IOBPD_LOC(:,:)
+!/PDLIB      INTEGER, POINTER      :: IOBDP_LOC(:), IOBPA_LOC(:)
+!
 ! Warning Defined but not set if UGTYPE .EQ. .T. 
             INTEGER, POINTER      :: ITER(:,:)
 !
@@ -587,6 +590,9 @@
 !/SMC                                 NACT, NMXY
 !/SMC      INTEGER, POINTER        :: MAPX2(:), MAPY2(:), MAPAXY(:),       &
 !/SMC                                 MAPXY(:), MAPTH2(:), MAPWN2(:)
+
+!/PDLIB      INTEGER, POINTER      :: IOBP_LOC(:), IOBPD_LOC(:,:)
+!/PDLIB      INTEGER, POINTER      :: IOBDP_LOC(:), IOBPA_LOC(:)
 !
           INTEGER, POINTER        :: ITER(:,:)
 !
@@ -1278,7 +1284,12 @@
                        WADATS(IMOD)%DCXDX(NY,NSEAL) ,                      &
                        WADATS(IMOD)%DCYDX(NY,NSEAL) ,                      &
                        WADATS(IMOD)%DCXDY(NY,NSEAL) ,                      &
-                       WADATS(IMOD)%DCYDY(NY,NSEAL) , STAT=ISTAT           )
+                       WADATS(IMOD)%DCYDY(NY,NSEAL) ,                      &
+!/PDLIB                       WADATS(IMOD)%IOBP_LOC(NSEAL),                       & 
+!/PDLIB                       WADATS(IMOD)%IOBPD_LOC(NTH,NSEAL),                  &
+!/PDLIB                       WADATS(IMOD)%IOBDP_LOC(NSEAL),                      &
+!/PDLIB                       WADATS(IMOD)%IOBPA_LOC(NSEAL),                      &
+                       STAT=ISTAT           )
           ENDIF
           CHECK_ALLOC_STATUS ( ISTAT )
           WADATS(IMOD)%DDDX = 0.
@@ -2744,6 +2755,10 @@
               DCYDX  => WADATS(IMOD)%DCYDX
               DCXDY  => WADATS(IMOD)%DCXDY
               DCYDY  => WADATS(IMOD)%DCYDY
+!/PDLIB              IOBP_LOC => WADATS(IMOD)%IOBP_LOC
+!/PDLIB              IOBPD_LOC => WADATS(IMOD)%IOBPD_LOC
+!/PDLIB              IOBDP_LOC => WADATS(IMOD)%IOBDP_LOC
+!/PDLIB              IOBPA_LOC => WADATS(IMOD)%IOBPA_LOC
 !
 !/SMC              DHDX   => WADATS(IMOD)%DHDX
 !/SMC              DHDY   => WADATS(IMOD)%DHDY
@@ -2793,6 +2808,12 @@
 !/SMC              MAPXY  => WADATS(IMOD)%MAPXY
 !/SMC              MAPTH2 => WADATS(IMOD)%MAPTH2
 !/SMC              MAPWN2 => WADATS(IMOD)%MAPWN2
+
+!/PDLIB            IOBP_LOC => WADATS(IMOD)%IOBP_LOC
+!/PDLIB            IOBPD_LOC => WADATS(IMOD)%IOBPD_LOC
+!/PDLIB            IOBDP_LOC => WADATS(IMOD)%IOBDP_LOC
+!/PDLIB            IOBPA_LOC => WADATS(IMOD)%IOBPA_LOC
+
 !
                IF (GTYPE .EQ. UNGTYPE) ITER   => WADATS(IMOD)%ITER
 !

@@ -360,7 +360,6 @@
       USE W3IDATMD, ONLY: FLLEV, FLCUR, FLWIND, FLICE, FLMDN, FLMTH,  &
                           FLMVS, FLIC1, FLIC2, FLIC3, FLIC4, FLIC5 
       USE W3DISPMD, ONLY: WAVNU1, WAVNU3
-      USE W3PARALL, ONLY : AC_tot
       USE W3PARALL, ONLY: SET_UP_NSEAL_NSEALM
 !/PDLIB      USE W3PARALL, ONLY: SYNCHRONIZE_IPGL_ETC_ARRAY, ISEA_TO_JSEA
 !/PDLIB      use yowNodepool, only: npa
@@ -622,8 +621,9 @@
 ! 2.  Model defintition ---------------------------------------------- /
 ! 2.a Read model defintition file
 !
-!!/DEBUGMPI     CALL TEST_MPI_STATUS("Case 8")
+!/DEBUGMPI     CALL TEST_MPI_STATUS("Case 8")
       CALL W3IOGR ( 'READ', NDS(5), IMOD, FEXT )
+
 !/PDLIB    IF (GTYPE .ne. UNGTYPE) THEN
 !/SETUP      CALL PREPARATION_FD_SCHEME(IMOD)
 !/PDLIB    ELSE
@@ -678,36 +678,32 @@
 !/DEBUGINIT     WRITE(740+IAPROC,*) 'After set up of NSEAL, NSEALM=', NSEALM
 !/DEBUGINIT     WRITE(740+IAPROC,*) 'NSEA=', NSEA, ' NSPEC=', NSPEC
 !/DEBUGINIT     FLUSH(740+IAPROC)
-!!/DEBUGMPI     CALL TEST_MPI_STATUS("Case 11")
+!/DEBUGMPI     CALL TEST_MPI_STATUS("Case 11")
 
 !/DIST        IF ( NSEA .LT. NAPROC ) GOTO 820
 !/DIST        IF ((LPDLIB .eqv. .FALSE.).or.(GTYPE .NE. UNGTYPE)) THEN
 !/DIST          IF ( NSPEC .LT. NAPROC ) GOTO 821
 !/DIST        END IF
+
 !/DEBUGINIT     WRITE(740+IAPROC,*) 'Before PDLIB related allocations'
 !/DEBUGINIT     FLUSH(740+IAPROC)
-!/PDLIB     IF ((IAPROC .LE. NAPROC).and.(GTYPE .eq. UNGTYPE)) THEN
-!/DEBUGINIT     WRITE(740+IAPROC,*) 'After test 1'
-!/DEBUGINIT     FLUSH(740+IAPROC)
-!/PDLIB       IF (FSNIMP .or. FSTOTALIMP) THEN
-!/DEBUGINIT     WRITE(740+IAPROC,*) 'Before BLOCK_SOLVER_INIT'
-!/DEBUGINIT     FLUSH(740+IAPROC)
-!/PDLIB         CALL BLOCK_SOLVER_INIT()
-!/DEBUGINIT     WRITE(740+IAPROC,*) 'After BLOCK_SOLVER_INIT'
-!/DEBUGINIT     FLUSH(740+IAPROC)
-!/TIMINGS       CALL PRINT_MY_TIME("After BLOCK_SOLVER_INIT")
-!/PDLIB       ELSE IF (FSTOTALEXP) THEN
-!/DEBUGINIT     WRITE(740+IAPROC,*) 'Before AC_tot allocation'
-!/DEBUGINIT     FLUSH(740+IAPROC)
-!/PDLIB         allocate(AC_tot(NSPEC, npa), stat=istat)
-!/DEBUGINIT     WRITE(740+IAPROC,*) 'After AC_tot allocation'
-!/DEBUGINIT     FLUSH(740+IAPROC)
-!/PDLIB       ENDIF
-!/PDLIB     END IF
-!/MEMCHECK       WRITE(740+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2d'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
-!!/DEBUGMPI     CALL TEST_MPI_STATUS("Case 12")
+!/PDLIB         IF ((IAPROC .LE. NAPROC).and.(GTYPE .eq. UNGTYPE)) THEN
+!/DEBUGINIT       WRITE(740+IAPROC,*) 'After test 1'
+!/DEBUGINIT       FLUSH(740+IAPROC)
+!/PDLIB           IF (FSNIMP .or. FSTOTALIMP) THEN
+!/DEBUGINIT         WRITE(740+IAPROC,*) 'Before BLOCK_SOLVER_INIT'
+!/DEBUGINIT         FLUSH(740+IAPROC)
+!/PDLIB             CALL BLOCK_SOLVER_INIT()
+!/DEBUGINIT         WRITE(740+IAPROC,*) 'After BLOCK_SOLVER_INIT'
+!/DEBUGINIT         FLUSH(740+IAPROC)
+!/TIMINGS           CALL PRINT_MY_TIME("After BLOCK_SOLVER_INIT")
+!/PDLIB           ELSE IF (FSTOTALEXP) THEN
+!/PDLIB           ENDIF
+!/PDLIB         END IF
+!/MEMCHECK      WRITE(740+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2d'
+!/MEMCHECK      call getMallocInfo(mallinfos)
+!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
+!/DEBUGMPI      CALL TEST_MPI_STATUS("Case 12")
 !
 !
 ! 2.c.2 Allocate arrays

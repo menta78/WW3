@@ -696,7 +696,6 @@
         INTEGER               :: COUNTRI,COUNTOT,NNZ, NBEDGE
         INTEGER, POINTER      :: CCON(:), COUNTCON(:), IE_CELL(:), &
                                  POS_CELL(:), IOBP(:), IOBPD(:,:), IOBDP(:), IOBPA(:),   &
-!/PDLIB                          IOBPD_loc(:,:), IOBP_loc(:), IOBPA_loc(:), IOBDP_loc(:),&
                                  IAA(:), JAA(:), POSI(:,:), INDEX_CELL(:),       &
                                  I_DIAG(:), JA_IE(:,:,:)
         INTEGER, POINTER      :: EDGES(:,:), NEIGH(:,:)
@@ -958,7 +957,6 @@
       REAL, POINTER           :: ANGLE(:,:),ANGLE0(:,:)
       INTEGER,  POINTER       :: CCON(:),  COUNTCON(:), IE_CELL(:),           &
                                  POS_CELL(:), IOBP(:), IOBPD(:,:), IOBDP(:), IOBPA(:),  &
-!/PDLIB                                 IOBPD_loc(:,:), IOBP_loc(:), IOBPA_loc(:), IOBDP_loc(:),&
                                  IAA(:), JAA(:), POSI(:,:),                   &
                                  I_DIAG(:), JA_IE(:,:,:),                     &
                                  INDEX_CELL(:)

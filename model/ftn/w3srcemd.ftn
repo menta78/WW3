@@ -421,7 +421,8 @@
 !/UOST      USE W3UOSTMD, ONLY : UOST_SRCTRMCOMPUTE
 !/PDLIB    USE PDLIB_W3PROFSMD, ONLY : B_JAC, ASPAR_JAC, ASPAR_DIAG_SOURCES, ASPAR_DIAG_ALL 
 !/PDLIB    USE yowNodepool,    ONLY: PDLIB_CCON, NPA, PDLIB_I_DIAG, PDLIB_JA, PDLIB_IA_P, PDLIB_SI
-!/PDLIB    USE W3GDATMD, ONLY: CLATS, IOBP_LOC, IOBPA_LOC, IOBPD_LOC, IOBDP_LOC
+!/PDLIB    USE W3GDATMD, ONLY: CLATS
+!/PDLIB    USE W3ADATMD, ONLY: IOBP_LOC, IOBPD_LOC, IOBPA_LOC, IOBDP_LOC
 !/PDLIB    USE W3WDATMD, ONLY: VA
 !/PDLIB    USE W3PARALL, ONLY: ONESIXTH, ZERO, THR, IMEM, LSLOC
 !/
@@ -805,6 +806,7 @@
 !
 !/PDLIB    IF (.NOT. FSSOURCE .or. LSLOC) THEN
 !/TR1        CALL W3STR1 ( SPEC, CG1, WN1, DEPTH, IX,        VSTR, VDTR )
+
 !/TRX        CALL W3STRX
 !/PDLIB    ENDIF
 !
@@ -1008,6 +1010,11 @@
 !/PDLIB      IF (LSLOC) THEN
 !/PDLIB        IF (IMEM == 1) THEN
 !/PDLIB          SIDT  = PDLIB_SI(JSEA) * DTG 
+                 IF (IX == 1762) THEN
+                   WRITE(*,*) 'DEPTH', JSEA, DEPTH
+                   WRITE(*,*) 'ACTION and STOT', SUM(SPEC), SUM(VS), SUM(VD)
+                   WRITE(*,*) 'SNL3 and SBR', SUM(VSTR), SUM(VDTR), SUM(VSDB), SUM(VDDB) 
+                 ENDIF
 !/PDLIB          DO IK = 1, NK
 !/PDLIB            JAC = CLATSL/CG1(IK) 
 !/PDLIB            DO ITH = 1, NTH
@@ -1023,12 +1030,11 @@
 !/PDLIB              DVS       = SIGN(MIN(MAXDAC,ABS(DVS)),DVS)
 !/PDLIB              PreVS     = DVS / FAKS
 !/PDLIB              eVS = PreVS / CG1(IK) * CLATSL
-!/PDLIB              eVD = MIN(0.,DBLE(VD(ISP)))
+!/PDLIB              eVD = MIN(0.,VD(ISP))
 !/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * (eVS - eVD*VA(ISP,JSEA)*JAC)
 !/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
-
-!/DB1                eVS = eVS + DBLE(VSDB(ISP)) * JAC
-!/DB1                eVD = evD + DBLE(VDDB(ISP))
+!/DB1                eVS = eVS + VSDB(ISP) * JAC
+!/DB1                eVD = evD + MIN(0.,VDDB(ISP))
 !/DB1                IF (eVS .gt. 0.) THEN
 !/DB1                  evS = 2*evS
 !/DB1                  evD = -evD 
@@ -1038,9 +1044,8 @@
 !/DB1                ENDIF
 !/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * eVS
 !/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
-
-!/TR1                eVS = DBLE(VSTR(ISP)) * JAC 
-!/TR1                eVD = DBLE(VDTR(ISP))
+!/TR1                eVS = VSTR(ISP) * JAC 
+!/TR1                eVD = VDTR(ISP)
 !/TR1                IF (eVS .gt. 0.) THEN
 !/TR1                  evS = 2*evS
 !/TR1                  evD = -evD 
@@ -1050,7 +1055,10 @@
 !/TR1                ENDIF
 !/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * eVS
 !/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
-
+!!/VEG1              eVS = eVS + DBLE(VSVG(ISP)) * JAC 
+!!/VEG1              eVD = evD + MIN(0.,DBLE(VDVG(ISP)))
+!!/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * (eVS - eVD*VA(ISP,JSEA)*JAC)
+!!/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
 !/PDLIB            END DO
 !/PDLIB          END DO
 !/PDLIB        ELSEIF (IMEM == 2) THEN
@@ -1075,8 +1083,10 @@
 !/DB1                eVD = evD + MIN(0.,DBLE(VDDB(ISP)))
 !!/TR1                eVS = eVS + DBLE(VSTR(ISP)) * JAC
 !!/TR1                eVD = evD + MIN(0.,DBLE(VDTR(ISP)))
-!!/PDLIB              B_JAC(ISP,JSEA)          = B_JAC(ISP,JSEA) + SIDT * (eVS - eVD*VA(ISP,JSEA))
-!!/PDLIB              ASPAR_DIAG_ALL(ISP,JSEA) = ASPAR_DIAG_ALL(ISP,JSEA) - SIDT * eVD
+!!/VEG1              eVS = eVS + DBLE(VSVG(ISP)) * JAC
+!!/VEG1              eVD = evD + MIN(0.,DBLE(VDVG(ISP)))
+!/PDLIB              B_JAC(ISP,JSEA)          = B_JAC(ISP,JSEA) + SIDT * (eVS - eVD*VA(ISP,JSEA))
+!/PDLIB              ASPAR_DIAG_ALL(ISP,JSEA) = ASPAR_DIAG_ALL(ISP,JSEA) - SIDT * eVD
 !/PDLIB            END DO
 !/PDLIB          END DO
 !/PDLIB        ENDIF

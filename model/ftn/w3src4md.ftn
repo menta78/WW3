@@ -395,7 +395,7 @@
 !/ ------------------------------------------------------------------- /
 !/ Local parameters
 !/
-      INTEGER                 :: IS,IK,ITH
+      INTEGER                 :: IS,IK,ITH,II
 !/S      INTEGER, SAVE           :: IENT = 0
       REAL                    :: FACLN1, FACLN2, LAMBDA
       REAL                    :: COSU, SINU, TAUX, TAUY, USDIRP, USTP
@@ -673,7 +673,9 @@
       DELJ2=1. - DELJ1
       IF (TTAUWSHELTER.GT.0) THEN 
         XK = CONST0*TEMP / DELTAIL
-         I = MIN (ILEVTAIL-1, INT(XK))
+         II = MAX(0,INT(MIN(REAL(HUGE(I)),XK)) - 1)
+         I  = MIN(ILEVTAIL-1, II)
+         WRITE(*,'(3I20,5F30.10)') I, II, HUGE(I), CONST0, TEMP, XK, DELTAIL, SUM(A)
          DELK1= MIN (1. ,XK-FLOAT(I))
          DELK2=1. - DELK1
          TAU1 =((TAUHFT2(IND,J,I)*DELI2+TAUHFT2(IND+1,J,I)*DELI1 )*DELJ2 &

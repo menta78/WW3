@@ -1370,8 +1370,9 @@
 !/DEBUGRUN        ENDDO
 
 !
-!/PDLIB    IF ((IOBP_LOC(JSEA) .eq. 1 .or. IOBP_LOC(JSEA) .eq. 3) &
-!/PDLIB       & .and. IOBDP_LOC(JSEA) .eq. 1 .and. IOBPA_LOC(JSEA) .eq. 0) THEN
+!!/PDLIB    IF ((IOBP_LOC(JSEA) .eq. 1 .or. IOBP_LOC(JSEA) .eq. 3) &
+!!/PDLIB       & .and. IOBDP_LOC(JSEA) .eq. 1 .and. IOBPA_LOC(JSEA) .eq. 0) THEN
+!/PDLIB               IF ( MAPSTA(IY,IX) .EQ. 1 .AND. FLAGST(ISEA)) THEN
 
 
 !/PDLIB!/DEBUGSRC         IF (IX .eq. DEBUG_NODE) THEN
@@ -1987,25 +1988,25 @@
                      TMP3   = TAUBBL(JSEA,1:2)
                      TMP4   = TAUICE(JSEA,1:2)
 !/PDLIB              IF (FSSOURCE) THEN
-!/PDLIB                 CALL W3SRCE(srce_imp_post,IT,ISEA,JSEA,IX,IY,IMOD,  &
-!/PDLIB                      VAOLD(:,JSEA), VA(:,JSEA),                  &
-!/PDLIB                      VSioDummy,VDioDummy,SHAVETOT(JSEA), &
-!/PDLIB                      ALPHA(1:NK,JSEA), WN(1:NK,ISEA),            &
-!/PDLIB                      CG(1:NK,ISEA), CLATS(ISEA), DW(ISEA), U10(ISEA),         &
-!/PDLIB                      U10D(ISEA), AS(ISEA), UST(ISEA),            &
-!/PDLIB                      USTDIR(ISEA), CX(ISEA), CY(ISEA),           &
-!/PDLIB                      ICE(ISEA), ICEH(ISEA), ICEF(ISEA),          &
-!/PDLIB                      ICEDMAX(ISEA),                              &
-!/PDLIB                      REFLEC, REFLED, DELX, DELY, DELA,           &
-!/PDLIB                      TRNX(IY,IX), TRNY(IY,IX), BERG(ISEA),       &
-!/PDLIB                      FPIS(ISEA), DTDYN(JSEA),                    &
-!/PDLIB                      FCUT(JSEA), DTG, TAUWX(JSEA), TAUWY(JSEA),  &
-!/PDLIB                      TAUOX(JSEA), TAUOY(JSEA), TAUWIX(JSEA),     &
-!/PDLIB                      TAUWIY(JSEA), TAUWNX(JSEA),                 &
-!/PDLIB                      TAUWNY(JSEA),  PHIAW(JSEA), CHARN(JSEA),    &
-!/PDLIB                      TWS(JSEA),PHIOC(JSEA), TMP1, D50, PSIC, TMP2,&
-!/PDLIB                      PHIBBL(JSEA), TMP3, TMP4, PHICE(JSEA),      &
-!/PDLIB                      ASF(ISEA))
+!!/PDLIB                 CALL W3SRCE(srce_imp_post,IT,ISEA,JSEA,IX,IY,IMOD,  &
+!!/PDLIB                      VAOLD(:,JSEA), VA(:,JSEA),                  &
+!!/PDLIB                      VSioDummy,VDioDummy,SHAVETOT(JSEA), &
+!!/PDLIB                      ALPHA(1:NK,JSEA), WN(1:NK,ISEA),            &
+!!/PDLIB                      CG(1:NK,ISEA), CLATS(ISEA), DW(ISEA), U10(ISEA),         &
+!!/PDLIB                      U10D(ISEA), AS(ISEA), UST(ISEA),            &
+!!/PDLIB                      USTDIR(ISEA), CX(ISEA), CY(ISEA),           &
+!!/PDLIB                      ICE(ISEA), ICEH(ISEA), ICEF(ISEA),          &
+!!/PDLIB                      ICEDMAX(ISEA),                              &
+!!/PDLIB                      REFLEC, REFLED, DELX, DELY, DELA,           &
+!!/PDLIB                      TRNX(IY,IX), TRNY(IY,IX), BERG(ISEA),       &
+!!/PDLIB                      FPIS(ISEA), DTDYN(JSEA),                    &
+!!/PDLIB                      FCUT(JSEA), DTG, TAUWX(JSEA), TAUWY(JSEA),  &
+!!/PDLIB                      TAUOX(JSEA), TAUOY(JSEA), TAUWIX(JSEA),     &
+!!/PDLIB                      TAUWIY(JSEA), TAUWNX(JSEA),                 &
+!!/PDLIB                      TAUWNY(JSEA),  PHIAW(JSEA), CHARN(JSEA),    &
+!!/PDLIB                      TWS(JSEA),PHIOC(JSEA), TMP1, D50, PSIC, TMP2,&
+!!/PDLIB                      PHIBBL(JSEA), TMP3, TMP4, PHICE(JSEA),      &
+!!/PDLIB                      ASF(ISEA))
 !/PDLIB              ELSE
                        CALL W3SRCE(srce_direct, IT, ISEA, JSEA, IX, IY, IMOD, &
                             VAoldDummy, VA(:,JSEA),                     &

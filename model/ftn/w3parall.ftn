@@ -56,7 +56,6 @@
 !/PDLIB      INTEGER :: PDLIB_NSEAL, PDLIB_NSEALM
 !/PDLIB      INTEGER, ALLOCATABLE :: JX_TO_JSEA(:), ISEA_TO_JSEA(:)
 
-      REAL, ALLOCATABLE    :: AC_tot(:,:)
       INTEGER, ALLOCATABLE :: ListISPnextDir(:), ListISPprevDir(:)
       INTEGER, ALLOCATABLE :: ListISPnextFreq(:), ListISPprevFreq(:)
 
