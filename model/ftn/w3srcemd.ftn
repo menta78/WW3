@@ -1010,11 +1010,6 @@
 !/PDLIB      IF (LSLOC) THEN
 !/PDLIB        IF (IMEM == 1) THEN
 !/PDLIB          SIDT  = PDLIB_SI(JSEA) * DTG 
-                 IF (IX == 1762) THEN
-                   WRITE(*,*) 'DEPTH', JSEA, DEPTH
-                   WRITE(*,*) 'ACTION and STOT', SUM(SPEC), SUM(VS), SUM(VD)
-                   WRITE(*,*) 'SNL3 and SBR', SUM(VSTR), SUM(VDTR), SUM(VSDB), SUM(VDDB) 
-                 ENDIF
 !/PDLIB          DO IK = 1, NK
 !/PDLIB            JAC = CLATSL/CG1(IK) 
 !/PDLIB            DO ITH = 1, NTH
