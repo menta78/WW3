@@ -3783,7 +3783,7 @@
       USE YOWNODEPOOL,    ONLY: PDLIB_IEN, PDLIB_TRIA,                  &
            PDLIB_IE_CELL2, PDLIB_POS_CELL2, PDLIB_CCON, NP, NPA,          &
            PDLIB_IA_P, PDLIB_POSI, PDLIB_IA, PDLIB_NNZ, iplg,           &
-           PDLIB_I_DIAG, PDLIB_JA
+           PDLIB_I_DIAG, PDLIB_JA, PDLIB_TRIA03
       USE W3ODATMD, ONLY : IAPROC
       USE W3PARALL, ONLY : ZERO
 !/MEMCHECK      USE MallocInfo_m
@@ -3805,20 +3805,19 @@
       INTEGER :: I1, I2, I3, NI(3)
       INTEGER :: counter, IB1, IB2
 !/REF1      INTEGER :: eIOBPDR
-      REAL :: DTK, TMP3
-      REAL  :: LAMBDA(2)
-      REAL  :: FL11, FL12
-      REAL  :: FL21, FL22
-      REAL  :: FL31, FL32
-      REAL  :: CRFS(3), K(3)
-      REAL  :: KP(3,NE), CXYY(2,3)
-      REAL  :: KM(3), CXY(2,NPA)
-      REAL  :: K1, eSI, eVS, eVD
-      REAL  :: eVal1, eVal2, eVal3
-      REAL  :: DELTAL(3,NE)
-      REAL  :: NM(NE)
-      REAL  :: TRIA03, SIDT, CCOS, CSIN
-      REAL  :: SPEC(NSPEC), DEPTH
+      REAL    :: DTK, TMP3
+      REAL    :: LAMBDA(2)
+      REAL    :: FL11, FL12
+      REAL    :: FL21, FL22
+      REAL    :: FL31, FL32
+      REAL    :: CRFS(3), K(3)
+      REAL    :: KP(3,NE), CXYY(2,3)
+      REAL    :: KM(3), CXY(2,NPA)
+      REAL    :: K1, eSI, eVS, eVD
+      REAL    :: eVal1, eVal2, eVal3
+      REAL    :: DELTAL(3,NE)
+      REAL    :: TRIA03, SIDT, CCOS, CSIN
+      REAL    :: SPEC(NSPEC), DEPTH
 
 !/DEBUGSOLVER     WRITE(740+IAPROC,*) 'calcARRAY_JACOBI, begin'
 !/DEBUGSOLVER     FLUSH(740+IAPROC)
@@ -3876,13 +3875,10 @@
           K(3)  = LAMBDA(1) * PDLIB_IEN(5,IE) + LAMBDA(2) * PDLIB_IEN(6,IE)
           KP(1:3,IE) = MAX(ZERO,K(1:3))
           DELTAL(1:3,IE) = (CRFS(1:3) - KP(1:3,IE)) * 1.d0/MIN(-THR,SUM(MIN(ZERO,K(1:3))))
-          !KM(1:3) = MIN(ZERO,K(1:3))
-          !NM(IE) = 1.d0/MIN(-THR,SUM(KM))
         ENDDO
 
         J = 0 
         DO IP = 1, npa
-          IP_glob=iplg(IP)
           IB1 = IOBDP_LOC(IP) * (1-IOBPA_LOC(IP)) * IOBPD_LOC(ITH,IP)
           IB2 = IOBDP_LOC(IP) * IOBPD_LOC(ITH,IP)
           DO I = 1, PDLIB_CCON(IP)
@@ -3898,11 +3894,9 @@
 !/REF1            IF (eIOBPDR .eq. 1) THEN
 !/REF1              K1=ZERO
 !/REF1            END IF
-            TRIA03        =  1./3. * PDLIB_TRIA(IE)
             DTK           =  K1 * DTG * IB1
-            B_JAC(ISP,IP) =  B_JAC(ISP,IP) + TRIA03 * VA(ISP,IP) * IB2
-            TMP3          =  DTK! * NM(IE)
-            ASPAR_JAC(ISP,I1) = ASPAR_JAC(ISP,I1) + TRIA03 + DTK - DTK * DELTAL(POS,IE)
+            B_JAC(ISP,IP) =  B_JAC(ISP,IP) + PDLIB_TRIA03(IE) * VA(ISP,IP) * IB2
+            ASPAR_JAC(ISP,I1) = ASPAR_JAC(ISP,I1) + PDLIB_TRIA03(IE) + DTK - DTK * DELTAL(POS,IE)
             ASPAR_JAC(ISP,I2) = ASPAR_JAC(ISP,I2)                - DTK * DELTAL(POS_TRICK(POS,1),IE)
             ASPAR_JAC(ISP,I3) = ASPAR_JAC(ISP,I3)                - DTK * DELTAL(POS_TRICK(POS,2),IE)
           END DO
