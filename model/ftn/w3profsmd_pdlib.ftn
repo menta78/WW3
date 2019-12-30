@@ -3803,7 +3803,7 @@
       INTEGER :: I, J, ITH, IK, J2
       INTEGER :: IE, POS, JSEA
       INTEGER :: I1, I2, I3, NI(3)
-      INTEGER :: counter
+      INTEGER :: counter, IB1, IB2
 !/REF1      INTEGER :: eIOBPDR
       REAL :: DTK, TMP3
       REAL  :: LAMBDA(2)
@@ -3875,14 +3875,16 @@
           K(2)  = LAMBDA(1) * PDLIB_IEN(3,IE) + LAMBDA(2) * PDLIB_IEN(4,IE)
           K(3)  = LAMBDA(1) * PDLIB_IEN(5,IE) + LAMBDA(2) * PDLIB_IEN(6,IE)
           KP(1:3,IE) = MAX(ZERO,K(1:3))
-          DELTAL(1:3,IE) = CRFS(1:3) - KP(1:3,IE)
-          KM(1:3) = MIN(ZERO,K(1:3))
-          NM(IE) = 1.d0/MIN(-THR,SUM(KM))
+          DELTAL(1:3,IE) = (CRFS(1:3) - KP(1:3,IE)) * 1.d0/MIN(-THR,SUM(MIN(ZERO,K(1:3))))
+          !KM(1:3) = MIN(ZERO,K(1:3))
+          !NM(IE) = 1.d0/MIN(-THR,SUM(KM))
         ENDDO
 
         J = 0 
         DO IP = 1, npa
           IP_glob=iplg(IP)
+          IB1 = IOBDP_LOC(IP) * (1-IOBPA_LOC(IP)) * IOBPD_LOC(ITH,IP)
+          IB2 = IOBDP_LOC(IP) * IOBPD_LOC(ITH,IP)
           DO I = 1, PDLIB_CCON(IP)
             J     =  J + 1
             IE    =  PDLIB_IE_CELL2(I,IP)
@@ -3897,12 +3899,12 @@
 !/REF1              K1=ZERO
 !/REF1            END IF
             TRIA03        =  1./3. * PDLIB_TRIA(IE)
-            DTK           =  K1 * DTG * IOBDP_LOC(IP) * (1-IOBPA_LOC(IP)) * IOBPD_LOC(ITH,IP)
-            B_JAC(ISP,IP) =  B_JAC(ISP,IP) + TRIA03 * VA(ISP,IP) * IOBDP_LOC(IP) * IOBPD_LOC(ITH,IP)
-            TMP3          =  DTK * NM(IE)
-            ASPAR_JAC(ISP,I1) = ASPAR_JAC(ISP,I1) + TRIA03 + DTK - TMP3*DELTAL(POS,IE)
-            ASPAR_JAC(ISP,I2) = ASPAR_JAC(ISP,I2)                - TMP3*DELTAL(POS_TRICK(POS,1),IE)
-            ASPAR_JAC(ISP,I3) = ASPAR_JAC(ISP,I3)                - TMP3*DELTAL(POS_TRICK(POS,2),IE)
+            DTK           =  K1 * DTG * IB1
+            B_JAC(ISP,IP) =  B_JAC(ISP,IP) + TRIA03 * VA(ISP,IP) * IB2
+            TMP3          =  DTK! * NM(IE)
+            ASPAR_JAC(ISP,I1) = ASPAR_JAC(ISP,I1) + TRIA03 + DTK - DTK * DELTAL(POS,IE)
+            ASPAR_JAC(ISP,I2) = ASPAR_JAC(ISP,I2)                - DTK * DELTAL(POS_TRICK(POS,1),IE)
+            ASPAR_JAC(ISP,I3) = ASPAR_JAC(ISP,I3)                - DTK * DELTAL(POS_TRICK(POS,2),IE)
           END DO
         END DO
       END DO ! ISP
