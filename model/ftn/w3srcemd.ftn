@@ -522,7 +522,7 @@
       REAL                    :: eInc1, eInc2, eVS, eVD, JAC
       REAL                    :: DeltaSRC(NSPEC)
       REAL, PARAMETER         :: DTMINTOT = 0.01
-      LOGICAL                 :: LNEWLIMITER = .FALSE. 
+      LOGICAL                 :: LNEWLIMITER = .TRUE. 
 !/PDLIB  REAL                 :: PreVS, FAK, DVS, SIDT, FAKS, MAXDAC
 
 !/NNT      CHARACTER(LEN=17), SAVE :: FNAME = 'test_data_nnn.ww3'

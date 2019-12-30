@@ -3830,7 +3830,6 @@
       I2     = 0
       I3     = 0
       DTK    = 0
-
       TMP3   = 0
 
 !/MEMCHECK      write(740+IAPROC,*) 'memcheck_____:', 'WW3_JACOBI SECTION 0'
@@ -6379,8 +6378,8 @@
                   eSum(ISP) = eSum(ISP) - eC_THE*VA(ISPnextDir,IP)
                 END DO
               END IF
-              IF (.false.) THEN!FSFREQSHIFT) THEN !! AR: Has some bug 
-                CAS    = CAS_SIG(:,IP)
+              IF (FSFREQSHIFT) THEN
+                CAS=CAS_SIG(:,IP)
                 CP_SIG = MAX(ZERO,CAS)
                 CM_SIG = MIN(ZERO,CAS)
                 DO ITH=1,NTH
@@ -6441,7 +6440,7 @@
        DO JSEA=1, NSEAL
         IP      = JSEA
         IP_glob = iplg(IP)
-        ISEA=MAPFS(1,IP_glob)
+        ISEA = MAPFS(1,IP_glob)
 !
 !/DEBUGSRC        IntDiff=0
 !/DEBUGSRC        SumVS=0
