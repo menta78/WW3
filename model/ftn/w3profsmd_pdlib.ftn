@@ -553,7 +553,7 @@
       USE W3WDATMD, ONLY: TIME, VA
       USE W3ODATMD, ONLY: TBPI0, TBPIN, FLBPI
       USE W3ADATMD, ONLY: CG, CX, CY, ITIME
-      USE W3IDATMD, ONLY: FLCUR
+      USE W3IDATMD, ONLY: FLCUR, FLLEV
       USE W3GDATMD, ONLY: NSEAL
       USE W3ODATMD, ONLY: IAPROC
       IMPLICIT NONE
@@ -3579,7 +3579,7 @@
       USE W3WDATMD, ONLY: VA
       USE W3ADATMD, ONLY: CG, DW, WN, CX, CY
 !/MEMCHECK USE W3ADATMD, ONLY: MALLINFOS
-      USE W3IDATMD, ONLY: FLCUR
+      USE W3IDATMD, ONLY: FLCUR, FLLEV
       USE W3GDATMD, ONLY: ECOS, ESIN, MAPFS
       USE W3PARALL, ONLY : ONESIXTH, ZERO, THR
       use yowElementpool, ONLY: ne, INE
@@ -3776,14 +3776,14 @@
       USE W3WDATMD, ONLY: VA
       USE W3ADATMD, ONLY: CG, DW, WN, CX, CY
 !/MEMCHECK USE W3ADATMD, ONLY: MALLINFOS
-      USE W3IDATMD, ONLY: FLCUR
+      USE W3IDATMD, ONLY: FLCUR, FLLEV
       USE W3GDATMD, ONLY: ECOS, ESIN, MAPFS
       USE W3PARALL, ONLY : ONESIXTH, ZERO, THR
       use yowElementpool, ONLY: ne, INE
       USE YOWNODEPOOL,    ONLY: PDLIB_IEN, PDLIB_TRIA,                  &
            PDLIB_IE_CELL2, PDLIB_POS_CELL2, PDLIB_CCON, NP, NPA,          &
            PDLIB_IA_P, PDLIB_POSI, PDLIB_IA, PDLIB_NNZ, iplg,           &
-           PDLIB_I_DIAG, PDLIB_JA, PDLIB_TRIA03
+           PDLIB_I_DIAG, PDLIB_JA, PDLIB_TRIA03, PDLIB_SI
       USE W3ODATMD, ONLY : IAPROC
       USE W3PARALL, ONLY : ZERO
 !/MEMCHECK      USE MallocInfo_m
@@ -3853,10 +3853,12 @@
         ENDDO
 
         DO IE = 1, NE
-          I1 = INE(1,IE)
-          I2 = INE(2,IE)
-          I3 = INE(3,IE)
           NI = INE(:,IE)
+          IF (SUM(IOBDP_LOC(NI)) .eq. 0) THEN
+            KP(1:3,IE) = 0.
+            DELTAL(1:3,IE) = 0.
+            CYCLE
+          ENDIF
           CXYY(1,:) = CXY(1,NI)
           CXYY(2,:) = CXY(2,NI)
           FL11 = CXYY(1,2)*PDLIB_IEN(1,IE)+CXYY(2,2)*PDLIB_IEN(2,IE)
@@ -3879,27 +3881,35 @@
 
         J = 0 
         DO IP = 1, npa
-          IB1 = IOBDP_LOC(IP) * (1-IOBPA_LOC(IP)) * IOBPD_LOC(ITH,IP)
-          IB2 = IOBDP_LOC(IP) * IOBPD_LOC(ITH,IP)
-          DO I = 1, PDLIB_CCON(IP)
-            J     =  J + 1
-            IE    =  PDLIB_IE_CELL2(I,IP)
-            POS   =  PDLIB_POS_CELL2(I,IP)
-            I1    =  PDLIB_POSI(1,J)
-            I2    =  PDLIB_POSI(2,J)
-            I3    =  PDLIB_POSI(3,J)
-!/DEBUGSRC      WRITE(740+IAPROC,*) 'I1=', I1, ' PDLIB_I_DIAG=', PDLIB_I_DIAG(IP)
-            K1    =  KP(POS,IE)
-!/REF1            eIOBPDR=(1-IOBP(IP_glob))*(1-IOBPD(ITH,IP_glob))
-!/REF1            IF (eIOBPDR .eq. 1) THEN
-!/REF1              K1=ZERO
-!/REF1            END IF
-            DTK           =  K1 * DTG * IB1
-            B_JAC(ISP,IP) =  B_JAC(ISP,IP) + PDLIB_TRIA03(IE) * VA(ISP,IP) * IB2
-            ASPAR_JAC(ISP,I1) = ASPAR_JAC(ISP,I1) + PDLIB_TRIA03(IE) + DTK - DTK * DELTAL(POS,IE)
-            ASPAR_JAC(ISP,I2) = ASPAR_JAC(ISP,I2)                - DTK * DELTAL(POS_TRICK(POS,1),IE)
-            ASPAR_JAC(ISP,I3) = ASPAR_JAC(ISP,I3)                - DTK * DELTAL(POS_TRICK(POS,2),IE)
-          END DO
+          IB1 = (1-IOBPA_LOC(IP)) * IOBPD_LOC(ITH,IP)
+          IB2 = IOBPD_LOC(ITH,IP)
+          IF (IOBDP_LOC(IP) .eq. 1) THEN
+            DO I = 1, PDLIB_CCON(IP)
+              J     =  J + 1
+              IE    =  PDLIB_IE_CELL2(I,IP)
+              POS   =  PDLIB_POS_CELL2(I,IP)
+!/DEBUGSRC        WRITE(740+IAPROC,*) 'I1=', I1, ' PDLIB_I_DIAG=', PDLIB_I_DIAG(IP)
+!/REF1              eIOBPDR=(1-IOBP(IP_glob))*(1-IOBPD(ITH,IP_glob))
+!/REF1              IF (eIOBPDR .eq. 1) THEN
+!/REF1                K1=ZERO
+!/REF1              END IF
+              DTK               = KP(POS,IE) * DTG * IB1
+              B_JAC(ISP,IP)     = B_JAC(ISP,IP)     + PDLIB_TRIA03(IE) * VA(ISP,IP) * IB2
+              I1    =  PDLIB_POSI(1,J)
+              ASPAR_JAC(ISP,I1) = ASPAR_JAC(ISP,I1) + PDLIB_TRIA03(IE) + DTK - DTK * DELTAL(POS,IE)
+              I2    =  PDLIB_POSI(2,J)
+              ASPAR_JAC(ISP,I2) = ASPAR_JAC(ISP,I2)                          - DTK * DELTAL(POS_TRICK(POS,1),IE)
+              I3    =  PDLIB_POSI(3,J)
+              ASPAR_JAC(ISP,I3) = ASPAR_JAC(ISP,I3)                          - DTK * DELTAL(POS_TRICK(POS,2),IE)
+            END DO
+          ELSE
+            DO I = 1, PDLIB_CCON(IP)
+              J = J + 1
+              I1    =  PDLIB_POSI(1,J)
+              ASPAR_JAC(ISP,I1) = ASPAR_JAC(ISP,I1) + PDLIB_TRIA03(IE)
+            END DO
+            B_JAC(ISP,IP) = 0.
+          ENDIF
         END DO
       END DO ! ISP
 
@@ -3969,7 +3979,7 @@
       USE W3ADATMD, ONLY: CG, DW, WN, CX, CY
 !/MEMCHECK      USE MallocInfo_m
 !/MEMCHECK      USE W3ADATMD, ONLY: MALLINFOS
-      USE W3IDATMD, ONLY: FLCUR
+      USE W3IDATMD, ONLY: FLCUR, FLLEV
       USE W3GDATMD, ONLY: ECOS, ESIN, MAPFS
       USE W3PARALL, ONLY : ONESIXTH, ZERO, THR, IMEM
       use yowElementpool, ONLY: ne, INE
@@ -4149,7 +4159,7 @@
       USE W3WDATMD, ONLY: VA, VAOLD
       USE W3ADATMD, ONLY: CG, DW, WN, CX, CY
 !/MEMCHECK USE W3ADATMD, ONLY: MALLINFOS
-      USE W3IDATMD, ONLY: FLCUR
+      USE W3IDATMD, ONLY: FLCUR, FLLEV
       USE W3GDATMD, ONLY: ECOS, ESIN, MAPFS
       USE W3PARALL, ONLY : ONESIXTH, ZERO, THR, ONETHIRD
       use yowElementpool, ONLY: ne, INE
@@ -4328,7 +4338,7 @@
       USE W3WDATMD, ONLY: VA, VAOLD
       USE W3ADATMD, ONLY: CG, DW, WN, CX, CY
 !/MEMCHECK USE W3ADATMD, ONLY: MALLINFOS
-      USE W3IDATMD, ONLY: FLCUR
+      USE W3IDATMD, ONLY: FLCUR, FLLEV
       USE W3GDATMD, ONLY: ECOS, ESIN, MAPFS
       USE W3PARALL, ONLY : ONESIXTH, ZERO, THR, ONETHIRD
       use yowElementpool, ONLY: ne, INE
@@ -4545,7 +4555,7 @@
       USE W3WDATMD, ONLY: VA, VAOLD
       USE W3ADATMD, ONLY: CG, DW, WN, CX, CY
 !/MEMCHECK USE W3ADATMD, ONLY: MALLINFOS
-      USE W3IDATMD, ONLY: FLCUR
+      USE W3IDATMD, ONLY: FLCUR, FLLEV
       USE W3GDATMD, ONLY: ECOS, ESIN, MAPFS
       USE W3PARALL, ONLY : ONESIXTH, ZERO, THR, ONETHIRD
       use yowElementpool, ONLY: ne, INE
@@ -5856,7 +5866,7 @@
       USE W3ODATMD, ONLY: NBI
       USE W3TIMEMD, ONLY: DSEC21
       USE W3GDATMD, ONLY: NSEAL, CLATS, FACHFA
-      USE W3IDATMD, ONLY: FLCUR
+      USE W3IDATMD, ONLY: FLCUR, FLLEV
       USE W3WDATMD, ONLY: VA, VAOLD, VSTOT, VDTOT
       USE W3ADATMD, ONLY: CG, CX, CY
       USE W3ODATMD, ONLY: TBPIN, FLBPI, IAPROC
@@ -5908,6 +5918,12 @@
       INTEGER ierr, i
       INTEGER JP_glob
       INTEGER is_converged, itmp
+
+      LOGICAL :: LSIG = .FALSE.
+
+!AR: this is missing in init ... but there is a design error in ww3_grid with FLCUR and FLLEV
+      LSIG = FLCUR .OR. FLLEV
+
 
 !/MEMCHECK      write(740+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION 0'
 !/MEMCHECK      call getMallocInfo(mallinfos)
@@ -6144,7 +6160,7 @@
               END DO
             END IF
 !/DEBUGSRC            WRITE(740+IAPROC,*) 'Step 3: sum(eSum)=', sum(eSum)
-            IF (FSFREQSHIFT) THEN
+            IF (FSFREQSHIFT .and. LSIG) THEN
               IF (FreqShiftMethod .eq. 1) THEN
                 CAS = CAS_SIG(:,IP)
                 CP_SIG = MAX(ZERO,CAS)
