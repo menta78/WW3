@@ -469,7 +469,6 @@
         IOBP_loc(IP)    = IOBP(IP_glob)
         IOBPD_loc(:,IP) = IOBPD(:,IP_glob)
         IOBPA_loc(IP)   = IOBPA(IP_glob)
-        write(*,*) IP, IOBP_loc(IP), IOBPA_loc(IP)
       END DO
       DEALLOCATE(IOBP,IOBPD,IOBPA)
 
@@ -3894,13 +3893,13 @@
 !/REF1                K1=ZERO
 !/REF1              END IF
               DTK               = KP(POS,IE) * DTG * IB1
+              I3    =  PDLIB_POSI(3,J)
+              ASPAR_JAC(ISP,I3) = ASPAR_JAC(ISP,I3)                          - DTK * DELTAL(POS_TRICK(POS,2),IE)
               B_JAC(ISP,IP)     = B_JAC(ISP,IP)     + PDLIB_TRIA03(IE) * VA(ISP,IP) * IB2
               I1    =  PDLIB_POSI(1,J)
               ASPAR_JAC(ISP,I1) = ASPAR_JAC(ISP,I1) + PDLIB_TRIA03(IE) + DTK - DTK * DELTAL(POS,IE)
               I2    =  PDLIB_POSI(2,J)
               ASPAR_JAC(ISP,I2) = ASPAR_JAC(ISP,I2)                          - DTK * DELTAL(POS_TRICK(POS,1),IE)
-              I3    =  PDLIB_POSI(3,J)
-              ASPAR_JAC(ISP,I3) = ASPAR_JAC(ISP,I3)                          - DTK * DELTAL(POS_TRICK(POS,2),IE)
             END DO
           ELSE
             DO I = 1, PDLIB_CCON(IP)
@@ -6328,7 +6327,7 @@
         ! Terminate via number of iteration
         !
         IF (B_JGS_TERMINATE_MAXITER) THEN
-          nbIter=nbIter+1
+          nbIter = nbIter + 1
           IF (nbIter .gt. B_JGS_MAXITER) THEN
 !/DEBUGSOLVER       WRITE(740+IAPROC,*) 'Exiting by TERMINATE_MAXITER'
             EXIT
