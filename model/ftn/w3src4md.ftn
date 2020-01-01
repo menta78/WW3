@@ -268,7 +268,7 @@
       CALL CALC_USTAR(U,TAUW,USTAR,Z0,CHARN) 
       UNZ    = MAX ( 0.01 , U )
       CD     = (USTAR/UNZ)**2 
-      USDIR = UDIR
+      USDIR  = UDIR
 !
 ! 6.  Final test output ---------------------------------------------- *
 !

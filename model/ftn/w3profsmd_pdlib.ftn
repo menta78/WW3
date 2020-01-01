@@ -3905,6 +3905,7 @@
             DO I = 1, PDLIB_CCON(IP)
               J = J + 1
               I1    =  PDLIB_POSI(1,J)
+              IE    =  PDLIB_IE_CELL2(I,IP)
               ASPAR_JAC(ISP,I1) = ASPAR_JAC(ISP,I1) + PDLIB_TRIA03(IE)
             END DO
             B_JAC(ISP,IP) = 0.
