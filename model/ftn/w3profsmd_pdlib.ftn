@@ -5876,6 +5876,7 @@
       USE W3PARALL, ONLY : JX_TO_JSEA
       USE W3GDATMD, ONLY: B_JGS_NLEVEL, B_JGS_SOURCE_NONLINEAR
       USE yowfunction, ONLY : pdlib_abort
+      USE yowNodepool, only: np_global
 !/MEMCHECK      USE MallocInfo_m
       implicit none
       REAL, INTENT(IN) :: FACX, FACY, DTG, VGX, VGY
@@ -5903,7 +5904,10 @@
       REAL  :: eDiffSing, eSumPart
       REAL  :: eVal1, eVal2!, extmp(nspec,nseal)
       REAL  :: eVA
-      LOGICAL :: LCONVERGED(NSEAL)
+      LOGICAL :: LCONVERGED(NSEAL), lexist
+#ifdef WEIGHTS  
+      INTEGER :: ipiter(nseal), ipitergl(np_global), ipiterout(np_global) 
+#endif
 !/DEBUGSRC      REAL :: IntDiff, eVA_w3srce, eVAsolve, SumACout
 !/DEBUGSRC      REAL :: SumVAin, SumVAout, SumVAw3srce, SumVS, SumVD, VS_w3srce
 !/DEBUGSRC      REAL    :: VAsolve(NSPEC)
@@ -6066,7 +6070,10 @@
 !/DEBUGSOLVER     !WRITE(740+IAPROC,'(A20,20E20.10)') 'SUM BJAC 4', sum(B_JAC), SUM(ASPAR_JAC)
 
       nbIter=0
-      Lconverged = .false.
+      do ip = 1, np
+        Lconverged(ip) = .false.
+        ipiter(ip) = 0
+      enddo
 !
       DO
 
@@ -6093,6 +6100,7 @@
           ACLOC = VA(:,JSEA)
 
           IF (.NOT. LCONVERGED(IP)) THEN
+            ipiter(ip) = ipiter(ip) + 1
 !/DEBUGFREQSHIFT    	WRITE(740+IAPROC,*) 'Begin loop'
 !/DEBUGFREQSHIFT        WRITE(740+IAPROC,*) 'IP/IP_glob/ISEA/JSEA=', IP, IP_glob, ISEA, JSEA
 !/DEBUGSRC          WRITE(740+IAPROC,*) 'IP=', IP, ' IP_glob=', IP_glob
@@ -6136,9 +6144,9 @@
 !/DEBUGSRC            WRITE(740+IAPROC,*) 'Step 1: sum(eSum)=', sum(eSum)
 !/DEBUGSOLVERCOH          eOff=ZERO
               DO i = PDLIB_IA_P(IP)+1, PDLIB_IA_P(IP+1)
-                JP=PDLIB_JA(I)
+                JP = PDLIB_JA(I)
                 IF (JP .ne. IP) THEN
-                  eProd = ASPAR_JAC(1:NSPEC,i)*VA(1:NSPEC,JP)
+                  eProd = ASPAR_JAC(1:NSPEC,i) * VA(1:NSPEC,JP)
                   eSum  = eSum - eProd
 !/DEBUGSOLVER     WRITE(740+IAPROC,'(A20,3I10,20E20.10)') 'OFF DIAGONAL', IP, i, jp, sum(B_JAC(:,IP)), sum(eSum), SUM(ASPAR_JAC(:,i)), SUM(VA(:,JP))
 !/DEBUGSOLVERCOH              eOff=eOff + abs(ASPAR_JAC(:,i))
@@ -6327,8 +6335,8 @@
         !
         ! Terminate via number of iteration
         !
+        nbIter = nbIter + 1
         IF (B_JGS_TERMINATE_MAXITER) THEN
-          nbIter = nbIter + 1
           IF (nbIter .gt. B_JGS_MAXITER) THEN
 !/DEBUGSOLVER       WRITE(740+IAPROC,*) 'Exiting by TERMINATE_MAXITER'
             EXIT
@@ -6495,6 +6503,24 @@
 !/DEBUGSRC        WRITE(740+IAPROC,*) 'SumVA(in/out/w3srce)=', SumVAin, SumVAout, SumVAw3srce
 !/DEBUGSRC        WRITE(740+IAPROC,*) 'SumACout=', SumACout
       END DO ! JSEA
+
+#ifdef WEIGHTS      
+      INQUIRE ( FILE='weights.ww3', EXIST = lexist )
+      if (.not. lexist) then
+        ipitergl = 0
+        ipiterout = 0
+        DO IP = 1, np
+          ipitergl(iplg(IP)) = ipiter(ip)
+        END DO
+        call mpi_reduce(ipitergl,ipiterout,NP_GLOBAL,MPI_INT,MPI_SUM,0,MPI_COMM_WCMP,ierr)
+        if (myrank == 0) tHEN
+          OPEN(100001,FILE='weights.ww3',FORM='FORMATTED',STATUS='unknown')
+          do ip = 1, np_global 
+            write(100001,*) ipiterout(ip)
+          enddo 
+        endif
+      endif
+#endif
 
 !/MEMCHECK      write(740+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION 7'
 !/MEMCHECK      call getMallocInfo(mallinfos)

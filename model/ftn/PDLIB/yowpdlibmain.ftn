@@ -385,10 +385,11 @@ module yowpdlibMain
     ! Parmetis
     ! Node neighbor information
     integer :: wgtflag, numflag, ndims, nparts, edgecut, ncon
-    integer, allocatable :: xadj(:), part(:), vwgt(:), adjwgt(:), vtxdist(:), options(:), adjncy(:)
+    integer, allocatable :: xadj(:), part(:), vwgt(:), adjwgt(:), vtxdist(:), options(:), adjncy(:), iweights(:)
     ! parmetis need single precision
     real(4), allocatable :: xyz(:), tpwgts(:), ubvec(:)
-    integer IP_glob
+    integer :: IP_glob
+    logical :: lexist = .false. 
 
     ! Node to domain mapping.
     ! np_global long. give the domain number for die global node number
@@ -444,17 +445,37 @@ module yowpdlibMain
     nparts = nTasks
     ! # weight per node
     ncon = 1
+    ! wgtflag: 0: none (vwgt and adjwgt are NULL); 1: edges (vwgt is NULL); 2: vertices (adjwgt is NULL); 3: both vertices & edges;
 
+#ifdef WEIGHTS
+    wgtflag = 2
+    INQUIRE ( FILE='weights.ww3', EXIST = lexist )
+    IF (lexist) THEN
+      OPEN(100001,FILE='weights.ww3',FORM='FORMATTED',status='unknown')
+      allocate(iweights(np_global)); iweights = 0
+      do i = 1, np_global
+        read(100001,*) iweights(i)
+        write(*,*) i, iweights(i)
+      enddo 
+      CLOSE(100001)
+    ENDIF
+#else
+    wgtflag = 0
+#endif
 
     ! Create weights
-    ! keep it simple. ignore weights
-
-    ! wgtflag: 0: none (vwgt and adjwgt are NULL); 1: edges (vwgt is NULL); 2: vertices (adjwgt is NULL); 3: both vertices & edges;
-    wgtflag = 0
     allocate(vwgt(np*ncon), stat=stat)
     if(stat/=0) call parallel_abort('vwgt allocation failure')
-    !> \todo
+
+#ifdef weights 
+    do i = 1, np
+      vwgt(ip) = iweights(iplg(i))
+    enddo 
+    deallocate(iweights)
+#else
     vwgt = 1
+#endif
+
     allocate(adjwgt(ns), stat=stat)
     if(stat/=0) call parallel_abort('adjwgt allocation failure')
     !> \todo
@@ -557,12 +578,12 @@ module yowpdlibMain
 
     CALL REAL_MPI_BARRIER_PDLIB(comm, "runParmetis, step 9")
 
-  if(nTasks == 1) then
+    if(nTasks == 1) then
 !    write(*,*) myrank, "minval part", minval(part)
-    if(minval(part) == 0) then
-      part(:) = part(:) + 1
+      if(minval(part) == 0) then
+        part(:) = part(:) + 1
+      endif
     endif
-  endif
 
   ! write(*,*) myrank, "edge cuted", edgecut
 
