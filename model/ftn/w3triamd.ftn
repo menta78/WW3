@@ -337,15 +337,14 @@ CONTAINS
 !
 ! call the various routines which define the point spotting strategy
 !
-!/PDLIB if (.not. lpdlib) then
+#ifndef PDLIB
       CALL SPATIAL_GRID    
+#endif
       CALL NVECTRI
+#ifndef PDLIB 
       CALL COORDMAX
-!
-!READMSH is only called by ww3_grid, thus the grid index is always 1. 
-!
       CALL AREA_SI(1)
-!/PDLIB endif
+#endif
 !
       CLOSE(NDS)
       END SUBROUTINE READMSH
@@ -993,7 +992,9 @@ CONTAINS
             IEN(IE,6) = N3(2)
     
          END DO
- 
+
+         DEALLOCATE(LEN)
+
      END SUBROUTINE
 !/---------------------------------------------------------------------------
 
@@ -1282,8 +1283,8 @@ END SUBROUTINE
          DO IP = 1, NX
            DO I = 1, CCON(IP)
              J = J + 1
-             IE_CELL(J)  = CELLVERTEX(IP,I,1)
-             POS_CELL(J) = CELLVERTEX(IP,I,2) 
+             !IE_CELL(J)  = CELLVERTEX(IP,I,1)
+             !POS_CELL(J) = CELLVERTEX(IP,I,2) 
            END DO
            INDEX_CELL(IP+1)=J+1
          END DO

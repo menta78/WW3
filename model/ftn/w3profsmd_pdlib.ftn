@@ -174,7 +174,7 @@
       USE W3GDATMD, ONLY: MAPSTA, MAPFS, GRIDS, NTH, SIG, NK
       USE W3ADATMD, ONLY: IOBP_LOC, IOBPD_LOC, IOBPA_LOC, IOBDP_LOC
       USE W3GDATMD, ONLY: CCON, COUNTCON, INDEX_CELL, IE_CELL
-      USE W3GDATMD, ONLY: IOBP, IOBPA, IOBPD, IOBDP 
+      USE W3GDATMD, ONLY: IOBP, IOBPA, IOBPD, IOBDP, SI 
 
       USE W3ADATMD, ONLY: MPI_COMM_WCMP, MPI_COMM_WAVE
       USE W3ODATMD, ONLY: IAPROC, NAPROC, NTPROC
@@ -310,7 +310,7 @@
             NSEAL_arr(IPROC)=IScal(1)
           END DO
           PDLIB_NSEALM=maxval(NSEAL_arr)
-          deALLOCATE(NSEAL_arr)
+          DEALLOCATE(NSEAL_arr)
         ELSE
           IScal(1)=PDLIB_NSEAL
           CALL MPI_SEND(IScal,1,MPI_INT, 0, 23, MPI_COMM_WAVE, IERR_MPI)
@@ -359,6 +359,7 @@
       !    CALL PDLIB_ABORT(20)
       !  ENDIF
       !ENDDO
+!
 !
 !/
 !/ End of PDLIB_INIT ------------------------------------------- /

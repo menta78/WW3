@@ -671,7 +671,6 @@
           END IF
         END IF
 
-!AR: Must be checked better ... will do that when cleaning debugging switches!
         VA = MAX(0.,VA)
 !
 !/T      WRITE (NDST,9006)
