@@ -448,7 +448,7 @@
 !/TIMINGS       CALL PRINT_MY_TIME("Case 2")
 
 
-!/MEMCHECK       WRITE(740+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 1'
+!/MEMCHECK       WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 1'
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
 !
@@ -595,7 +595,7 @@
 !
 ! 1.f Initial and test outputs
 !
-!/MEMCHECK       WRITE(740+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2'
+!/MEMCHECK       WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2'
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
 !
@@ -607,7 +607,7 @@
           WRITE (NDSO,900) WWVER, STDATE, STTIME
         END IF
 
-!/MEMCHECK       WRITE(740+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2a'
+!/MEMCHECK       WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2a'
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
 !
@@ -623,7 +623,7 @@
 !
 !/DEBUGMPI     CALL TEST_MPI_STATUS("Case 8")
       CALL W3IOGR ( 'READ', NDS(5), IMOD, FEXT )
-!/MEMCHECK       WRITE(740+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2b'
+!/MEMCHECK       WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2b'
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
 
@@ -641,7 +641,7 @@
 !/PDLIB!/DEBUGINIT      WRITE(*,*) 'After PDLIB_INIT, IMOD=', IMOD
 !/PDLIB      CALL SYNCHRONIZE_IPGL_ETC_ARRAY(IMOD, IsMulti)
 !/PDLIB    END IF
-!/MEMCHECK       WRITE(740+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2c'
+!/MEMCHECK       WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2c'
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
 
@@ -664,7 +664,7 @@
       ALLOCATE ( MAPTST(NY,NX) )
       MAPTST  = MAPSTA 
 
-!/MEMCHECK       WRITE(740+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2b'
+!/MEMCHECK       WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2b'
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
 !
@@ -677,7 +677,7 @@
       NSEAL  = NSEALout
       NSEALM = NSEALMout
 
-!/MEMCHECK       WRITE(740+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2c'
+!/MEMCHECK       WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2c'
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
 !
@@ -707,7 +707,7 @@
 !/PDLIB           ELSE IF (FSTOTALEXP) THEN
 !/PDLIB           ENDIF
 !/PDLIB         END IF
-!/MEMCHECK      WRITE(740+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2d'
+!/MEMCHECK      WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2d'
 !/MEMCHECK      call getMallocInfo(mallinfos)
 !/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
 !/DEBUGMPI      CALL TEST_MPI_STATUS("Case 12")
@@ -733,7 +733,7 @@
 !!/DEBUGMPI     CALL TEST_MPI_STATUS("Case 13")
 !/TIMINGS       CALL PRINT_MY_TIME("After W3DIMI")
 
-!/MEMCHECK      WRITE(740+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 3'
+!/MEMCHECK      WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 3'
 !/MEMCHECK      call getMallocInfo(mallinfos)
 !/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
 !
@@ -856,7 +856,7 @@
 !/TIMINGS       CALL PRINT_MY_TIME("Before W3IORS")
       CALL W3IORS ( 'READ', NDS(6), SIG(NK), INTYPE, IMOD )
 !/TIMINGS       CALL PRINT_MY_TIME("After W3IORS")
-!/MEMCHECK      WRITE(740+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 3a'
+!/MEMCHECK      WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 3a'
 !/MEMCHECK      call getMallocInfo(mallinfos)
 !/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
 
@@ -896,7 +896,7 @@
           END DO
         END DO
 
-!/MEMCHECK      WRITE(740+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 3b'
+!/MEMCHECK      WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 3b'
 !/MEMCHECK      call getMallocInfo(mallinfos)
 !/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
 !
@@ -925,7 +925,7 @@
 !/T          WRITE (NDST,9031)
         END IF
 
-!/MEMCHECK       WRITE(740+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 4'
+!/MEMCHECK       WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 4'
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
 !
@@ -1063,7 +1063,7 @@
 !
         END DO
 !
-!/MEMCHECK       WRITE(740+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 5'
+!/MEMCHECK       WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 5'
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
 
@@ -1165,7 +1165,7 @@
 !/DEBUGINIT     WRITE(740+IAPROC,*) 'W3INIT, aft BLOCK_SOLVER_INIT, step 9.3'
 !/DEBUGINIT     FLUSH(740+IAPROC)
 
-!/MEMCHECK       WRITE(740+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 6'
+!/MEMCHECK       WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 6'
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
 !
@@ -1327,7 +1327,7 @@
 !
       IF ( NOPTS .EQ. 0 ) FLOUT(2) = .FALSE.
 
-!/MEMCHECK       WRITE(740+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 7'
+!/MEMCHECK       WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 7'
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
 !/DEBUGINIT     WRITE(740+IAPROC,*) 'W3INIT, aft BLOCK_SOLVER_INIT, step 9.9'
