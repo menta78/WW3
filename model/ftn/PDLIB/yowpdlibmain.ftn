@@ -471,12 +471,13 @@ module yowpdlibMain
 #ifdef WEIGHTS
     if (lexist) then
       do i = 1, np
-        itmp = int(real((iweights(iplg(i))+100))/10.)
+        itmp = max(1,int(real((iweights(iplg(i))+100))/10.))
         !vwgt(i) = max(1,int(real(iweights(iplg(i)))/maxval(iweights)) * 10)
         !vwgt(i) = max(1,iweights(iplg(i)))
         !vwgt(i) = max(1,itmp)
         vwgt(i) = itmp
       enddo 
+      vwgt = 1
       deallocate(iweights)
     else
       vwgt = 1

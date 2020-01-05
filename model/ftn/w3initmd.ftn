@@ -623,6 +623,9 @@
 !
 !/DEBUGMPI     CALL TEST_MPI_STATUS("Case 8")
       CALL W3IOGR ( 'READ', NDS(5), IMOD, FEXT )
+!/MEMCHECK       WRITE(740+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2b'
+!/MEMCHECK       call getMallocInfo(mallinfos)
+!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
 
 !/PDLIB    IF (GTYPE .ne. UNGTYPE) THEN
 !/SETUP      CALL PREPARATION_FD_SCHEME(IMOD)
@@ -638,6 +641,10 @@
 !/PDLIB!/DEBUGINIT      WRITE(*,*) 'After PDLIB_INIT, IMOD=', IMOD
 !/PDLIB      CALL SYNCHRONIZE_IPGL_ETC_ARRAY(IMOD, IsMulti)
 !/PDLIB    END IF
+!/MEMCHECK       WRITE(740+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2c'
+!/MEMCHECK       call getMallocInfo(mallinfos)
+!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+
 ! Update of output parameter flags based on mod_def parameters (for 3D arrays)
 !/DEBUGINIT      WRITE(740+IAPROC,*) 'Before W3FLGRDUPDT'
 !/DEBUGINIT      FLUSH(740+IAPROC)
