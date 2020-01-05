@@ -5905,7 +5905,7 @@
       REAL  :: eVal1, eVal2!, extmp(nspec,nseal)
       REAL  :: eVA
       LOGICAL :: LCONVERGED(NSEAL), lexist
-#ifdef WEIGHTS  
+#ifdef WEIGHTS 
       INTEGER :: ipiter(nseal), ipitergl(np_global), ipiterout(np_global) 
 #endif
 !/DEBUGSRC      REAL :: IntDiff, eVA_w3srce, eVAsolve, SumACout
@@ -6520,6 +6520,7 @@
           do ip = 1, np_global 
             write(100001,*) ipiterout(ip)
           enddo 
+          CLOSE(100001)
         endif
       endif
 #endif

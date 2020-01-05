@@ -388,7 +388,7 @@ module yowpdlibMain
     integer, allocatable :: xadj(:), part(:), vwgt(:), adjwgt(:), vtxdist(:), options(:), adjncy(:), iweights(:)
     ! parmetis need single precision
     real(4), allocatable :: xyz(:), tpwgts(:), ubvec(:)
-    integer :: IP_glob
+    integer :: IP_glob, itmp
     logical :: lexist = .false. 
 
     ! Node to domain mapping.
@@ -455,10 +455,11 @@ module yowpdlibMain
       allocate(iweights(np_global)); iweights = 0
       do i = 1, np_global
         read(100001,*) iweights(i)
-        write(*,*) i, iweights(i)
       enddo 
       CLOSE(100001)
-    ENDIF
+    ELSE
+      wgtflag = 0
+    ENDIF 
 #else
     wgtflag = 0
 #endif
@@ -467,11 +468,19 @@ module yowpdlibMain
     allocate(vwgt(np*ncon), stat=stat)
     if(stat/=0) call parallel_abort('vwgt allocation failure')
 
-#ifdef weights 
-    do i = 1, np
-      vwgt(ip) = iweights(iplg(i))
-    enddo 
-    deallocate(iweights)
+#ifdef WEIGHTS
+    if (lexist) then
+      do i = 1, np
+        itmp = int(real((iweights(iplg(i))+100))/10.)
+        !vwgt(i) = max(1,int(real(iweights(iplg(i)))/maxval(iweights)) * 10)
+        !vwgt(i) = max(1,iweights(iplg(i)))
+        !vwgt(i) = max(1,itmp)
+        vwgt(i) = itmp
+      enddo 
+      deallocate(iweights)
+    else
+      vwgt = 1
+    endif
 #else
     vwgt = 1
 #endif
