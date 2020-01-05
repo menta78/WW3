@@ -201,7 +201,6 @@
 !/ ------------------------------------------------------------------- /
 !/
 !!      INCLUDE "mpif.h"
-      INTEGER, ALLOCATABLE   :: INE_IN(:,:)
       INTEGER :: istat
       INTEGER :: I, J, IBND_MAP, ISEA, IP, IX, JSEA, nb
       INTEGER :: IP_glob
