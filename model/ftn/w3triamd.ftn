@@ -337,6 +337,7 @@ CONTAINS
 !
 ! call the various routines which define the point spotting strategy
 !
+!/PDLIB if (.not. lpdlib) then
       CALL SPATIAL_GRID    
       CALL NVECTRI
       CALL COORDMAX
@@ -344,6 +345,7 @@ CONTAINS
 !READMSH is only called by ww3_grid, thus the grid index is always 1. 
 !
       CALL AREA_SI(1)
+!/PDLIB endif
 !
       CLOSE(NDS)
       END SUBROUTINE READMSH

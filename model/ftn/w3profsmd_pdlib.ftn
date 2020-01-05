@@ -6100,7 +6100,9 @@
           ACLOC = VA(:,JSEA)
 
           IF (.NOT. LCONVERGED(IP)) THEN
+#ifdef WEIGHTS
             ipiter(ip) = ipiter(ip) + 1
+#endif
 !/DEBUGFREQSHIFT    	WRITE(740+IAPROC,*) 'Begin loop'
 !/DEBUGFREQSHIFT        WRITE(740+IAPROC,*) 'IP/IP_glob/ISEA/JSEA=', IP, IP_glob, ISEA, JSEA
 !/DEBUGSRC          WRITE(740+IAPROC,*) 'IP=', IP, ' IP_glob=', IP_glob
