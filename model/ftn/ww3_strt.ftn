@@ -460,8 +460,8 @@
 !/SHRD            ISEA   = JSEA
             IF (GTYPE .EQ. UNGTYPE) THEN 
                IX     = MAPSF(ISEA,1)
-               X      = XYB(IX,1)
-               Y      = XYB(IX,2)
+               X      = XYB(1,IX)
+               Y      = XYB(2,IX)
             ELSE
                IX     = MAPSF(ISEA,1)
                IY     = MAPSF(ISEA,2)
@@ -627,8 +627,8 @@
 !/SHRD            ISEA   = JSEA
             IF (GTYPE .EQ. UNGTYPE) THEN 
                IX     = MAPSF(ISEA,1)
-               X      = XYB(IX,1)
-               Y      = XYB(IX,2)
+               X      = XYB(1,IX)
+               Y      = XYB(2,IX)
             ELSE
                IX     = MAPSF(ISEA,1)
                IY     = MAPSF(ISEA,2)

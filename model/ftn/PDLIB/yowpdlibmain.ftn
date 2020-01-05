@@ -58,7 +58,7 @@ module yowpdlibMain
   !> @param[in] thirdDim size of the third dimensions to exchange
   !> @param[in] MPIComm MPI communicator to use with pdlib
   !> @overload initPD1
-  subroutine initFromGridDim(MNP, XP, YP, DEP, MNE, INE, secDim, MPIcomm)
+  subroutine initFromGridDim(MNP, XYB, MNE, INE, secDim, MPIcomm)
     use yowDatapool,       only: myrank, debugPrePartition, debugPostPartition
     use yowNodepool,       only: np_global, np, np_perProcSum, ng, ipgl, iplg, npa
     use yowElementpool,    only: ne_global,ne
@@ -68,7 +68,7 @@ module yowpdlibMain
     implicit none
     integer, intent(in) :: MNP, MNE
     integer, intent(in) :: INE(3,MNE)
-    real(kind=rkind), intent(in) :: XP(MNP), YP(MNP), DEP(MNP)
+    real(kind=8), intent(in) :: XYB(3,MNP)
     integer, intent(in) :: secDim
     integer, intent(in) :: MPIcomm
     integer istat
@@ -77,7 +77,7 @@ module yowpdlibMain
 !/DEBUGINIT    Print *, '1: MPIcomm=', MPIcomm
     call initMPI(MPIcomm)
 !/DEBUGINIT    Print *, '2: After initMPI'
-    call assignMesh(MNP, XP, YP, DEP, MNE, INE)
+    call assignMesh(MNP, XYB, MNE, INE)
 !/DEBUGINIT    Print *, '3: After assignMesh'
     call prePartition()
 !/DEBUGINIT    Print *, '3: After prePartition'
@@ -98,7 +98,7 @@ module yowpdlibMain
  !   call writeMesh()
 !/DEBUGINIT    Print *, '4.1: After findConnNodes'
 !    CALL REAL_MPI_BARRIER_PDLIB(MPIcomm, "Before call to runParmetis")
-    call runParmetis(MNP, XP, YP)
+    call runParmetis(MNP, XYB)
 !    CALL REAL_MPI_BARRIER_PDLIB(MPIcomm, "After call to runParmetis")
 !/DEBUGINIT    Print *, '5: After runParmetis'
     call postPartition
@@ -106,7 +106,7 @@ module yowpdlibMain
     call findGhostNodes
     call findConnDomains
     call exchangeGhostIds
-    call postPartition2(MNP, XP, YP, DEP)
+    call postPartition2(MNP, XYB)
     call initRankModule
     call ComputeTRIA_IEN_SI_CCON
     call ComputeIA_JA_POSI_NNZ
@@ -205,14 +205,14 @@ module yowpdlibMain
   !> @param[in] MNE number of element global
   !> @param[in] INE element array
   !> alter: np_global, nodes_global(), ne_global, elements(), INE_global
-  subroutine assignMesh(MNP, XP, YP, DEP, MNE, INE)
+  subroutine assignMesh(MNP, XYB, MNE, INE)
     use yowNodepool,    only: nodes_global, np_global
     use yowElementpool, only: ne_global, INE_global
     use yowerr,       only: parallel_abort
     implicit none
     integer, intent(in) :: MNP, MNE
     integer, intent(in) :: INE(3,MNE)
-    real(kind=rkind), intent(in) :: XP(MNP), YP(MNP), DEP(MNP)
+    real(kind=8), intent(in) :: XYB(3,MNP) 
     integer :: stat, i
 
     np_global=MNP
@@ -371,7 +371,7 @@ module yowpdlibMain
   !> Collect all data for parmetis und partition the mesh
   !> after that, we know for every node the domain ID
   !> alter: t_Node::domainID
-  subroutine runParmetis(MNP, XP, YP)
+  subroutine runParmetis(MNP, XYB)
     use yowerr,    only: parallel_abort
     use yowDatapool, only: debugParmetis,debugPartition, nTasks, myrank, itype, comm
     use yowNodepool, only: np, npa, np_global, nodes, nodes_global, t_Node, iplg, np_perProcSum, np_perProc
@@ -380,7 +380,7 @@ module yowpdlibMain
     use MPI
     implicit none
     integer, intent(in) :: MNP
-    real(kind=rkind), intent(in) :: XP(MNP), YP(MNP)
+    real(kind=8), intent(in) :: XYB(3,MNP)
 
     ! Parmetis
     ! Node neighbor information
@@ -509,8 +509,8 @@ module yowpdlibMain
     if(debugParmetis) write(710+myrank,*) np_global, ne_global, np, npa, ne
     do i = 1, np
       IP_glob = iplg(i)
-      xyz(2*(i-1)+1) = REAL(XP(IP_glob))
-      xyz(2*(i-1)+2) = REAL(YP(IP_glob))
+      xyz(2*(i-1)+1) = REAL(XYB(1,IP_glob))
+      xyz(2*(i-1)+2) = REAL(XYB(2,IP_glob))
       if(debugParmetis) then
         write(710+myrank,*) i, np, xyz(2*(i-1)+1), xyz(2*(i-1)+2)  
         call flush(710+myrank)
@@ -1044,7 +1044,7 @@ module yowpdlibMain
 
   !> this collects all data which depends on ghost information
   !> alter: ne, INE, x, y, z, ielg
-  subroutine postPartition2(MNP, XP, YP, DEP)
+  subroutine postPartition2(MNP, XYB)
     use yowElementpool, only: ne, ne_global, INE, INE_global, belongto, ielg
     use yowerr,       only: parallel_abort
     use yowDatapool,    only: myrank
@@ -1052,7 +1052,7 @@ module yowpdlibMain
     use yowNodepool,    only: x, y, z
     implicit none
     integer, intent(in) :: MNP
-    REAL(kind=rkind), intent(in) :: XP(MNP), YP(MNP), DEP(MNP)
+    REAL(kind=8), intent(in) :: XYB(3,MNP)
 
     integer :: i, j, k, stat, IP_glob
     type(t_Node), pointer :: node
@@ -1151,16 +1151,16 @@ module yowpdlibMain
 
     do i=1, np
       IP_glob = iplg(i)
-      x(i) = XP(IP_glob)
-      y(i) = YP(IP_glob)
-      z(i) = DEP(IP_glob)
+      x(i) = XYB(1,IP_glob)
+      y(i) = XYB(2,IP_glob)
+      z(i) = XYB(3,IP_glob)
     end do
 
     do i=1, ng
       IP_glob = ghostlg(i)
-      x(np+i) = XP(IP_glob)
-      y(np+i) = YP(IP_glob)
-      z(np+i) = DEP(IP_glob)
+      x(np+i) = XYB(1,IP_glob)
+      y(np+i) = XYB(2,IP_glob)
+      z(np+i) = XYB(3,IP_glob)
     end do
   end subroutine
 !**********************************************************************

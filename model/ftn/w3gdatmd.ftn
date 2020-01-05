@@ -2732,8 +2732,8 @@
 ! -------------------------------------------------------------------- /
 ! 2.  Allocate arrays
 !
-      ALLOCATE ( GRIDS(IMOD)%TRIGP(MTRI,3),                         &
-                 GRIDS(IMOD)%XYB(MX,3),                             &
+      ALLOCATE ( GRIDS(IMOD)%TRIGP(3,MTRI),                         &
+                 GRIDS(IMOD)%XYB(3,MX),                             &
                  GRIDS(IMOD)%SI(MX),                                &
                  GRIDS(IMOD)%TRIA(MTRI),                            & 
                  GRIDS(IMOD)%CROSSDIFF(6,MTRI),                     &

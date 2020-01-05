@@ -778,7 +778,6 @@
 !/NC4    INTEGER                  :: DEFLATE=1
 !/S      INTEGER, SAVE           :: IENT   =   0
 !
-      INTEGER, ALLOCATABLE    :: TRIGP2(:,:)
       ! Make the below allocatable to avoid stack overflow on some machines 
       INTEGER(KIND=2), ALLOCATABLE    :: MX1(:,:), MXX(:,:), MYY(:,:), &
                                          MXY(:,:), MAPOUT(:,:)
@@ -3671,12 +3670,10 @@
 
               ! If unstructured mesh
               IF (GTYPE.EQ.UNGTYPE) THEN 
-                LON(:)=XYB(:,1) 
-                LAT(:)=XYB(:,2)
-                IF (.NOT.ALLOCATED(TRIGP2)) ALLOCATE(TRIGP2(3,NTRI))
+                LON(:)=XYB(1,:) 
+                LAT(:)=XYB(2,:)
                 DIMLN(2)=NX
                 DIMLN(3)=NTRI
-                TRIGP2=TRANSPOSE(TRIGP)
                 IRET=NF90_PUT_ATT(NCID,NF90_GLOBAL, &
                                      'latitude_resolution','n/a')
                 CALL CHECK_ERR(IRET)
@@ -3813,7 +3810,7 @@
 
               ! Writes triangles to netcdf file
               IF (GTYPE.EQ.UNGTYPE) THEN
-                IRET=NF90_PUT_VAR(NCID,VARID(4+EXTRADIM),TRIGP2)
+                IRET=NF90_PUT_VAR(NCID,VARID(4+EXTRADIM),TRIGP)
                 CALL CHECK_ERR(IRET)
               END IF
 

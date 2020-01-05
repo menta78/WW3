@@ -470,8 +470,8 @@
           IX     = IXX(J)
           IY     = IYY(J)
           IF(GTYPE .EQ. UNGTYPE) THEN
-            X = XYB(IX,1)
-            Y = XYB(IX,2)
+            X = XYB(1,IX)
+            Y = XYB(2,IX)
             ENDIF
           MASK1(IY,IX) = MASK1(IY,IX) .OR. FLAG1
           MASK2(IY,IX) = MASK2(IY,IX) .OR. FLAG2
@@ -543,8 +543,8 @@
           IF ( MASK1(IY,IX) ) THEN
 !
             IF(GTYPE .EQ. UNGTYPE) THEN
-                X = XYB(IX,1)
-                Y = XYB(IX,2)
+                X = XYB(1,IX)
+                Y = XYB(2,IX)
               ELSE
                 X = XGRD(IY,IX)
                 Y = YGRD(IY,IX)

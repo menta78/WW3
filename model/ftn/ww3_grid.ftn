@@ -3282,7 +3282,7 @@
 !
         CALL READMSH(NDSG,FNAME)
         ALLOCATE(ZBIN(NX, NY),OBSX(NX,NY),OBSY(NX,NY))
-        ZBIN(:,1) = VSC*XYB(:,3)
+        ZBIN(:,1) = VSC*XYB(3,:)
 !/DEBUGSTP        WRITE(740,*) 'VSC=', VSC
 !/DEBUGSTP        WRITE(740,*) 'Printing ZBIN 1'
 !/DEBUGSTP        DO IX=1,NX
@@ -4133,8 +4133,8 @@
 !/O1                X = FACTOR * ( XGRDIN(IX,IY) )
 !/O1                Y = FACTOR * ( YGRDIN(IX,IY) )
 !/O1              ELSE
-!/O1                X = FACTOR * XYB(IX,1)
-!/O1                Y = FACTOR * XYB(IX,2)
+!/O1                X = FACTOR * XYB(1,IX)
+!/O1                Y = FACTOR * XYB(2,IX)
 !/O1                END IF
 !/O1            IF ( TMPSTA(IY,IX).EQ.2 ) THEN
 !/O1                  IF ( FLAGLL ) THEN
@@ -4196,8 +4196,8 @@
 ! should be removed when XYB is replaced by XGRD and YGRD
 !
         DO IX=1, NX
-          XGRD(:,IX) = XYB(IX,1)
-          YGRD(:,IX) = XYB(IX,2)
+          XGRD(:,IX) = XYB(1,IX)
+          YGRD(:,IX) = XYB(2,IX)
           END DO
         END IF   ! GTYPE
 !      

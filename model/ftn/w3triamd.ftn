@@ -106,6 +106,7 @@ CONTAINS
 !/                  +-----------------------------------+
 !/                  | WAVEWATCH III           NOAA/NCEP |
 !/                  |           F. Ardhuin              |
+!/                  |           A. Roland               | 
 !/                  |                        FORTRAN 90 |
 !/                  | Last update :          06-Jun-2018|
 !/                  +-----------------------------------+
@@ -216,10 +217,10 @@ CONTAINS
 ! read number of nodes and nodes from Gmsh files
 !
       READ(NDS,*) NODES
-      ALLOCATE(XYBTMP1(NODES,3))
+      ALLOCATE(XYBTMP1(3,NODES))
       DO I= 1, NODES
-        READ(NDS,*) j, XYBTMP1(I,1), XYBTMP1(I,2), XYBTMP1(I,3)
-        END DO
+        READ(NDS,*) j, XYBTMP1(1,I), XYBTMP1(2,I), XYBTMP1(3,I)
+      END DO
 !
 ! read number of elements and elements from Gmsh files
 !
@@ -227,7 +228,7 @@ CONTAINS
       N_OUTSIDE_BOUNDARY = 0
       CALL NEXTLN(COMSTR, NDS, NDSE)
       READ(NDS,*) NELTS
-      ALLOCATE(TRIGPTMP1(NELTS, 3))
+      ALLOCATE(TRIGPTMP1(3,NELTS))
       J = 0 
       DO I= 1, NELTS
         READ(NDS,'(A100)') LINE
@@ -248,11 +249,11 @@ CONTAINS
         CASE (2)
           J = J + 1
           READ(LINE,*)  Ind,eltype,ntag,tags,ITMP
-          TRIGPTMP1(J,1:3) = ITMP
+          TRIGPTMP1(1:3,J) = ITMP
           END SELECT
 
         DEALLOCATE(TAGS)
-        END DO
+      END DO
 !
 ! organizes the grid data structure
 !
@@ -267,9 +268,9 @@ CONTAINS
 ! Verifies that the nodes are used in at least one triangle
 ! 
       DO K = 1, NTRI
-        I1 = TRIGPTMP1(K,1)
-        I2 = TRIGPTMP1(K,2)
-        I3 = TRIGPTMP1(K,3)
+        I1 = TRIGPTMP1(1,K)
+        I2 = TRIGPTMP1(2,K)
+        I3 = TRIGPTMP1(3,K)
     
         IFOUND(I1)= IFOUND(I1) + 1
         IFOUND(I2)= IFOUND(I2) + 1
@@ -278,14 +279,14 @@ CONTAINS
  
       J = 0
  
-      ALLOCATE(TRIGPTMP2(NTRI,3),VERTEX(NODES),XYBTMP2(NODES,3)) 
+      ALLOCATE(TRIGPTMP2(3,NTRI),VERTEX(NODES),XYBTMP2(3,NODES)) 
       VERTEX(:)=0
       XYBTMP2 = 0
 
       DO I = 1, NODES
         IF( IFOUND(I) .GT. 0) THEN
           J = J+1
-          XYBTMP2(J,:) = XYBTMP1(I,:) 
+          XYBTMP2(:,J) = XYBTMP1(:,I) 
           VERTEX(I) = J
           END IF
         END DO
@@ -294,17 +295,17 @@ CONTAINS
 ! 
       NX = J  
 !
-      DO I = 1, NTRI
-        I1 = TRIGPTMP1(I,1)
-        I2 = TRIGPTMP1(I,2)
-        I3 = TRIGPTMP1(I,3)
-        TRIGPTMP2(I,1) = VERTEX(I1)
-        TRIGPTMP2(I,2) = VERTEX(I2)
-        TRIGPTMP2(I,3) = VERTEX(I3)
-        END DO   
+     DO I = 1, NTRI
+       I1 = TRIGPTMP1(1,I)
+       I2 = TRIGPTMP1(2,I)
+       I3 = TRIGPTMP1(3,I)
+       TRIGPTMP2(1,I) = VERTEX(I1)
+       TRIGPTMP2(2,I) = VERTEX(I2)
+       TRIGPTMP2(3,I) = VERTEX(I3)
+     END DO   
 !
-      DEALLOCATE(XYBTMP1, IFOUND,TRIGPTMP1)
-      DEALLOCATE(VERTEX)
+     DEALLOCATE(XYBTMP1,IFOUND,TRIGPTMP1)
+     DEALLOCATE(VERTEX)
 !
 !count points connections to allocate array in W3DIMUG 
 !
@@ -317,20 +318,20 @@ CONTAINS
 ! fills arrays
 !
       DO I = 1, NX
-        XYB(I,1) = XYBTMP2(I,1) 
-        XYB(I,2) = XYBTMP2(I,2) 
-        XYB(I,3) = XYBTMP2(I,3)
-        END DO
+        XYB(1,I) = XYBTMP2(1,I) 
+        XYB(2,I) = XYBTMP2(2,I) 
+        XYB(3,I) = XYBTMP2(3,I)
+      END DO
 !
-!/DEBUGSTP    WRITE(740,*) 'Writing XYB(:,3)'
+!/DEBUGSTP    WRITE(740,*) 'Writing XYB(3,:)'
 !/DEBUGSTP    DO I=1,NX
-!/DEBUGSTP      WRITE(740,*) 'I,XYB(I,3)=', I, XYB(I,3)
+!/DEBUGSTP      WRITE(740,*) 'I,XYB(3,I)=', I, XYB(3,I)
 !/DEBUGSTP    END DO
 !/DEBUGSTP    FLUSH(740)
 !
       DO I=1, NTRI
-        ITMP = TRIGPTMP2(I,:)
-        TRIGP(I,:) = ITMP 
+        ITMP = TRIGPTMP2(:,I)
+        TRIGP(:,I) = ITMP 
         END DO   
 !   
       DEALLOCATE(TRIGPTMP2,XYBTMP2)   
@@ -455,10 +456,10 @@ CONTAINS
 ! read number of nodes and nodes from Gmsh files
 !
       READ(NDS,*) NODES
-      ALLOCATE(XYBTMP1(NODES,3))
+      ALLOCATE(XYBTMP1(3,NODES))
       DO I= 1, NODES
-        READ(NDS,*) j, XYBTMP1(I,1), XYBTMP1(I,2), XYBTMP1(I,3)
-        IF (INT(XYBTMP1(I,3)) .EQ. 3) IOBP(I) = 3
+        READ(NDS,*) j, XYBTMP1(1,I), XYBTMP1(2,I), XYBTMP1(3,I)
+        IF (INT(XYBTMP1(3,I)) .EQ. 3) IOBP(I) = 3
       END DO
 !
       CLOSE(NDS)
@@ -546,9 +547,9 @@ CONTAINS
           ELSE
             INEXT=I+1
           END IF
-          IP=TRIGP(IE,I)
-          IPNEXT=TRIGP(IE,INEXT)
-          IPPREV=TRIGP(IE,IPREV)
+          IP=TRIGP(I,IE)
+          IPNEXT=TRIGP(INEXT,IE)
+          IPPREV=TRIGP(IPREV,IE)
           IF (STATUS(IP).EQ.0) THEN
             STATUS(IP)=1
             PREVVERT(IP)=IPPREV
@@ -571,9 +572,9 @@ CONTAINS
             ELSE
               INEXT=I+1
             END IF
-            IP=TRIGP(IE,I)
-            IPNEXT=TRIGP(IE,INEXT)
-            IPPREV=TRIGP(IE,IPREV)
+            IP=TRIGP(I,IE)
+            IPNEXT=TRIGP(INEXT,IE)
+            IPPREV=TRIGP(IPREV,IE)
             IF (STATUS(IP).eq.0) THEN
               ZNEXT=NEXTVERT(IP)
               IF (ZNEXT.eq.IPPREV) THEN
@@ -857,26 +858,26 @@ CONTAINS
 
                 DO K = 1, NTRI
                
-                   I1 = TRIGP(K,1)
-                   I2 = TRIGP(K,2)
-                   I3 = TRIGP(K,3)
+                   I1 = TRIGP(1,K)
+                   I2 = TRIGP(2,K)
+                   I3 = TRIGP(3,K)
 !
 ! cross product of edge-vector  (orientated anticlockwise)
 !                                   
-                   TRIA(K) = REAL( (XYB(I2,2)-XYB(I1,2))      &     !  (Y2-Y1)
-                                  *(XYB(I1,1)-XYB(I3,1))      &     ! *(X1-X3)
-                                  +(XYB(I3,2)-XYB(I1,2))      &     !  (Y3-Y1)*(X2-X1)
-                                  *(XYB(I2,1)-XYB(I1,1))      )*0.5
+                   TRIA(K) = REAL( (XYB(2,I2)-XYB(2,I1))      &     !  (Y2-Y1)
+                                  *(XYB(1,I1)-XYB(1,I3))      &     ! *(X1-X3)
+                                  +(XYB(2,I3)-XYB(2,I1))      &     !  (Y3-Y1)*(X2-X1)
+                                  *(XYB(1,I2)-XYB(1,I1))      )*0.5
 !
 ! test on negative triangle area, which means that the orientiation is not as assumed to be anticw. 
 ! therefore we swap the nodes !!! 
 !      
                   IF (TRIA(K) .lt. TINY(1.)) THEN
-         TMPTRIGP = TRIGP(K,2)
-         TRIGP(K,2) = TRIGP(K,3)
-         TRIGP(K,3) = TMPTRIGP
-         I2 = TRIGP(K,2)
-         I3 = TRIGP(K,3)
+         TMPTRIGP = TRIGP(2,K)
+         TRIGP(2,K) = TRIGP(3,K)
+         TRIGP(3,K) = TMPTRIGP
+         I2 = TRIGP(2,K)
+         I3 = TRIGP(3,K)
          TRIA(K) = -1.d0*TRIA(K)
          STOP 'WRONG TRIANGLE' 
          END IF    
@@ -952,16 +953,16 @@ CONTAINS
 !
 ! vertices
 !
-            I1 = TRIGP(IE,1)
-            I2 = TRIGP(IE,2)
-            I3 = TRIGP(IE,3)
+            I1 = TRIGP(1,IE)
+            I2 = TRIGP(2,IE)
+            I3 = TRIGP(3,IE)
                            
-            P1(1) = XYB(I1,1)
-            P1(2) = XYB(I1,2)
-            P2(1) = XYB(I2,1)
-            P2(2) = XYB(I2,2)
-            P3(1) = XYB(I3,1)
-            P3(2) = XYB(I3,2)
+            P1(1) = XYB(1,I1)
+            P1(2) = XYB(2,I1)
+            P2(1) = XYB(1,I2)
+            P2(2) = XYB(2,I2)
+            P3(1) = XYB(1,I3)
+            P3(2) = XYB(2,I3)
 !
 ! I1 -> I2, I2 -> I3, I3 -> I1 (anticlockwise orientation is preserved)
 !                    
@@ -1078,9 +1079,9 @@ CONN(:)= 0
 
 DO IE = 1,NTRI
    N(:) = 0.
-   N(1) = TRIGPTEMP(IE,1)
-   N(2) = TRIGPTEMP(IE,2)
-   N(3) = TRIGPTEMP(IE,3)
+   N(1) = TRIGPTEMP(1,IE)
+   N(2) = TRIGPTEMP(2,IE)
+   N(3) = TRIGPTEMP(3,IE)
    CONN(N(1)) = CONN(N(1)) + 1
    CONN(N(2)) = CONN(N(2)) + 1
    CONN(N(3)) = CONN(N(3)) + 1
@@ -1150,13 +1151,13 @@ END SUBROUTINE
 !     
 ! maximum of coordinates s
 !
-    MAXX = MAXVAL(XYB(:,1))
-    MAXY = MAXVAL(XYB(:,2))
+    MAXX = MAXVAL(XYB(1,:))
+    MAXY = MAXVAL(XYB(2,:))
 ! 
 ! minimum of coordinates 
 !
-    X0 = MINVAL(XYB(:,1))
-    Y0 = MINVAL(XYB(:,2))
+    X0 = MINVAL(XYB(1,:))
+    Y0 = MINVAL(XYB(2,:))
 ! 
 !maximum and minimum length of edges
 !
@@ -1244,9 +1245,9 @@ END SUBROUTINE
 !
          CCON(:) = 0     ! Number of connected Elements
          DO IE = 1, NTRI 
-           I1 = TRIGP(IE,1)
-           I2 = TRIGP(IE,2)
-           I3 = TRIGP(IE,3)
+           I1 = TRIGP(1,IE)
+           I2 = TRIGP(2,IE)
+           I3 = TRIGP(3,IE)
            CCON(I1) = CCON(I1) + 1
            CCON(I2) = CCON(I2) + 1
            CCON(I3) = CCON(I3) + 1
@@ -1265,7 +1266,7 @@ END SUBROUTINE
 
          DO IE = 1, NTRI 
            DO J=1,3
-             I = TRIGP(IE,J)!INE(J,IE)
+             I = TRIGP(J,IE)!INE(J,IE)
              CHILF(I) = CHILF(I)+1
              CELLVERTEX(I,CHILF(I),1) = IE
              CELLVERTEX(I,CHILF(I),2) = J
@@ -1309,9 +1310,9 @@ END SUBROUTINE
                J = J + 1
                IE    = IE_CELL(J)
                POS   = POS_CELL(J)
-               I1 = TRIGP(IE,1)
-               I2 = TRIGP(IE,2)
-               I3 = TRIGP(IE,3)
+               I1 = TRIGP(1,IE)
+               I2 = TRIGP(2,IE)
+               I3 = TRIGP(3,IE)
                IF (POS == 1) THEN
                  POS_J = 2
                  POS_K = 3
@@ -1323,8 +1324,8 @@ END SUBROUTINE
                  POS_K = 2
                END IF
                IP_I = IP
-               IP_J = TRIGP(IE,POS_J)
-               IP_K = TRIGP(IE,POS_K)
+               IP_J = TRIGP(POS_J,IE)
+               IP_K = TRIGP(POS_K,IE)
                PTABLE(J,1) = IP_I
                PTABLE(J,2) = IP_J
                PTABLE(J,3) = IP_K
@@ -1540,18 +1541,18 @@ END SUBROUTINE
      ITRI = 0 
      DO WHILE (nbFound.EQ.0.AND.ITRI.LT.GRIDS(IMOD)%NTRI)
        ITRI = ITRI +1 
-       I1=GRIDS(IMOD)%TRIGP(ITRI,1)
-       I2=GRIDS(IMOD)%TRIGP(ITRI,2)
-       I3=GRIDS(IMOD)%TRIGP(ITRI,3)
+       I1=GRIDS(IMOD)%TRIGP(1,ITRI)
+       I2=GRIDS(IMOD)%TRIGP(2,ITRI)
+       I3=GRIDS(IMOD)%TRIGP(3,ITRI)
 ! coordinates of the first vertex A
-       x1=GRIDS(IMOD)%XYB(I1,1)
-       y1=GRIDS(IMOD)%XYB(I1,2)
+       x1=GRIDS(IMOD)%XYB(1,I1)
+       y1=GRIDS(IMOD)%XYB(2,I1)
 ! coordinates of the 2nd vertex B
-       x2=GRIDS(IMOD)%XYB(I2,1)
-       y2=GRIDS(IMOD)%XYB(I2,2)
+       x2=GRIDS(IMOD)%XYB(1,I2)
+       y2=GRIDS(IMOD)%XYB(2,I2)
 !coordinates of the 3rd vertex C
-       x3=GRIDS(IMOD)%XYB(I3,1)
-       y3=GRIDS(IMOD)%XYB(I3,2)
+       x3=GRIDS(IMOD)%XYB(1,I3)
+       y3=GRIDS(IMOD)%XYB(2,I3)
 !with M = (XTIN,YTIN) the target point ... 
 !vector product of AB and AC
        sg3=(y3-y1)*(x2-x1)-(x3-x1)*(y2-y1)
@@ -1715,18 +1716,18 @@ END SUBROUTINE
      smin = 0
      DO WHILE (nbFound.EQ.0.AND.ITRI.LT.GRIDS(IMOD)%NTRI)
        ITRI = ITRI +1 
-       I1=GRIDS(IMOD)%TRIGP(ITRI,1)
-       I2=GRIDS(IMOD)%TRIGP(ITRI,2)
-       I3=GRIDS(IMOD)%TRIGP(ITRI,3)
+       I1=GRIDS(IMOD)%TRIGP(1,ITRI)
+       I2=GRIDS(IMOD)%TRIGP(2,ITRI)
+       I3=GRIDS(IMOD)%TRIGP(3,ITRI)
 ! coordinates of the first vertex A
-       x1=GRIDS(IMOD)%XYB(I1,1)
-       y1=GRIDS(IMOD)%XYB(I1,2)
+       x1=GRIDS(IMOD)%XYB(1,I1)
+       y1=GRIDS(IMOD)%XYB(2,I1)
 ! coordinates of the 2nd vertex B
-       x2=GRIDS(IMOD)%XYB(I2,1)
-       y2=GRIDS(IMOD)%XYB(I2,2)
+       x2=GRIDS(IMOD)%XYB(1,I2)
+       y2=GRIDS(IMOD)%XYB(2,I2)
 !coordinates of the 3rd vertex C
-       x3=GRIDS(IMOD)%XYB(I3,1)
-       y3=GRIDS(IMOD)%XYB(I3,2)
+       x3=GRIDS(IMOD)%XYB(1,I3)
+       y3=GRIDS(IMOD)%XYB(2,I3)
 !with M = (XTIN,YTIN) the target point ... 
 !vector product of AB and AC
        sg3=(y3-y1)*(x2-x1)-(x3-x1)*(y2-y1)
@@ -1767,18 +1768,18 @@ END SUBROUTINE
      ENDDO
      IF (itout.EQ.0.AND.FORCE.GT.0) THEN
        ITRI=ITRIS
-       I1=GRIDS(IMOD)%TRIGP(ITRI,1)
-       I2=GRIDS(IMOD)%TRIGP(ITRI,2)
-       I3=GRIDS(IMOD)%TRIGP(ITRI,3)
+       I1=GRIDS(IMOD)%TRIGP(1,ITRI)
+       I2=GRIDS(IMOD)%TRIGP(2,ITRI)
+       I3=GRIDS(IMOD)%TRIGP(3,ITRI)
 ! coordinates of the first vertex A
-       x1=GRIDS(IMOD)%XYB(I1,1)
-       y1=GRIDS(IMOD)%XYB(I1,2)
+       x1=GRIDS(IMOD)%XYB(1,I1)
+       y1=GRIDS(IMOD)%XYB(2,I1)
 ! coordinates of the 2nd vertex B
-       x2=GRIDS(IMOD)%XYB(I2,1)
-       y2=GRIDS(IMOD)%XYB(I2,2)
+       x2=GRIDS(IMOD)%XYB(1,I2)
+       y2=GRIDS(IMOD)%XYB(2,I2)
 !coordinates of the 3rd vertex C
-       x3=GRIDS(IMOD)%XYB(I3,1)
-       y3=GRIDS(IMOD)%XYB(I3,2)
+       x3=GRIDS(IMOD)%XYB(1,I3)
+       y3=GRIDS(IMOD)%XYB(2,I3)
        D1=(XTIN-X1)**2+(YTIN-Y1)**2
        D2=(XTIN-X2)**2+(YTIN-Y2)**2
        D3=(XTIN-X3)**2+(YTIN-Y3)**2
@@ -1851,7 +1852,7 @@ END SUBROUTINE
       
       
       REAL, INTENT(IN)     :: PARAM(0:NSEA)
-      REAL, INTENT(OUT)    :: DIFFX(:,:), DIFFY(:,:)
+      REAL, INTENT(OUT)  :: DIFFX(:,:), DIFFY(:,:)
  
 ! local parameters      
       
@@ -1863,6 +1864,7 @@ END SUBROUTINE
       REAL                 :: DEDX(3), DEDY(3)
       REAL                 :: DVDXIE, DVDYIE
       REAL                 :: WEI(NX), WEI_LOCAL(NSEAL)
+      REAL*8               :: RTMP(NSEAL) 
        
      DIFFX = 0.              
      DIFFY = 0. 
@@ -1876,7 +1878,7 @@ END SUBROUTINE
 !/PDLIB     IF (.NOT. LPDLIB) THEN
        WEI = 0.
        DO IE = 1, NTRI
-         NI = TRIGP(IE,:)
+         NI = TRIGP(:,IE)
          LATMEAN = 1./3. * SUM(CLATIS(MAPFS(1,NI)))
          WEI(NI) = WEI(NI) + 2.*TRIA(IE)
          DEDX(1)     = IEN(IE,1)
@@ -1916,9 +1918,8 @@ END SUBROUTINE
 !/PDLIB       DIFFX(1,:) = DIFFX(1,:)/WEI_LOCAL
 !/PDLIB       DIFFY(1,:) = DIFFY(1,:)/WEI_LOCAL
 !/PDLIB     ENDIF
-!/PDLIB  CALL PDLIB_exchange1Dreal(DIFFX(1,1:NPA))
-!/PDLIB  CALL PDLIB_exchange1Dreal(DIFFY(1,1:NPA))
-     
+!/PDLIB  CALL PDLIB_exchange1Dreal(DIFFX(1,:))
+!/PDLIB  CALL PDLIB_exchange1Dreal(DIFFY(1,:))
 !
     END SUBROUTINE UG_GRADIENTS
 !/ ------------------------------------------------------------------- /    
@@ -2007,7 +2008,7 @@ END SUBROUTINE
       DIST0 = 360**2
       IS=1
       DO J = 1, N
-        DIST=(XBPI(I)-XYB(IX1(J),1))**2+(YBPI(I)-XYB(IX1(J),2))**2
+        DIST = (XBPI(I) - XYB(1,IX1(J)))**2 + (YBPI(I) - XYB(2,IX1(J)))**2
         IF (DIST.LT.DIST0) THEN 
           IS = MAPFS(1,IX1(J))
           DIST0=DIST
@@ -2117,12 +2118,12 @@ END SUBROUTINE
 !/DEBUGSETIOBP      FLUSH(740+IAPROC)
       DO IE=1,NTRI 
 ! If one of the points of the triangle is masked out (land) then do as if triangle does not exist... 
-!        IF ((MASK(TRIGP(IE,1)).GT.0).AND.(MASK(TRIGP(IE,2)).GT.0).AND.(MASK(TRIGP(IE,3)).GT.0)) THEN 
+!        IF ((MASK(TRIGP(1,IE)).GT.0).AND.(MASK(TRIGP(2,IE)).GT.0).AND.(MASK(TRIGP(3,IE)).GT.0)) THEN 
         DO I=1,3
-          IP=TRIGP(IE,I)
+          IP=TRIGP(I,IE)
           CALL TRIANG_INDEXES(I, IPNEXT, IPPREV)
-          !IPNEXT=TRIGP(IE,INEXT(I))
-          !IPPREV=TRIGP(IE,IPREV(I))
+          !IPNEXT=TRIGP(INEXT(I),IE)
+          !IPPREV=TRIGP(IPREV(I),IE)
           IF (STATUS(IP).EQ.-1) THEN
             STATUS(IP)=1
             PREVVERT(IP)=IPPREV
@@ -2138,12 +2139,12 @@ END SUBROUTINE
         COUNT = COUNT + 1
         COLLECTED(:)=0
         DO IE=1,NTRI
-!        IF ((MASK(TRIGP(IE,1)).GT.0).AND.(MASK(TRIGP(IE,2)).GT.0).AND.(MASK(TRIGP(IE,3)).GT.0)) THEN 
+!        IF ((MASK(TRIGP(1,IE)).GT.0).AND.(MASK(TRIGP(2,IE)).GT.0).AND.(MASK(TRIGP(3,IE)).GT.0)) THEN 
           DO I=1,3
-            IP=TRIGP(IE,I)
+            IP=TRIGP(I,IE)
             CALL TRIANG_INDEXES(I, IPNEXT, IPPREV)
-            !IPNEXT=TRIGP(IE,INEXT(I))
-            !IPPREV=TRIGP(IE,IPREV(I))
+            !IPNEXT=TRIGP(INEXT(I),IE)
+            !IPPREV=TRIGP(IPREV(I),IE)
             IF (STATUS(IP).EQ.-1) THEN
               ZNEXT=NEXTVERT(IP)
               IF (ZNEXT.EQ.IPPREV) THEN
@@ -2257,7 +2258,7 @@ END SUBROUTINE
 !/
 !/S      INTEGER, SAVE           :: IENT = 0
 
-        INTEGER, INTENT(IN)             :: MNP, MNE, TRIGP(MNE,3)
+        INTEGER, INTENT(IN)             :: MNP, MNE, TRIGP(3,MNE)
         INTEGER, INTENT(INOUT)          :: IOBP(MNP)
         INTEGER, INTENT(INOUT)          :: NEIGHBOR_PREV(MNP)
         INTEGER, INTENT(INOUT)          :: NEIGHBOR_NEXT(MNP)
@@ -2289,9 +2290,9 @@ END SUBROUTINE
         DO IE=1,MNE
           DO I=1,3
             CALL TRIANG_INDEXES(I, INEXT, IPREV)
-            IP=TRIGP(IE,I)
-            IPNEXT=TRIGP(IE,INEXT)
-            IPPREV=TRIGP(IE,IPREV)
+            IP=TRIGP(I,IE)
+            IPNEXT=TRIGP(INEXT,IE)
+            IPPREV=TRIGP(IPREV,IE)
             IF (STATUS(IP).EQ.0) THEN
               STATUS(IP)=1
               PREVVERT(IP)=IPPREV
@@ -2305,9 +2306,9 @@ END SUBROUTINE
           DO IE=1,MNE
             DO I=1,3
               CALL TRIANG_INDEXES(I, INEXT, IPREV)
-              IP=TRIGP(IE,I)
-              IPNEXT=TRIGP(IE,INEXT)
-              IPPREV=TRIGP(IE,IPREV)
+              IP=TRIGP(I,IE)
+              IPNEXT=TRIGP(INEXT,IE)
+              IPPREV=TRIGP(IPREV,IE)
               IF (STATUS(IP).EQ.0) THEN
                 ZNEXT=NEXTVERT(IP)
                 IF (ZNEXT.EQ.IPPREV) THEN
@@ -2343,9 +2344,9 @@ END SUBROUTINE
         DO IE=1,MNE
           DO I=1,3
             CALL TRIANG_INDEXES(I, INEXT, IPREV)
-            IP=TRIGP(IE,I)
-            IPNEXT=TRIGP(IE,INEXT)
-            IPPREV=TRIGP(IE,IPREV)
+            IP=TRIGP(I,IE)
+            IPNEXT=TRIGP(INEXT,IE)
+            IPPREV=TRIGP(IPREV,IE)
             IF (STATUS(IP).EQ.0) THEN
               STATUS(IP)=1
               PREVVERT(IP)=IPPREV
@@ -2359,9 +2360,9 @@ END SUBROUTINE
           DO IE=1,MNE
             DO I=1,3
               CALL TRIANG_INDEXES(I, INEXT, IPREV)
-              IP=TRIGP(IE,I)
-              IPNEXT=TRIGP(IE,INEXT)
-              IPPREV=TRIGP(IE,IPREV)
+              IP=TRIGP(I,IE)
+              IPNEXT=TRIGP(INEXT,IE)
+              IPPREV=TRIGP(IPREV,IE)
               IF (STATUS(IP).EQ.0) THEN
                 ZPREV=PREVVERT(IP)
                 IF (ZPREV.EQ.IPNEXT) THEN
@@ -2566,7 +2567,7 @@ END SUBROUTINE
 !/PDLIB        IF (IOBP(IP) .NE. 0 .OR. IOBDP(IP) .EQ. 0) CYCLE
 !/PDLIB        DO I = 1, PDLIB_CCON(IP)
 !/PDLIB          IE = PDLIB_IE_CELL2(I,IP)
-!/PDLIB          IF (ANY(IOBDP(TRIGP(IE,:)) .EQ. 0)) THEN
+!/PDLIB          IF (ANY(IOBDP(TRIGP(:,IE)) .EQ. 0)) THEN
 !/PDLIB             IOBDP(IP) = -1
 !/PDLIB            CYCLE
 !/PDLIB          ENDIF
@@ -2579,7 +2580,7 @@ END SUBROUTINE
         DO I = 1, CCON(IP)
           J = J + 1 
           IE = IE_CELL(J)
-          IF (ANY(IOBDP(TRIGP(IE,:)) .EQ. 0)) THEN
+          IF (ANY(IOBDP(TRIGP(:,IE)) .EQ. 0)) THEN
             IOBDP(IP) = -1 ! Set this node as a wet node adjacent to a dry one ... now what's next? Here on this points we want to compute the reflection source term, yes?  
             EXIT 
           ENDIF
@@ -2723,9 +2724,9 @@ END SUBROUTINE
 !/DEBUGSETUGIOBP      FLUSH(740+IAPROC)
 
       DO IE=1,NTRI
-        I1   =   TRIGP(IE,1)
-        I2   =   TRIGP(IE,2)
-        I3   =   TRIGP(IE,3)
+        I1   =   TRIGP(1,IE)
+        I2   =   TRIGP(2,IE)
+        I3   =   TRIGP(3,IE)
         DXP1 =   IEN(IE,6)
         DYP1 = - IEN(IE,5)
         DXP2 =   IEN(IE,2)

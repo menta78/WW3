@@ -749,8 +749,8 @@ sfsdfsd
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
 
-                XGRD(1,:)=XYB(:,1)
-                YGRD(1,:)=XYB(:,2)
+                XGRD(1,:)=XYB(1,:)
+                YGRD(1,:)=XYB(2,:)
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.7'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
             END SELECT !GTYPE

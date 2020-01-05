@@ -303,8 +303,8 @@
               XBPO(IBO)= XGRD(IY,IX)
               YBPO(IBO)= YGRD(IY,IX)
             CASE (UNGTYPE) 
-              XBPO(IBO)= XYB(IX,1)
-              YBPO(IBO)= XYB(IX,2)
+              XBPO(IBO)= XYB(1,IX)
+              YBPO(IBO)= XYB(2,IX)
               END SELECT !GTYPE
             END IF
           END DO

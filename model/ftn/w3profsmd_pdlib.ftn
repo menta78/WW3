@@ -201,7 +201,6 @@
 !/ ------------------------------------------------------------------- /
 !/
 !!      INCLUDE "mpif.h"
-      REAL, ALLOCATABLE   :: XP_IN(:), YP_IN(:), DEP_IN(:)
       INTEGER, ALLOCATABLE   :: INE_IN(:,:)
       INTEGER :: istat
       INTEGER :: I, J, IBND_MAP, ISEA, IP, IX, JSEA, nb
@@ -224,22 +223,8 @@
 !/MEMCHECK       WRITE(740+IAPROC,*) 'memcheck_____:', 'WW3_PDLIB_INIT SECTION 1'
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
-      PDLIB_NSEAL=0
+      PDLIB_NSEAL = 0
       IF (IAPROC .le. NAPROC) THEN
-        ALLOCATE(XP_IN(NX), YP_IN(NX), DEP_IN(NX), stat=istat)
-        if(istat /= 0) CALL PDLIB_ABORT(1)
-        DO I=1,NX
-          XP_IN(I)=XYB(I,1)
-          YP_IN(I)=XYB(I,2)
-          DEP_IN(I)=XYB(I,3)
-        END DO
-        ALLOCATE(INE_IN(3,NTRI), stat=istat)
-        if(istat /= 0) CALL PDLIB_ABORT(2)
-        DO I=1,NTRI
-          DO J=1,3
-            INE_IN(J,I)=TRIGP(I,J)
-          END DO
-        END DO
         CALL MPI_COMM_RANK(MPI_COMM_WCMP, myrank, ierr)
 !/DEBUGSOLVER     WRITE(740+IAPROC,*) 'PDLIB_INIT, IAPROC=', IAPROC
 !/DEBUGSOLVER     WRITE(740+IAPROC,*) 'PDLIB_INIT, NAPROC=', NAPROC
@@ -250,7 +235,7 @@
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
 !
-        CALL initFromGridDim(NX,XP_IN,YP_IN,DEP_IN,NTRI,INE_IN,NSPEC,MPI_COMM_WCMP)
+        CALL initFromGridDim(NX,XYB,NTRI,TRIGP,NSPEC,MPI_COMM_WCMP)
 !
 !/MEMCHECK       WRITE(740+IAPROC,*) 'memcheck_____:', 'WW3_PDLIB_INIT SECTION 3'
 !/MEMCHECK       call getMallocInfo(mallinfos)
@@ -259,7 +244,6 @@
 !
 !/DEBUGSOLVER     WRITE(740+IAPROC,*) 'After initFromGridDim'
 !/DEBUGSOLVER     FLUSH(740+IAPROC)
-        DEALLOCATE(XP_IN, YP_IN, DEP_IN, INE_IN)
         !
         ! Now the computation of NSEAL
         !
@@ -359,7 +343,7 @@
       ALLOCATE(IS0_pdlib(NSPEC))
       DO ISP=1, NSPEC
         IS0_pdlib(ISP) = ISP - 1
-      END DO
+1      END DO
       DO ISP=1, NSPEC, NTH
         IS0_pdlib(ISP) = IS0_pdlib(ISP) + NTH
       END DO
