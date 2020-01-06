@@ -357,6 +357,8 @@
       !    CALL PDLIB_ABORT(20)
       !  ENDIF
       !ENDDO
+
+       CALL PDLIB_ABORT(20)
 !
 !
 !/
