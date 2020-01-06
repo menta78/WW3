@@ -6530,10 +6530,11 @@
         endif
       endif
 #endif
-
+!
 !/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION 7'
 !/MEMCHECK      call getMallocInfo(mallinfos)
 !/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
+!
 !/DEBUGSRC      DO JSEA=1,NSEAL
 !/DEBUGSRC        WRITE(740+IAPROC,*) 'JSEA=', JSEA
 !/DEBUGSRC        WRITE(740+IAPROC,*) 'min/max/sum(VA)=', minval(VA(:,JSEA)), maxval(VA(:,JSEA)), sum(VA(:,JSEA))
