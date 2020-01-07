@@ -1165,7 +1165,6 @@ module yowpdlibMain
       z(np+i) = XYB(3,IP_glob)
     end do
     
-    deallocate(xyb)
   end subroutine
 !**********************************************************************
 !*                                                                    *
