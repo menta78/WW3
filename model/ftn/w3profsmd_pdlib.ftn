@@ -7220,7 +7220,7 @@
       END DO
 !/DEBUGSETUGIOBP      WRITE(740+IAPROC,*) 'Calling SETUGIOBP, step 5'
 !/DEBUGSETUGIOBP      FLUSH(740+IAPROC)
-      DO IP = 1, NX 
+      DO IP = 1, NPA
         IF ( IOBPA_LOC(IP) .eq. 1 .OR. IOBP_LOC(IP) .eq. 3 .OR. IOBP_LOC(IP) .eq. 4) IOBPD_LOC(:,IP) = 1
       END DO
 !2do: recode for mpi 
