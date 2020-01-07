@@ -58,20 +58,20 @@ module yowpdlibMain
   !> @param[in] thirdDim size of the third dimensions to exchange
   !> @param[in] MPIComm MPI communicator to use with pdlib
   !> @overload initPD1
-  subroutine initFromGridDim(MNP, XYB, MNE, INE, secDim, MPIcomm)
+  subroutine initFromGridDim(MNP, MNE, INE, secDim, MPIcomm)
     use yowDatapool,       only: myrank, debugPrePartition, debugPostPartition
     use yowNodepool,       only: np_global, np, np_perProcSum, ng, ipgl, iplg, npa
     use yowElementpool,    only: ne_global,ne
     use yowSidepool,       only: ns, ns_global
     use yowExchangeModule, only: nConnDomains, setDimSize
     use yowRankModule,     only: initRankModule, ipgl_npa
+    use w3gdatmd,          only: XYB
 !/MEMCHECK      USE MallocInfo_m
 !/MEMCHECK USE W3ADATMD, ONLY: MALLINFOS
 
     implicit none
     integer, intent(in) :: MNP, MNE
     integer, intent(in) :: INE(3,MNE)
-    real(kind=8), intent(in) :: XYB(3,MNP)
     integer, intent(in) :: secDim
     integer, intent(in) :: MPIcomm
     integer istat
@@ -80,7 +80,7 @@ module yowpdlibMain
 !/DEBUGINIT    Print *, '1: MPIcomm=', MPIcomm
     call initMPI(MPIcomm)
 !/DEBUGINIT    Print *, '2: After initMPI'
-    call assignMesh(MNP, XYB, MNE, INE)
+    call assignMesh(MNP, MNE, INE)
 !/DEBUGINIT    Print *, '3: After assignMesh'
     call prePartition()
 !/DEBUGINIT    Print *, '3: After prePartition'
@@ -101,7 +101,7 @@ module yowpdlibMain
  !   call writeMesh()
 !/DEBUGINIT    Print *, '4.1: After findConnNodes'
 !    CALL REAL_MPI_BARRIER_PDLIB(MPIcomm, "Before call to runParmetis")
-    call runParmetis(MNP, XYB)
+    call runParmetis(MNP)
 !    CALL REAL_MPI_BARRIER_PDLIB(MPIcomm, "After call to runParmetis")
 !/DEBUGINIT    Print *, '5: After runParmetis'
     call postPartition
@@ -109,7 +109,7 @@ module yowpdlibMain
     call findGhostNodes
     call findConnDomains
     call exchangeGhostIds
-    call postPartition2(MNP, XYB)
+    call postPartition2(MNP)
     call initRankModule
     call ComputeTRIA_IEN_SI_CCON
     call ComputeIA_JA_POSI_NNZ
@@ -208,14 +208,13 @@ module yowpdlibMain
   !> @param[in] MNE number of element global
   !> @param[in] INE element array
   !> alter: np_global, nodes_global(), ne_global, elements(), INE_global
-  subroutine assignMesh(MNP, XYB, MNE, INE)
+  subroutine assignMesh(MNP, MNE, INE)
     use yowNodepool,    only: nodes_global, np_global
     use yowElementpool, only: ne_global, INE_global
     use yowerr,       only: parallel_abort
     implicit none
     integer, intent(in) :: MNP, MNE
     integer, intent(in) :: INE(3,MNE)
-    real(kind=8), intent(in) :: XYB(3,MNP) 
     integer :: stat, i
 
     np_global=MNP
@@ -374,16 +373,16 @@ module yowpdlibMain
   !> Collect all data for parmetis und partition the mesh
   !> after that, we know for every node the domain ID
   !> alter: t_Node::domainID
-  subroutine runParmetis(MNP, XYB)
+  subroutine runParmetis(MNP)
     use yowerr,    only: parallel_abort
     use yowDatapool, only: debugParmetis,debugPartition, nTasks, myrank, itype, comm
     use yowNodepool, only: np, npa, np_global, nodes, nodes_global, t_Node, iplg, np_perProcSum, np_perProc
     use yowSidepool, only: ns
     use yowElementpool, only: ne, ne_global
+    use w3gdatmd, only: xyb
     use MPI
     implicit none
     integer, intent(in) :: MNP
-    real(kind=8), intent(in) :: XYB(3,MNP)
 
     ! Parmetis
     ! Node neighbor information
@@ -1047,15 +1046,15 @@ module yowpdlibMain
 
   !> this collects all data which depends on ghost information
   !> alter: ne, INE, x, y, z, ielg
-  subroutine postPartition2(MNP, XYB)
+  subroutine postPartition2(MNP)
     use yowElementpool, only: ne, ne_global, INE, INE_global, belongto, ielg
     use yowerr,       only: parallel_abort
     use yowDatapool,    only: myrank
     use yowNodepool,    only: np_global, np, nodes_global, iplg, t_Node, ghostlg, ng, npa
     use yowNodepool,    only: x, y, z
+    use w3gdatmd,       only: XYB
     implicit none
     integer, intent(in) :: MNP
-    REAL(kind=8), intent(in) :: XYB(3,MNP)
 
     integer :: i, j, k, stat, IP_glob
     type(t_Node), pointer :: node
@@ -1165,6 +1164,8 @@ module yowpdlibMain
       y(np+i) = XYB(2,IP_glob)
       z(np+i) = XYB(3,IP_glob)
     end do
+    
+    deallocate(xyb)
   end subroutine
 !**********************************************************************
 !*                                                                    *
