@@ -624,7 +624,7 @@ sfsdfsd
                 X0, Y0, SX, SY, DXYMAX, XYB, TRIGP, TRIA,             &
                 MAXX, MAXY, &
                 DXYMAX, &
-                IOBP, IOBPA, IOBPD
+                IOBP
 #endif
             END SELECT !GTYPE
 !
@@ -739,7 +739,7 @@ sfsdfsd
                 X0, Y0, SX, SY, DXYMAX, XYB, TRIGP, TRIA,             &
                 MAXX, MAXY,   &
                 DXYMAX, &
-                IOBP, IOBPA, IOBPD
+                IOBP
 #endif
 
 

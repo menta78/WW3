@@ -454,10 +454,10 @@
       DO IP = 1, npa
         IP_glob = iplg(IP)
         IOBP_loc(IP)    = IOBP(IP_glob)
-        IOBPD_loc(:,IP) = IOBPD(:,IP_glob)
-        IOBPA_loc(IP)   = IOBPA(IP_glob)
       END DO
-      DEALLOCATE(IOBP,IOBPD,IOBPA)
+      DEALLOCATE(IOBP)
+
+      CALL SET_UG_IOBP_PDLIB_INIT
 
 !/
 !/ End of W3SPR4 ----------------------------------------------------- /
@@ -7068,6 +7068,222 @@
 !/ End of SETDEPTH_PDLIB --------------------------------------------- /
 !/
       END SUBROUTINE SETDEPTH_PDLIB
+      
+      SUBROUTINE SET_UG_IOBP_PDLIB_INIT()
+!/
+!/                  +-----------------------------------+
+!/                  | WAVEWATCH III           NOAA/NCEP |
+!/                  |        Fabrice Ardhuin            |
+!/                  |        Aron Roland                |
+!/                  |                        FORTRAN 90 |
+!/                  | Last update :         17-Apr-2016 |
+!/                  +-----------------------------------+
+!/
+!/    23-Aug-2011 : Origination.                        ( version 4.04 )
+!/    17-Apr-2016 : Uses optimized boundary detection   ( version 5.10 )
+!/
+!  1. Purpose :
+!
+!     Redefines the values of the boundary points and angle pointers
+!     based on the MAPSTA array
+!
+!  2. Method :
+!
+!     Adapted boundary detection from A. Roland and M. Dutour (WWM code)
+!
+!  3. Parameters :
+!
+!     Parameter list
+!     ----------------------------------------------------------------
+!     ----------------------------------------------------------------
+!
+!     Local variables.
+!     ----------------------------------------------------------------
+!     ----------------------------------------------------------------
+!
+!  4. Subroutines used :
+!
+
+!  5. Called by :
+!
+!      Name      Type  Module   Description
+!     ----------------------------------------------------------------
+!      WW3_GRID  Prog. WW3_GRID Grid preprocessor
+!      W3ULEV    Subr. W3UPDTMD Water level update
+!     ----------------------------------------------------------------
+!
+!  6. Error messages :
+!
+!       None.
+!
+!  7. Remarks :
+!
+!  8. Structure :
+!
+!
+!  9. Switches :
+!
+!       !/S     Enable subroutine tracing.
+!
+!
+! 10. Source code :     
+!/ ------------------------------------------------------------------- /
+!/
+!
+      USE CONSTANTS
+!
+!
+      USE W3GDATMD, ONLY: NX, NY, NSEA, MAPFS,                        &
+                          NK, NTH, DTH, XFR, MAPSTA, COUNTRI,         &
+                          ECOS, ESIN, IEN, NTRI, TRIGP,               &
+                          IOBP,IOBPD, IOBPA,                          &
+!/REF1                    REFPARS, REFLC, REFLD,                      &
+                          ANGLE0, ANGLE
+
+      USE W3ODATMD, ONLY: TBPI0, TBPIN, FLBPI
+      USE W3ADATMD, ONLY: CG, CX, CY, ATRNX, ATRNY, ITIME, CFLXYMAX
+      USE W3ADATMD, ONLY: IOBP_LOC, IOBPD_LOC, IOBPA_LOC, IOBDP_LOC
+      USE W3IDATMD, ONLY: FLCUR
+      USE W3ODATMD, only : IAPROC
+      USE YOWNODEPOOL,    ONLY: PDLIB_SI, PDLIB_IEN, PDLIB_TRIA, ipgl, iplg, npa, np
+      use yowElementpool, ONLY: ne, INE
+!/S      USE W3SERVMD, ONLY: STRACE
+      
+      IMPLICIT NONE
+!/ ------------------------------------------------------------------- /
+!/ Parameter list
+!/
+!/
+!/ ------------------------------------------------------------------- /
+!/ Local parameters
+!/
+      INTEGER                 :: ITH, IX, I, J, IP, IE, NDIRSUM
+      REAL (KIND = 8)         :: COSSUM, SINSUM
+      REAL (KIND = 8)         :: DIRMIN, DIRMAX, SHIFT, TEMPO, DIRCOAST 
+      REAL (KIND = 8)         :: X1, X2, Y1, Y2, DXP1, DXP2, DXP3
+      REAL (KIND = 8)         :: DYP1, DYP2, DYP3, eDet1, eDet2, EVX, EVY
+      REAL(KIND=8), PARAMETER :: THR    = TINY(1.)
+      INTEGER                 :: I1, I2, I3
+      INTEGER                 :: ITMP(NX), NEXTVERT(NX), PREVVERT(NX)
+      CHARACTER(60) :: FNAME
+!/S      INTEGER, SAVE           :: IENT = 0
+!/ ------------------------------------------------------------------- /                                     
+!
+!
+      DO IE = 1, NE
+        I1   =   INE(1,IE)
+        I2   =   INE(2,IE)
+        I3   =   INE(3,IE)
+        DXP1 =   PDLIB_IEN(6,IE)
+        DYP1 = - PDLIB_IEN(5,IE)
+        DXP2 =   PDLIB_IEN(2,IE)
+        DYP2 = - PDLIB_IEN(1,IE)
+        DXP3 =   PDLIB_IEN(4,IE)
+        DYP3 = - PDLIB_IEN(3,IE)
+        DO ITH=1,NTH
+          EVX=ECOS(ITH)
+          EVY=ESIN(ITH)
+          DO I=1,3
+            IF (I.eq.1) THEN
+              x1=   DXP1
+              y1=   DYP1
+              x2= - DXP3
+              y2= - DYP3
+              IP=   I1
+            END IF
+            IF (I.eq.2) THEN
+              x1 =   DXP2
+              y1 =   DYP2
+              x2 = - DXP1
+              y2 = - DYP1
+              IP =   I2
+            END IF
+            IF (I.eq.3) THEN
+              x1 =   DXP3
+              y1 =   DYP3
+              x2 = - DXP2
+              y2 = - DYP2
+              IP =   I3
+            END IF
+            IF (IOBP_LOC(IP) .eq. 0) THEN ! physical boundary 
+              eDet1 = THR-x1*EVY+y1*EVX
+              eDet2 = THR+x2*EVY-y2*EVX
+              IF ((eDet1.gt.0.).and.(eDet2.gt.0.)) THEN
+! this is the case of waves going towards the boundary ...
+                IOBPD_LOC(ITH,IP) = 1
+              ENDIF 
+            ELSE ! water ...
+              IOBPD_LOC(ITH,IP) = 1
+            END IF
+          END DO
+        END DO
+      END DO
+!/DEBUGSETUGIOBP      WRITE(740+IAPROC,*) 'Calling SETUGIOBP, step 5'
+!/DEBUGSETUGIOBP      FLUSH(740+IAPROC)
+      DO IP = 1, NX 
+        IF ( IOBPA_LOC(IP) .eq. 1 .OR. IOBP_LOC(IP) .eq. 3 .OR. IOBP_LOC(IP) .eq. 4) IOBPD_LOC(:,IP) = 1
+      END DO
+!2do: recode for mpi 
+!        IF (LBCWA .OR. LBCSP) THEN
+!          IF (.NOT. ANY(IOBP .EQ. 2)) THEN
+!            CALL WWM_ABORT('YOU IMPOSED BOUNDARY CONDITIONS BUT IN THE BOUNDARY FILE ARE NO NODES WITH FLAG = 2')
+!          ENDIF
+!        ENDIF
+!#ifdef MPI_PARALL_GRID
+!      CALL exchange_p2di(IOBWB)
+!      DO ID = 1, MDC
+!        iwild = IOBPD(ID,:)
+!        CALL exchange_p2di(iwild)
+!        IOBPD(ID,:) = iwild
+!      ENDDO
+!#endif
+!/DEBUGSETUGIOBP      WRITE(740+IAPROC,*) 'Calling SETUGIOBP, step 7'
+!/DEBUGSETUGIOBP      FLUSH(740+IAPROC)
+!--- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+! 3. Updates the reflection direction and sharp / flat shoreline angle
+
+!/REF1 ! 
+!/REF1 ! Finds the shoreline direction from IOBPD
+!/REF1 !
+!/REF1          REFLC(1,:)= 0.
+!/REF1          REFLD(:,:)= 1
+!/REF1          DO IP=1,NX
+!/REF1            IF (IOBP(IP).EQ.0.AND.MAPSTA(1,IP).EQ.1) THEN 
+!/REF1              COSSUM=0.
+!/REF1              SINSUM=0.
+!/REF1              NDIRSUM=0.
+!/REF1              DO ITH=1,NTH
+!/REF1                COSSUM=COSSUM+IOBPD(ITH,IP)*ECOS(ITH)
+!/REF1                SINSUM=SINSUM+IOBPD(ITH,IP)*ESIN(ITH)
+!/REF1                NDIRSUM=NDIRSUM+IOBPD(ITH,IP)
+!/REF1                END DO
+!/REF1              DIRCOAST=ATAN2(SINSUM, COSSUM)
+!/REF1              REFLD(1,MAPFS(1,IP)) = 1+MOD(NTH+NINT(DIRCOAST/DTH),NTH)
+!/REF1              REFLD(2,MAPFS(1,IP)) = 4-MAX(2,NINT(4.*REAL(NDIRSUM)/REAL(NTH)))
+!/REF1              REFLC(1,MAPFS(1,IP))= REFPARS(1)
+!/REF1              END IF
+!/REF1            END DO
+!/DEBUGSETUGIOBP      WRITE(740+IAPROC,*) 'Calling SETUGIOBP, step 8'
+!/DEBUGSETUGIOBP      FLUSH(740+IAPROC)
+          
+
+!DO IX=1,NX
+!DO ITH=1,NTH
+!  WRITE(500+IAPROC,*) IX,ITH,IOBP(IX),IOBPA(IX),IOBPD(ITH,IX) !,REFLD(1:2,MAPFS(1,IX))
+!ENDDO 
+!ENDDO
+
+!/DEBUGSETUGIOBP      WRITE(740+IAPROC,*) 'Calling SETUGIOBP, step 9'
+!/DEBUGSETUGIOBP      FLUSH(740+IAPROC)
+!
+! Recomputes the angles used in the gradients estimation 
+! 
+!/DEBUGSETUGIOBP      WRITE(740+IAPROC,*) 'Calling SETUGIOBP, step 10'
+!/DEBUGSETUGIOBP      FLUSH(740+IAPROC)
+!
+      RETURN    
+      END SUBROUTINE SET_UG_IOBP_PDLIB_INIT
+!/ ------------------------------------------------------------------- /      
 !/ ------------------------------------------------------------------- /
       SUBROUTINE BLOCK_SOLVER_FINALIZE
 !/
@@ -7324,7 +7540,5 @@
 !/ End of JACOBI_FINALIZE -------------------------------------------- /
 !/
       END SUBROUTINE JACOBI_FINALIZE
-!/
-!/ End of Module PDLIB_W3PROFSMD ------------------------------------- /
-!/
+!/ ------------------------------------------------------------------- /
 END MODULE PDLIB_W3PROFSMD
