@@ -76,33 +76,15 @@ module yowpdlibMain
     integer, intent(in) :: MPIcomm
     integer istat
 
-!/MEMCHECK       WRITE(740+myrank,*) 'memcheck_____:', 'WW3_PDLIB_MAIN SECTION 1'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(myrank,mallInfos)
     call setDimSize(secDim)
-!/MEMCHECK       WRITE(740+myrank,*) 'memcheck_____:', 'WW3_PDLIB_MAIN SECTION 2'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(myrank,mallInfos)
 !/DEBUGINIT    Print *, '1: MPIcomm=', MPIcomm
     call initMPI(MPIcomm)
-!/MEMCHECK       WRITE(740+myrank,*) 'memcheck_____:', 'WW3_PDLIB_MAIN SECTION 3'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(myrank,mallInfos)
 !/DEBUGINIT    Print *, '2: After initMPI'
     call assignMesh(MNP, XYB, MNE, INE)
-!/MEMCHECK       WRITE(740+myrank,*) 'memcheck_____:', 'WW3_PDLIB_MAIN SECTION 4'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(myrank,mallInfos)
 !/DEBUGINIT    Print *, '3: After assignMesh'
     call prePartition()
-!/MEMCHECK       WRITE(740+myrank,*) 'memcheck_____:', 'WW3_PDLIB_MAIN SECTION 5'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(myrank,mallInfos)
 !/DEBUGINIT    Print *, '3: After prePartition'
     call findConnNodes()
-!/MEMCHECK       WRITE(740+myrank,*) 'memcheck_____:', 'WW3_PDLIB_MAIN SECTION 6'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(myrank,mallInfos)
 !/DEBUGINIT    Print *, '4: After findConnNodes'
     if(debugPrePartition) then
       if(myrank == 0) then
@@ -120,44 +102,17 @@ module yowpdlibMain
 !/DEBUGINIT    Print *, '4.1: After findConnNodes'
 !    CALL REAL_MPI_BARRIER_PDLIB(MPIcomm, "Before call to runParmetis")
     call runParmetis(MNP, XYB)
-!/MEMCHECK       WRITE(740+myrank,*) 'memcheck_____:', 'WW3_PDLIB_MAIN SECTION 6'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(myrank,mallInfos)
 !    CALL REAL_MPI_BARRIER_PDLIB(MPIcomm, "After call to runParmetis")
 !/DEBUGINIT    Print *, '5: After runParmetis'
     call postPartition
-!/MEMCHECK       WRITE(740+myrank,*) 'memcheck_____:', 'WW3_PDLIB_MAIN SECTION 7'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(myrank,mallInfos)
 !/DEBUGINIT    Print *, 'Before findGhostNodes'
     call findGhostNodes
-!/MEMCHECK       WRITE(740+myrank,*) 'memcheck_____:', 'WW3_PDLIB_MAIN SECTION 8'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(myrank,mallInfos)
     call findConnDomains
-!/MEMCHECK       WRITE(740+myrank,*) 'memcheck_____:', 'WW3_PDLIB_MAIN SECTION 9'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(myrank,mallInfos)
     call exchangeGhostIds
-!/MEMCHECK       WRITE(740+myrank,*) 'memcheck_____:', 'WW3_PDLIB_MAIN SECTION 10'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(myrank,mallInfos)
     call postPartition2(MNP, XYB)
-!/MEMCHECK       WRITE(740+myrank,*) 'memcheck_____:', 'WW3_PDLIB_MAIN SECTION 11' 
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(myrank,mallInfos)
     call initRankModule
-!/MEMCHECK       WRITE(740+myrank,*) 'memcheck_____:', 'WW3_PDLIB_MAIN SECTION 12'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(myrank,mallInfos)
     call ComputeTRIA_IEN_SI_CCON
-!/MEMCHECK       WRITE(740+myrank,*) 'memcheck_____:', 'WW3_PDLIB_MAIN SECTION 13'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(myrank,mallInfos)
     call ComputeIA_JA_POSI_NNZ
-!/MEMCHECK       WRITE(740+myrank,*) 'memcheck_____:', 'WW3_PDLIB_MAIN SECTION 14'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(myrank,mallInfos)
     if(debugPostPartition) then
       if(myrank == 0) then
         write(*,*) "New data after partition"

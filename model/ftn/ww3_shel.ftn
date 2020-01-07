@@ -411,9 +411,6 @@
 ! 1.  IO set-up
 ! 1.a For shell
 !
-!/MEMCHECK       WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 1'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
 !/DEBUGINIT      WRITE(740+IAPROC,*) 'ww3_shel, step 1'
 !/DEBUGINIT      FLUSH(740+IAPROC)
       NDSI   = 10
@@ -478,11 +475,6 @@
       ELSE
         NDSEN  = -1
       END IF
-!
-!/MEMCHECK       WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 1'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
-
 !
 ! 1.b For WAVEWATCH III (See W3INIT)
 !
@@ -552,10 +544,6 @@
 !
 !--- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ! 2.  Define input fields
-!
-!/MEMCHECK       WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 1'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
 !
 ! process ww3_prnc namelist
 !
@@ -709,12 +697,6 @@
 
 !/T        WRITE (NDST,9020) FLFLG, INFLAGS1, FLHOM, FLH
 
-!/MEMCHECK       WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 1'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
-
-
-
 ! 2.2 Time setup
 
         READ(NML_DOMAIN%START,*) TIME0
@@ -757,10 +739,6 @@
         READ(NML_OUTPUT_DATE%COUPLING%START, *)   ODAT(31), ODAT(32)
         READ(NML_OUTPUT_DATE%COUPLING%STRIDE, *)  ODAT(33)
         READ(NML_OUTPUT_DATE%COUPLING%STOP, *)    ODAT(34), ODAT(35)
-
-!/MEMCHECK       WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 1'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
 
         ! set the time stride at 0 or more
         ODAT(3) = MAX ( 0 , ODAT(3) )
@@ -895,11 +873,6 @@
             END IF ! J
           END IF ! ODAT
         END DO ! J
-
-!/MEMCHECK       WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 1'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
-
 
         ! force minimal allocation to avoid memory seg fault
         IF ( .NOT.ALLOCATED(X) .AND. NPTS.EQ.0 ) ALLOCATE ( X(1), Y(1), PNAMES(1) )
@@ -1141,10 +1114,6 @@
 
 !/NETCDF_QAD      TIME0_NETCDF_QAD = TIME0
 
-!/MEMCHECK       WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 2c'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
-
         CALL NEXTLN ( COMSTR , NDSI , NDSEN )
 !/DEBUGINIT      write(740+IAPROC,*), 'Before read 2002, case 5'
         READ (NDSI,*) TIMEN
@@ -1153,10 +1122,6 @@
 
 !/DEBUGINIT      write(740+IAPROC,*), 'ww3_shel, step 6'
 !
-!/MEMCHECK       WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 2d'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
-
 ! 2.3 Domain setup
 
 !/DEBUGINIT      write(740+IAPROC,*), 'ww3_shel, step 7'
@@ -1397,11 +1362,6 @@
             END DO
           END DO
 
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 3'
-!/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
-!
-
 !/O7          DO J=JFIRST, 8
 !/O7            IF ( FLH(J) .AND. IAPROC.EQ.NAPOUT ) THEN
 !/O7              WRITE (NDSO,952) NH(J), IDFLDS(J)
@@ -1491,11 +1451,6 @@
         END DO
 !
       END IF ! FLFLG
-
-
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 4'
-!/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
 
 
 ! 2.2 Time setup
@@ -1603,9 +1558,6 @@
         END IF
       END DO
 
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 5'
-!/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
 !
 !--- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ! 5.  Initializations
@@ -1635,15 +1587,11 @@
 !      ENDIF
 
 
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 5'
-!/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
-!
 !/TIDE      IF (FLAGSTIDE(1)) CALL W3FLDTIDE2 ( 'READ',  NDSF(1), NDST, NDSEN, NX, NY, IDSTR(1), 1, IERR )
 !/TIDE      IF (FLAGSTIDE(2)) CALL W3FLDTIDE2 ( 'READ',  NDSF(2), NDST, NDSEN, NX, NY, IDSTR(2), 1, IERR )
 !/TIDE      ALLOCATE(V_ARG(170,1),F_ARG(170,1),U_ARG(170,1))  ! to be removed later ...
 !
-      ALLOCATE ( XXX(NX,NY) )
+!/XXX      ALLOCATE ( XXX(NX,NY) )
 !
 
 !
@@ -1680,10 +1628,6 @@
 !        CALL FLUSH(740+IAPROC)
 !        CALL EXTCDE(666)
 !      ENDIF
-
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 6'
-!/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
 
       IF ( .NOT. FLFLG ) THEN
 !
@@ -1750,17 +1694,9 @@
 !/T                        IDSTR(7), INFLAGS1(7), T2N,       &
 !/T                        IDSTR(8), INFLAGS1(8), TG0, TGN
 !
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 7'
-!/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
-
 
       DO J=JFIRST,8
 !
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL UPDATE', J
-!/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
-
         IF ( INFLAGS1(J) ) THEN
 !
 ! 7.a.2 Check if update is needed
@@ -2130,10 +2066,6 @@
 ! update the next assimilation data time
 !
 
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 8'
-!/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
-
       TDN = TTIME
       CALL TICK21 ( TDN, 1. )
       DO J=5, 7
@@ -2172,10 +2104,6 @@
 !/OASIS             ,.TRUE., .FALSE., MPI_COMM                        &
                   )
 
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 9'
-!/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
-!
       ! The following lines prevents us from trying to read past the end 
       ! of the files. This feature existed in v3.14.
       ! "1" is for water levels
@@ -2218,9 +2146,6 @@
 !
 ! 7.e Check times
 !
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 10'
-!/MEMCHECK      call getMallocInfo(mallinfos)
-
 
       DTTST  = DSEC21 ( TIME0 , TIMEN )
       IF ( DTTST .GT. 0. ) GOTO 700

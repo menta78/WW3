@@ -2590,7 +2590,7 @@ END SUBROUTINE
    
    END SUBROUTINE
 !/ ------------------------------------------------------------------- /
-   SUBROUTINE SET_UG_IOBP ( )
+   SUBROUTINE SET_UG_IOBP()
 !/
 !/                  +-----------------------------------+
 !/                  | WAVEWATCH III           NOAA/NCEP |
@@ -2723,7 +2723,7 @@ END SUBROUTINE
 !/DEBUGSETUGIOBP      WRITE(740+IAPROC,*) 'Calling SETUGIOBP, step 4'
 !/DEBUGSETUGIOBP      FLUSH(740+IAPROC)
 
-      DO IE=1,NTRI
+      DO IE = 1,NTRI
         I1   =   TRIGP(1,IE)
         I2   =   TRIGP(2,IE)
         I3   =   TRIGP(3,IE)

@@ -219,9 +219,6 @@
 !/DEBUGSOLVER     WRITE(740+IAPROC,*) 'NTPROC=', NTPROC
 !/DEBUGSOLVER     FLUSH(740+IAPROC)
 
-!/MEMCHECK       WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_PDLIB_INIT SECTION 1'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
       PDLIB_NSEAL = 0
       IF (IAPROC .le. NAPROC) THEN
         CALL MPI_COMM_RANK(MPI_COMM_WCMP, myrank, ierr)
@@ -230,16 +227,7 @@
 !/DEBUGSOLVER     WRITE(740+IAPROC,*) 'PDLIB_INIT, myrank=', myrank
 !/DEBUGSOLVER     FLUSH(740+IAPROC)
 
-!/MEMCHECK       WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_PDLIB_INIT SECTION 2'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
-!
         CALL initFromGridDim(NX,XYB,NTRI,TRIGP,NSPEC,MPI_COMM_WCMP)
-!
-!/MEMCHECK       WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_PDLIB_INIT SECTION 3'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
-
 !
 !/DEBUGSOLVER     WRITE(740+IAPROC,*) 'After initFromGridDim'
 !/DEBUGSOLVER     FLUSH(740+IAPROC)
@@ -357,8 +345,6 @@
       !    CALL PDLIB_ABORT(20)
       !  ENDIF
       !ENDDO
-
-       CALL PDLIB_ABORT(20)
 !
 !
 !/
@@ -3635,9 +3621,9 @@
       DTK    = 0
       TMP3   = 0
 
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_JACOBI SECTION 0'
+!/MEMCHECK      write(50000+IAPROC,*) 'memcheck_____:', 'WW3_JACOBI SECTION 0'
 !/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
 
       DO IE = 1, NE
         I1 = INE(1,IE)
@@ -3712,9 +3698,9 @@
         END DO
       END DO
 
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_JACOBI SECTION 1'
+!/MEMCHECK      write(50000+IAPROC,*) 'memcheck_____:', 'WW3_JACOBI SECTION 1'
 !/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
 !/DEBUGSOLVER      WRITE(740+IAPROC,*) 'sum(VA)=', sum(VA)
 !/DEBUGSOLVER      CALL PrintTotalOffContrib("Offdiag after the geo advection")
 !/
@@ -3831,9 +3817,9 @@
       DTK    = 0
       TMP3   = 0
 
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_JACOBI SECTION 0'
+!/MEMCHECK      write(50000+IAPROC,*) 'memcheck_____:', 'WW3_JACOBI SECTION 0'
 !/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
       DO ISP = 1, NSPEC
 
         ITH    = 1 + MOD(ISP-1,NTH)
@@ -3914,9 +3900,9 @@
         END DO
       END DO ! ISP
 
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_JACOBI SECTION 1'
+!/MEMCHECK      write(50000+IAPROC,*) 'memcheck_____:', 'WW3_JACOBI SECTION 1'
 !/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
 !/DEBUGSOLVER      WRITE(740+IAPROC,*) 'sum(VA)=', sum(VA)
 !/DEBUGSOLVER      CALL PrintTotalOffContrib("Offdiag after the geo advection")
 !/
@@ -4024,9 +4010,9 @@
       REAL  :: TRIA03, SIDT, CCOS, CSIN
       REAL    :: SPEC(NSPEC), DEPTH
 
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_JACOBI SECTION 0'
+!/MEMCHECK      write(50000+IAPROC,*) 'memcheck_____:', 'WW3_JACOBI SECTION 0'
 !/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
 
       J = 0
       DO IP = 1, npa
@@ -4098,9 +4084,9 @@
         END DO
       END DO
 
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_JACOBI SECTION 1'
+!/MEMCHECK      write(50000+IAPROC,*) 'memcheck_____:', 'WW3_JACOBI SECTION 1'
 !/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
 !/
 !/ End of W3XYPFSN ----------------------------------------------------- /
 !/
@@ -5930,9 +5916,9 @@
       LSIG = FLCUR .OR. FLLEV
 
 
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION 0'
+!/MEMCHECK      write(50000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION 0'
 !/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
 
       CCURX  = FACX
       CCURY  = FACY
@@ -5957,9 +5943,9 @@
 !/DEBUGSOLVER     FLUSH(740+IAPROC)
 !/DEBUGSRC     WRITE(740+IAPROC,*) 'optionCall=', optionCall
 !/DEBUGSRC     FLUSH(740+IAPROC)
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION 1'
+!/MEMCHECK      write(50000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION 1'
 !/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
 !
 ! 2.  Convert to Wave Action ---------------- *
 ! 
@@ -5993,9 +5979,9 @@
 !
 !    init matrix and right hand side
 !
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION 2'
+!/MEMCHECK      write(50000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION 2'
 !/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
 !
       IF (.not. LSLOC) THEN
         IF (IMEM == 1) THEN
@@ -6008,9 +5994,9 @@
 
 !/DEBUGSOLVER     !WRITE(740+IAPROC,'(A20,20E20.10)') 'SUM BJAC INIT', sum(B_JAC), SUM(ASPAR_JAC)
 
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION 3'
+!/MEMCHECK      write(50000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION 3'
 !/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
 !
 !     source terms 
 !
@@ -6024,9 +6010,9 @@
         ENDIF
       END IF
 
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION 4'
+!/MEMCHECK      write(50000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION 4'
 !/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
 
 !
 !     geographical advection  
@@ -6035,9 +6021,9 @@
 
 !/DEBUGSOLVER     !WRITE(740+IAPROC,'(A20,20E20.10)') 'SUM BJAC 1', sum(B_JAC), SUM(ASPAR_JAC)
 
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION 5'
+!/MEMCHECK      write(50000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION 5'
 !/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
 !
 !/DEBUGSOLVER     !WRITE(740+IAPROC,'(A20,20E20.10)') 'SUM BJAC 1', sum(B_JAC), SUM(ASPAR_JAC)
 
@@ -6058,9 +6044,9 @@
 
 !/DEBUGSOLVER     !WRITE(740+IAPROC,'(A20,20E20.10)') 'SUM BJAC 3', sum(B_JAC), SUM(ASPAR_JAC)
 
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION 6'
+!/MEMCHECK      write(50000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION 6'
 !/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
 !
 !/DEBUGSOLVERCOH      CALL CHECK_ARRAY_INTEGRAL_NX_R8(B_JAC, "B_JAC after calcARRAY", np)
 !/DEBUGSOLVERCOH      DO IP=1,npa
@@ -6084,9 +6070,9 @@
 
 !        WRITE(740+IAPROC,*) myrank, 'start solver', nbiter
 
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION SOLVER LOOP 1'
+!/MEMCHECK      write(50000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION SOLVER LOOP 1'
 !/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
         DO IP = 1, np
 
           IP_glob=iplg(IP)
@@ -6316,9 +6302,9 @@
 
 !        WRITE(740+IAPROC,*) myrank, 'afer vertex loop', nbiter
 
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION SOLVER LOOP 2'
+!/MEMCHECK      write(50000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION SOLVER LOOP 2'
 !/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
 
 !/DEBUGSOLVERCOH        WRITE(740+IAPROC,*) 'sum(OffDiag)=', sum(OffDiag)
 !/DEBUGSOLVERCOH        WRITE (eFile,40) nbIter
@@ -6336,9 +6322,9 @@
           CALL PDLIB_exchange2DREAL(U_JAC)
           VA(:,1:NPA) = U_JAC
         END IF
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION SOLVER LOOP 3'
+!/MEMCHECK      write(50000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION SOLVER LOOP 3'
 !/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
 
 !!/DEBUGSOLVERCOH      CALL CHECK_ARRAY_INTEGRAL_NX_R8(VA, "VA(npa) after exchanges", npa)
         !
@@ -6352,9 +6338,9 @@
           END IF
         END IF
 
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION SOLVER LOOP 4'
+!/MEMCHECK      write(50000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION SOLVER LOOP 4'
 !/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
         !
         ! Terminate via differences
         !
@@ -6377,9 +6363,9 @@
           END IF
         END IF
 
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION SOLVER LOOP 5'
+!/MEMCHECK      write(50000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION SOLVER LOOP 5'
 !/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
         !
         ! Terminate via norm
         !
@@ -6443,9 +6429,9 @@
             EXIT
           END IF
         END IF
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION SOLVER LOOP 6'
+!/MEMCHECK      write(50000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION SOLVER LOOP 6'
 !/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
 
 
       END DO ! Open Do Loop ... End of Time Interval 
@@ -6533,9 +6519,9 @@
       endif
 #endif
 !
-!/MEMCHECK      write(100000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION 7'
+!/MEMCHECK      write(50000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION 7'
 !/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
 !
 !/DEBUGSRC      DO JSEA=1,NSEAL
 !/DEBUGSRC        WRITE(740+IAPROC,*) 'JSEA=', JSEA

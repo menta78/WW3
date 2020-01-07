@@ -844,9 +844,9 @@
             IT0    = 1
           END IF
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE'
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 
 !
 !/T        WRITE (NDST,9020) IT0, NT, DTGA
@@ -886,9 +886,9 @@
 !/PDLIB!/DEBUGCOH          CALL ALL_VA_INTEGRAL_PRINT(IMOD, "Beginning time loop")
 !/TIMINGS         CALL PRINT_MY_TIME("After assigning VAOLD")
 !
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 0'
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 0'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 
 
           ITIME  = ITIME + 1
@@ -901,9 +901,9 @@
 !/DEBUGRUN      WRITE(740+IAPROC,*) 'DTG 1 : DTG=', DTG
 !/DEBUGRUN      FLUSH(740+IAPROC)
 !
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 1'
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 1'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 
           IF ( TSTAMP .AND. SCREEN.NE.NDSO .AND. IAPROC.EQ.NAPOUT ) THEN
               CALL WWTIME ( STTIME )
@@ -911,9 +911,9 @@
               WRITE (SCREEN,950) IDTIME, STTIME
             END IF
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 2'
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 2'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 
 !/DEBUGRUN      DO JSEA = 1, NSEAL
 !/DEBUGRUN        DO IS = 1, NSPEC
@@ -954,9 +954,9 @@
 !/DEBUGRUN        WRITE(740+IAPROC,*) 'FLCUR=', FLCUR
 !/DEBUGRUN        FLUSH(740+IAPROC)
 !/DEBUGDCXDX       WRITE(740+IAPROC,*) 'Debug DCXDX FLCUR=', FLCUR
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 3a '
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 3a '
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 
           IF ( FLCUR  ) THEN
 !/DEBUGRUN        WRITE(740+IAPROC,*) 'W3WAVE, step 6.4'
@@ -972,9 +972,9 @@
 !/DEBUGRUN        WRITE(740+IAPROC,*) 'W3WAVE, step 6.4.1 after W3UCUR'
 !/DEBUGRUN        FLUSH(740+IAPROC)
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 3b '
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 3b '
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
             IF (GTYPE .NE. UNGTYPE) THEN       
               IF( RGLGRD ) THEN
               CALL W3DZXY(CX(1:UBOUND(CX,1)),'m/s',DCXDX, DCXDY) !CX GRADIENT
@@ -991,9 +991,9 @@
               CFLXYMAX = 0.
             END IF
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 4'
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 4'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 !
             ELSE IF ( FLFRST ) THEN
               UGDTUPDATE=.TRUE.
@@ -1003,9 +1003,9 @@
               END IF ! FLCUR 
 !/TIMINGS         CALL PRINT_MY_TIME("After CX/CY assignation")
 !
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 5'
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 5'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 
           IF ( FLWIND ) THEN
             IF ( FLFRST ) ASF = 1.
@@ -1031,9 +1031,9 @@
 !        STOP
 !      ENDIF
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 6'
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 6'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 
 !/TIMINGS         CALL PRINT_MY_TIME("After U10, etc. assignation")
 !
@@ -1052,9 +1052,10 @@
 !/DEBUGRUN        WRITE(740+IAPROC,*) 'FLBPI=', FLBPI
 !/DEBUGRUN        WRITE(740+IAPROC,*) 'LOCAL=', LOCAL
 !/DEBUGRUN        FLUSH(740+IAPROC)
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 7'
+!
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 7'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 
           IF ( FLBPI .AND. LOCAL ) THEN
 !
@@ -1090,18 +1091,18 @@
           END IF
 
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 7'
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 7'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 
 
 !/PDLIB          CALL APPLY_BOUNDARY_CONDITION_VA
 !/PDLIB!/DEBUGCOH          CALL ALL_VA_INTEGRAL_PRINT(IMOD, "After FLBPI and LOCAL")
 !/TIMINGS         CALL PRINT_MY_TIME("After FLBPI and LOCAL")
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 8'
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 8'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 
 !
 ! 3.3.1 Update ice coverage (if new ice map).
@@ -1136,9 +1137,9 @@
 !/DEBUGRUN        FLUSH(740+IAPROC)
 !/PDLIB!/DEBUGIOBP         IF (NX .ge. 10210) WRITE(*,*) 'Before W3ULEV:', MAPSTA(1,10210), IOBP(10210)
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 9'
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 9'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 !
 ! 3.3.2 Update ice thickness
 !
@@ -1165,9 +1166,9 @@
 !
             END IF
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 10'
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 10'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 
 !
 ! 3.3.3 Update ice floe diameter
@@ -1194,9 +1195,9 @@
 !
 !/IS2            END IF
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 11a'
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 11a'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 !
 ! 3.4 Transform grid (if new water level).
 !
@@ -1246,9 +1247,9 @@
 !/DEBUGRUN        WRITE(740+IAPROC,*) 'FLMAP=', FLMAP
 !/DEBUGRUN        FLUSH(740+IAPROC)
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 11b'
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 11b'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 
 !
 ! 3.5 Update maps and derivatives.
@@ -1289,9 +1290,9 @@
             END IF 
             FLDDIR = .FALSE.
           END IF
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 12'
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 12'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 
 !/DEBUGRUN        WRITE(740+IAPROC,*) 'W3WAVE, step 6.8.3 DTG=', DTG
 !/DEBUGRUN        FLUSH(740+IAPROC)
@@ -1335,9 +1336,9 @@
 !/PDLIB         DTGpre = DTG
 !/PDLIB       END IF
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 13'
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 13'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 !
 !/PDLIB        IF ( FLSOU .and. LPDLIB .and. FSSOURCE) THEN
 !
@@ -1431,9 +1432,9 @@
 !/PDLIB!/DEBUGSRC            WRITE(740+IAPROC,*) '     sum(VDTOT)=', sum(VDTOT(:,DEBUG_NODE))
 !/PDLIB!/DEBUGSRC          END IF
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 14'
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 14'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 
           IF ( FLZERO ) THEN
 !/T              WRITE (NDST,9022)
@@ -1492,9 +1493,9 @@
 !/DEBUGRUN        WRITE(740+IAPROC,*) 'W3WAVE, step 6.8.7'
 !/DEBUGRUN        FLUSH(740+IAPROC)
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 15'
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 15'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 !
 !/DEBUGRUN      DO JSEA = 1, NSEAL
 !/DEBUGRUN        DO IS = 1, NSPEC
@@ -1622,9 +1623,9 @@
               END DO
           END IF
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 16'
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 16'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 
 !/PDLIB!/DEBUGCOH  CALL ALL_VA_INTEGRAL_PRINT(IMOD, "Before spatial advection")
 !/TIMINGS         CALL PRINT_MY_TIME("Before spatial advection")
@@ -1755,9 +1756,9 @@
 !/MPI         DEALLOCATE ( STATCO )
 !/MPI         END IF
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 17'
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 17'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 
 
 !/OMPX/!$OMP END DO
@@ -2144,9 +2145,9 @@
 !/TIMINGS         CALL PRINT_MY_TIME("W3WAVE, step 6.21.1")
 !
 !/T      WRITE (NDST,9030)
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE END TIME LOOP'
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE END TIME LOOP'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 !
 !     End of loop over time steps
 ! ==================================================================== /
@@ -2252,9 +2253,9 @@
 !/MPI       END IF
 !/MPI     END IF
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE AFTER TIME LOOP 1'
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE AFTER TIME LOOP 1'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 
 !
 !/DEBUGRUN      WRITE(740+IAPROC,*) 'After DO_OUTPUT_EXCHANGES, step 1'
@@ -2306,9 +2307,9 @@
 !/MPI           IF ( NRQMAX .NE. 0 ) ALLOCATE                         &
 !/MPI                                 ( STATIO(MPI_STATUS_SIZE,NRQMAX) )
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE AFTER TIME LOOP 2'
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE AFTER TIME LOOP 2'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 
 !
 ! 4.c Reset next output time
@@ -2436,9 +2437,9 @@
                 END IF
 !
               END DO
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE AFTER TIME LOOP 3'
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE AFTER TIME LOOP 3'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 
 !
 !/MPI            IF ( FLGMPI(0) ) CALL MPI_WAITALL                    &
@@ -2461,9 +2462,9 @@
           END IF
 !/TIMINGS         CALL PRINT_MY_TIME("Before update log file")
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE AFTER TIME LOOP 4'
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE AFTER TIME LOOP 4'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 
 !
 ! 5.  Update log file ------------------------------------------------ /
@@ -2512,9 +2513,9 @@
 !/TIMINGS         CALL PRINT_MY_TIME("Continuing the loop")
       END DO
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE AFTER TIME LOOP 5'
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE AFTER TIME LOOP 5'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 !
 
       IF ( TSTAMP .AND. SCREEN.NE.NDSO .AND. IAPROC.EQ.NAPOUT ) THEN
@@ -2528,9 +2529,9 @@
 !
       DEALLOCATE(TAUWX, TAUWY)
 !
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE END W3WAVE'
+!/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE END W3WAVE'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 !
       RETURN
 !

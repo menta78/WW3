@@ -284,9 +284,9 @@
 !
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 1'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 1'
+!/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 1'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
 
 
       MESSAGE =(/ '     MOD DEF FILE WAS GENERATED WITH A DIFFERENT    ', &
@@ -409,9 +409,9 @@
       FILEXT = TEMPXT
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 4'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 2'
+!/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 2'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
 !
 ! open file ---------------------------------------------------------- *
 !
@@ -565,9 +565,9 @@
         ENDIF
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 6'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 3'
+!/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 3'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
 
 !
 ! Parameters in modules  --------------------------------------------- *
@@ -661,9 +661,9 @@ sfsdfsd
         ELSE
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.1'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 4'
+!/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 4'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
 
           READ (NDSM,END=801 ,IOSTAT=IERR)                     &
                GTYPE, FLAGLL, ICLOSE
@@ -722,9 +722,9 @@ sfsdfsd
 !/DEBUGIOGR     FLUSH(740+IAPROC)
                 CALL W3DIMUG ( IGRD, NTRI, NX, COUNTOT, NNZ, NDSE, NDST )
               END IF
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 5'
+!/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 5'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.6'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
 
@@ -745,9 +745,9 @@ sfsdfsd
 
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.6.4'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 6'
+!/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 6'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
 
                 XGRD(1,:)=XYB(1,:)
                 YGRD(1,:)=XYB(2,:)
@@ -821,9 +821,9 @@ sfsdfsd
 !/DEBUGIOGR     FLUSH(740+IAPROC)
         END IF
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 7'
+!/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 7'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
 
 
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 8'
@@ -881,9 +881,9 @@ sfsdfsd
                FTF, FTWN, FTTR, FTWL, FACTI1, FACTI2, FACHFA, FACHFE
         END IF
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 7a'
+!/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 7a'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
 
 
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 10'
@@ -926,9 +926,9 @@ sfsdfsd
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 12'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 7b'
+!/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 7b'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
 
 !
 !/T      WRITE (NDST,9020)
@@ -1041,9 +1041,9 @@ sfsdfsd
 !/FLX4          READ (NDSM,END=801 ,IOSTAT=IERR) FLX4A0
 !/FLX4        END IF
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 7c'
+!/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 7c'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
 
 !
 ! 
@@ -1106,9 +1106,9 @@ sfsdfsd
 !/ST3            END IF
 !/ST3        END IF
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 7d'
+!/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 7d'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
 
 !
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 17'
@@ -1144,9 +1144,9 @@ sfsdfsd
 !/ST4                DIKCUMUL, CUMULW
 !/ST4        END IF
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'AFTER READING ST4 STUFF'
+!/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'AFTER READING ST4 STUFF'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
 
 !
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 18'
@@ -1162,9 +1162,9 @@ sfsdfsd
 !/ST6                       SIN6WS, SIN6FC
 !/ST6        END IF
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 7f'
+!/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 7f'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
 
 !
 ! ... Nonlinear interactions
@@ -1297,9 +1297,9 @@ sfsdfsd
 !
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 23'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 8'
+!/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 8'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
 
 !/DB1      IF ( WRITE ) THEN
 !/DB1          WRITE (NDSM)                                           &
@@ -1398,9 +1398,9 @@ sfsdfsd
 !
       CLOSE ( NDSM )
 
-!/MEMCHECK       write(100000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 9'
+!/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 9'
 !/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(IAPROC,mallInfos)
+!/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
 !
       RETURN
 !

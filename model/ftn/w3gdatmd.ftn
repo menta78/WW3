@@ -2724,10 +2724,6 @@
 #if defined(TEST_W3GDATMD) || defined(TEST_W3GDATMD_W3DIMUG)
       WRITE (NDST,9000) IMOD, MX, MTRI
 #endif
-
-!/MEMCHECK      WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_UG_ALLOCATE SECTION 1'
-!/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
 !
 ! -------------------------------------------------------------------- /
 ! 2.  Allocate arrays
@@ -2784,10 +2780,6 @@
 #if defined(TEST_W3GDATMD) || defined(TEST_W3GDATMD_W3DIMUG)
       WRITE (NDST,9003)
 #endif
-!/MEMCHECK      WRITE(100000+IAPROC,*) 'memcheck_____:', 'WW3_UG_ALLOCATE SECTION 2'
-!/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(IAPROC,mallInfos)
-
       RETURN
 !
 ! Formats
