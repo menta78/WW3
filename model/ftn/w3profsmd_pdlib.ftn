@@ -6352,8 +6352,8 @@
           !WRITE(740+IAPROC,*) myrank, 'solver', nbiter, is_converged, prop_conv, B_JGS_PMIN
 !/DEBUGSOLVER       WRITE(740+IAPROC,*) 'solver', nbiter, is_converged, prop_conv, B_JGS_PMIN
 !/DEBUGSOLVER       FLUSH(740+IAPROC)
-          IF (prop_conv .lt. B_JGS_PMIN) THEN
             if (myrank == 0) WRITE(*,*) 'No. of solver iterations', nbiter, is_converged, prop_conv, B_JGS_PMIN
+          IF (prop_conv .lt. B_JGS_PMIN) THEN
 !/DEBUGFREQSHIFT       WRITE(740+IAPROC,*) 'prop_conv=', prop_conv
 !/DEBUGFREQSHIFT       WRITE(740+IAPROC,*) 'NX=', NX
 !/DEBUGFREQSHIFT       WRITE(740+IAPROC,*) 'is_converged=', is_converged
