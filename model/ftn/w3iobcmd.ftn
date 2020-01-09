@@ -442,15 +442,13 @@
               ! W3GFTP: find the nearest grid point to the input boundary point
               ! DCIN=0.1 is the distance outside of source grid in units of
               ! cell width to treat target point as inside the source grid.
-              IF ( W3GFPT( GSU, XBPI(I), YBPI(I), IX, IY, DCIN=0.1 ) ) THEN
+              IF ( W3GFPT( GSU, XBPI(I), YBPI(I), IX, IY, DCIN = 0.1 ) ) THEN
                 IF ( ABS(MAPSTA(IY,IX)) .NE. 2 ) THEN
-                    IF ( IAPROC .EQ. NAPERR )                         &
-                        WRITE (NDSE,909) IX, IY, ABS(MAPSTA(IY,IX))
-                    FLOK   = .FALSE.
-                  END IF
+                  IF ( IAPROC .EQ. NAPERR ) WRITE (NDSE,909) IX, IY, ABS(MAPSTA(IY,IX))
+                  FLOK = .FALSE.
+                END IF
               ELSE
-                IF ( IAPROC .EQ. NAPERR )                             &
-                    WRITE (NDSE,910) I, XBPI(I), YBPI(I)
+                IF ( IAPROC .EQ. NAPERR ) WRITE (NDSE,910) I, XBPI(I), YBPI(I)
                 CALL EXTCDE ( 12 )
               END IF
             ISBPI(I) = MAPFS(IY,IX)
@@ -464,19 +462,18 @@
 !/T0            END DO
 !
           IF ( .NOT.FLOK ) CALL EXTCDE ( 20 )
-!
-          DO ISEA=1, NSEA
+         
+          DO ISEA = 1, NSEA
             IX     = MAPSF(ISEA,1)
             IY     = MAPSF(ISEA,2)
             IF ( ABS(MAPSTA(IY,IX)) .EQ. 2 ) THEN
-                FLOK   = .FALSE.
-                DO I=1, NBI
-                  IF ( ISEA .EQ. ISBPI(I) ) FLOK = .TRUE.
-                  END DO
-                IF ( .NOT.FLOK .AND. IAPROC.EQ.NAPERR )               &
-                    WRITE (NDSE,911) IX, IY
-              END IF
-            END DO
+              FLOK   = .FALSE.
+              DO I=1, NBI
+                IF ( ISEA .EQ. ISBPI(I) ) FLOK = .TRUE.
+              END DO
+              IF ( .NOT.FLOK .AND. IAPROC.EQ.NAPERR ) WRITE (NDSE,911) IX, IY
+            END IF
+          END DO
 !
 !     Read first time and allocate ABPI0/N
 !

@@ -502,9 +502,6 @@
           CALL CHECK_ERR(IRET)
 !
         END DO ! IP=1,NBO2
-
-
-
 !
 !--- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ! 6. Defines frequency range in spectra

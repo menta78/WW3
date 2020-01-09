@@ -1997,40 +1997,55 @@ END SUBROUTINE
         ENDIF
         IX1(N) = IX
 !/T        WRITE(NDSE ,*)'ADDING BOUNDARY POINT:',N,IX
-        END IF
-      END DO
+      END IF
+    END DO
+
+    write(*,*) 'NX, N and NBI', NX, N, NBI
 !
 !2. Matches the model grid points (where MAPSTA = 2) with the points in nest.ww3
 !   For this, we use the nearest point in the nest file.
-!
+! 
     DO I = 1, NBI 
+
 !FA: This will not work with FLAGLL=.F.  (XY grid)
-      DIST0 = 360**2
-      IS=1
+
+      DIST0 = 10E6!360.**2
+      IS = 1
+      !AR: find nearest point ...
+
       DO J = 1, N
         DIST = (XBPI(I) - XYB(1,IX1(J)))**2 + (YBPI(I) - XYB(2,IX1(J)))**2
         IF (DIST.LT.DIST0) THEN 
           IS = MAPFS(1,IX1(J))
-          DIST0=DIST
-          JMEMO=J
-          END IF
-        END DO
-      DIST0=SQRT(DIST0)
+          DIST0 = DIST
+          JMEMO = J
+        END IF 
+        write(*,*) DIST, IS, MAPFS(1,IX1(J)), JMEMO, DISTMIN
+        if(DIST0.LE.DISTMIN) stop 'TEST TEST' 
+      END DO
+
+      DIST0 = SQRT(DIST0)
       IF (DIST0.LE.DISTMIN) THEN          
-        ISBPI(I)=IS
+        ISBPI(I) = IS
+        WRITE(* ,'(A,I6,A,I7,A,I6)') 'MATCHED BOUNDARY POINT:',I,&
+          &         'GRID POINT:', MAPSF(IS,1),'INDEX IN nest.ww3:', JMEMO
 !/T        WRITE(NDSE ,'(A,I6,A,I7,A,I6)') 'MATCHED BOUNDARY POINT:',I,'GRID POINT:', &
 !/T                                         MAPSF(IS,1),'INDEX IN nest.ww3:', JMEMO
-     ELSE
+      ELSE
         FLOK=.TRUE.
-        END IF
-      END DO  
+      END IF
+
+    END DO  
+
     IF ( N .NE. NBI) THEN 
       WRITE(NDSE ,900) N, NBI
       DO J=1,N
         WRITE(6,*) 'THIS POINT HAS MAPSTA=2:',ISBPI(J)  
-        END DO
+      END DO
       ISBPI(N+1:NBI)=ISBPI(1)
-      END IF
+    END IF
+
+    STOP 'FUCK THE REST'
       
 900 FORMAT (/' *** WAVEWATCH III ERROR IN W3IOBC : '/                &
              '     NUMBER OF MAPSTA=2 DIFFERS FROM NUMBER IN nest.ww3    '/                &

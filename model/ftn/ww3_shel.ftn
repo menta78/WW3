@@ -1591,7 +1591,7 @@
 !/TIDE      IF (FLAGSTIDE(2)) CALL W3FLDTIDE2 ( 'READ',  NDSF(2), NDST, NDSEN, NX, NY, IDSTR(2), 1, IERR )
 !/TIDE      ALLOCATE(V_ARG(170,1),F_ARG(170,1),U_ARG(170,1))  ! to be removed later ...
 !
-!/XXX      ALLOCATE ( XXX(NX,NY) )
+      ALLOCATE ( XXX(NX,NY) )
 !
 
 !
