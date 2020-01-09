@@ -86,9 +86,9 @@
 
   # linking options
   libs=""
-  opt="-O1 -traceback -g -assume byterecl -DPDLIB -ip -o $prog"
+#  opt="-O3 -ipo -traceback -g -assume byterecl -no-wrap-margin -DPDLIB -ip -o $prog"
 #  opt=" -g -ggdb -fno-omit-frame-pointer -ffree-line-length-none -fbacktrace -Wall -Wextra -Wconversion  -Wno-unused  -Wno-unused-dummy-argument -fcheck=all -fsanitize=address -fsanitize=undefined -ffpe-trap=invalid,zero,overflow -DPDLIB -o $prog"
-# opt="-traceback -g -O1 -check all -warn interfaces,nouncalled -gen-interface -assume byterecl -DWEIGHTS -DPDLIB -ip -o $prog"
+ opt="-traceback -g -O1 -check all -warn interfaces,nouncalled -gen-interface -assume byterecl -init=snan,arrays -no-wrap-margin -DPDLIB -ip -o $prog"
 # opt="-O3 -axSSE4.2 -g -DPDLIB -traceback -ip -o $prog"
 # opt="-O3 -prec-div -prec-sqrt -xHost -align array128byte -ip -o $prog"
 # opt="-O0 -g -traceback -check all -o $prog"
@@ -139,7 +139,7 @@
     case $WWATCH3_NETCDF in
       NC3) libs="$libs -L$NETCDF_LIBDIR -lnetcdf" ;;
       NC4) if [ "$mpi_mod" = 'no' ]; then comp="`$NETCDF_CONFIG --fc`"; fi
-           libs="$libs -L$NETCDF_LIBDIR -lnetcdff" ;;
+           libs="$libs `$NETCDF_CONFIG --flibs`" ;;
     esac
   fi
 
