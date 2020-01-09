@@ -434,7 +434,7 @@
 !/RTD
 !/RTD          DEALLOCATE ( Anglbdy,  ELatbdy, ELonbdy )
 !/RTD
-          FLOK   = .TRUE.
+          FLOK = .TRUE.
           IF (GTYPE .EQ. UNGTYPE) THEN
             CALL W3NESTUG(DXYMAX,FLOK) 
           ELSE 
@@ -474,6 +474,7 @@
               IF ( .NOT.FLOK .AND. IAPROC.EQ.NAPERR ) WRITE (NDSE,911) IX, IY
             END IF
           END DO
+
 !
 !     Read first time and allocate ABPI0/N
 !

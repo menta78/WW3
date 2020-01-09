@@ -338,14 +338,10 @@ CONTAINS
 !
 ! call the various routines which define the point spotting strategy
 !
-#ifndef PDLIB
       CALL SPATIAL_GRID    
-#endif
       CALL NVECTRI
-#ifndef PDLIB 
       CALL COORDMAX
       CALL AREA_SI(1)
-#endif
 !
       CLOSE(NDS)
       END SUBROUTINE READMSH
@@ -993,8 +989,6 @@ CONTAINS
             IEN(IE,6) = N3(2)
     
          END DO
-
-         DEALLOCATE(LEN)
 
      END SUBROUTINE
 !/---------------------------------------------------------------------------
@@ -1999,20 +1993,13 @@ END SUBROUTINE
 !/T        WRITE(NDSE ,*)'ADDING BOUNDARY POINT:',N,IX
       END IF
     END DO
-
-    write(*,*) 'NX, N and NBI', NX, N, NBI
 !
 !2. Matches the model grid points (where MAPSTA = 2) with the points in nest.ww3
 !   For this, we use the nearest point in the nest file.
 ! 
     DO I = 1, NBI 
-
-!FA: This will not work with FLAGLL=.F.  (XY grid)
-
-      DIST0 = 10E6!360.**2
+      DIST0 = HUGE(1.)
       IS = 1
-      !AR: find nearest point ...
-
       DO J = 1, N
         DIST = (XBPI(I) - XYB(1,IX1(J)))**2 + (YBPI(I) - XYB(2,IX1(J)))**2
         IF (DIST.LT.DIST0) THEN 
@@ -2020,15 +2007,11 @@ END SUBROUTINE
           DIST0 = DIST
           JMEMO = J
         END IF 
-        write(*,*) DIST, IS, MAPFS(1,IX1(J)), JMEMO, DISTMIN
-        if(DIST0.LE.DISTMIN) stop 'TEST TEST' 
       END DO
 
       DIST0 = SQRT(DIST0)
       IF (DIST0.LE.DISTMIN) THEN          
         ISBPI(I) = IS
-        WRITE(* ,'(A,I6,A,I7,A,I6)') 'MATCHED BOUNDARY POINT:',I,&
-          &         'GRID POINT:', MAPSF(IS,1),'INDEX IN nest.ww3:', JMEMO
 !/T        WRITE(NDSE ,'(A,I6,A,I7,A,I6)') 'MATCHED BOUNDARY POINT:',I,'GRID POINT:', &
 !/T                                         MAPSF(IS,1),'INDEX IN nest.ww3:', JMEMO
       ELSE
@@ -2045,8 +2028,6 @@ END SUBROUTINE
       ISBPI(N+1:NBI)=ISBPI(1)
     END IF
 
-    STOP 'FUCK THE REST'
-      
 900 FORMAT (/' *** WAVEWATCH III ERROR IN W3IOBC : '/                &
              '     NUMBER OF MAPSTA=2 DIFFERS FROM NUMBER IN nest.ww3    '/                &
              '     CHECK nest.ww3 AND ww3_grid.inp ',2I8/)

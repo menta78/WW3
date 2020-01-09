@@ -5914,8 +5914,6 @@
 !AR: this is missing in init ... but there is a design error in ww3_grid with FLCUR and FLLEV
       LSIG = FLCUR .OR. FLLEV
 
-      WRITE(*,*) SUM(VA)
-      STOP
 !/MEMCHECK      write(50000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION 0'
 !/MEMCHECK      call getMallocInfo(mallinfos)
 !/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
