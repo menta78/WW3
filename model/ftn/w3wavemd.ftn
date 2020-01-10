@@ -1929,10 +1929,10 @@
   370     CONTINUE
 !
 !
-!/PDLIB     IF (LSLOC) THEN
+!!/PDLIB     IF (LSLOC) THEN
 !/PDLIB       B_JAC     = 0.
 !/PDLIB       ASPAR_JAC = 0.
-!/PDLIB     ENDIF
+!!/PDLIB     ENDIF
 
           IF ( FLSOU ) THEN
 !

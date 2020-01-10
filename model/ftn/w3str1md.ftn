@@ -332,6 +332,9 @@
 !
       S = 0
       D = 0
+      IF (SUM(A) .LT. TINY(1.)) THEN 
+        RETURN
+      ENDIF
 
       SIGM01 = 0.
       EMEAN  = 0.

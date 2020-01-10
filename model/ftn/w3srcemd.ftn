@@ -533,7 +533,13 @@
 !
 !/T      FLTEST = .TRUE.
 !
-      DEPTH  = MAX ( DMIN , D_INP )
+      IF (D_INP .LT. DMIN) THEN
+        SPEC = 0.d0 
+        RETURN 
+      ELSE
+        DEPTH  = MAX ( DMIN , D_INP )
+      ENDIF
+
       IKS1 = 1
       ICESCALELN = MAX(0.,MIN(1.,1.-ICE*ICESCALES(1))) 
       ICESCALEIN = MAX(0.,MIN(1.,1.-ICE*ICESCALES(2))) 
@@ -1050,6 +1056,10 @@
 !/TR1                ENDIF
 !/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * eVS
 !/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
+!                     IF (IX == 36693) write(66666,*) IX, ISP, B_JAC(ISP,JSEA), ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)), &
+!                                              & VSTR(ISP), VDTR(ISP), VSDB(ISP), VDDB(ISP), VS(ISP), VD(ISP), &
+!                                              & SPEC(ISP), D_INP
+!                     
 !!/VEG1              eVS = eVS + DBLE(VSVG(ISP)) * JAC 
 !!/VEG1              eVD = evD + MIN(0.,DBLE(VDVG(ISP)))
 !!/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * (eVS - eVD*VA(ISP,JSEA)*JAC)
