@@ -5909,6 +5909,8 @@
       INTEGER JP_glob
       INTEGER is_converged, itmp
 
+      integer :: testknoten = 13366 
+
       LOGICAL :: LSIG = .FALSE.
 
 !AR: this is missing in init ... but there is a design error in ww3_grid with FLCUR and FLLEV
@@ -6013,8 +6015,9 @@
         JSEA    = JX_TO_JSEA(IP)
         ISEA    = MAPFS(1,IP_glob)
         JSEA    = JX_TO_JSEA(IP)
-        IF (ISEA == 3170) write(740+IAPROC,*) 'SOLVER ENTRY', ISEA, JSEA, SUM(B_JAC(:,JSEA)), &
-                                     SUM(ASPAR_JAC(:,PDLIB_I_DIAG(JSEA))), PDLIB_I_DIAG(JSEA)
+        IF (ISEA == testknoten) write(740+IAPROC,*) 'SOLVER ENTRY', ISEA, JSEA, SUM(B_JAC(:,JSEA)), &
+                                &     SUM(ASPAR_JAC(:,PDLIB_I_DIAG(JSEA))), PDLIB_I_DIAG(JSEA), &
+                                &     NSEA, NP, NPA, NSEAL
       enddo
 
 
@@ -6031,8 +6034,8 @@
         IP_glob =iplg(IP)
         ISEA    = MAPFS(1,IP_glob)
         JSEA    = JX_TO_JSEA(IP)
-        IF (ISEA == 3170) write(740+IAPROC,*) 'SOLVER ENTRY', ISEA, JSEA, SUM(B_JAC(:,JSEA)), &
-                                     SUM(ASPAR_JAC(:,PDLIB_I_DIAG(JSEA))), PDLIB_I_DIAG(JSEA)
+!        IF (ISEA == 28447) write(740+IAPROC,*) 'SOLVER ENTRY', ISEA, JSEA, SUM(B_JAC(:,JSEA)), &
+!                                     SUM(ASPAR_JAC(:,PDLIB_I_DIAG(JSEA))), PDLIB_I_DIAG(JSEA)
       enddo
 
 
@@ -6107,10 +6110,6 @@
           eSI   = PDLIB_SI(IP)
           ACLOC = VA(:,JSEA)
 
-          write(740+IAPROC,*) 'SOLVER BEFORE', ISEA, JSEA, nbiter, SUM(B_JAC(:,JSEA)), &
-                                     SUM(ASPAR_JAC(:,PDLIB_I_DIAG(JSEA))), PDLIB_I_DIAG(JSEA)
-
-
           IF (.NOT. LCONVERGED(IP)) THEN
 #ifdef WEIGHTS
             ipiter(ip) = ipiter(ip) + 1
@@ -6167,6 +6166,10 @@
                 END IF
               END DO
             ENDIF ! IMEM
+
+          IF (ISEA == testknoten) write(740+IAPROC,*) 'SOLVER 2', ISEA, JSEA, nbiter, sum(ASPAR_DIAG), &
+                       &  SUM(B_JAC(:,IP)), sum(ACLOC), sum(esum)
+
 !/DEBUGSOLVERCOH          OffDiag(:, IP)=REAL(eOff)
 !/DEBUGSOLVERCOH          WRITE(740+IAPROC,*) 'Step 2: sum(eSum)=', sum(eSum), ' eOff=', sum(eOff)
             IF (FSREFRACTION) THEN
@@ -6281,6 +6284,9 @@
 !/DEBUGFREQSHIFT          END IF
 !/DEBUGFREQSHIFT        END DO
 !/DEBUGFREQSHIFT        WRITE(740+IAPROC,*) 'sum(eDiff/VAnew/VAold)=', sum(abs(eDiff)), sum(abs(VAnew)), sum(abs(VAold))
+          IF (ISEA == testknoten) write(740+IAPROC,*) 'SOLVER 3', ISEA, JSEA, nbiter, sum(ASPAR_DIAG), &
+                       &  SUM(B_JAC(:,IP)), sum(ACLOC), sum(esum)
+
 
             Sum_New=sum(eSum)
 
@@ -6297,6 +6303,9 @@
             esum = VA(1:NSPEC,IP) 
           ENDIF ! LCONVERGED
 !
+          IF (ISEA == testknoten) write(740+IAPROC,*) 'SOLVER 4', ISEA, JSEA, nbiter, sum(ASPAR_DIAG), & 
+                       &  SUM(B_JAC(:,IP)), sum(ACLOC), sum(esum)
+
           IF (B_JGS_TERMINATE_DIFFERENCE) THEN
             if (Sum_new .gt. thr8) then
               DiffNew = sum(abs(ACLOC - eSum))!abs(Sum_new-Sum_prev)

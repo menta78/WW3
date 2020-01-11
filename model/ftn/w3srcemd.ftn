@@ -557,6 +557,10 @@
 
 !/NL0      VSNL = 0.
 !/NL0      VDNL = 0.
+!/NL1      VSNL = 0.
+!/NL1      VDNL = 0.
+!/TR1      VSTR = 0.
+!/TR1      VDTR = 0. 
 !/ST0      VSDS = 0.
 !/ST0      VDDS = 0.
       VSBT = 0.
@@ -1038,8 +1042,8 @@
 !/DB1                  evS = -evS
 !/DB1                  evD = 2*evD
 !/DB1                ENDIF
-!!/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * eVS
-!!/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
+!/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * eVS
+!/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
 !/TR1                eVS = VSTR(ISP) * JAC 
 !/TR1                eVD = VDTR(ISP)
 !/TR1                IF (eVS .gt. 0.) THEN
@@ -1049,8 +1053,8 @@
 !/TR1                  evS = -evS
 !/TR1                  evD = 2*evD
 !/TR1                ENDIF
-!!/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * eVS
-!!/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
+!/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * eVS
+!/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
 !                     IF (IX == 27211) write(740+IAPROC,*) IX, ISP, B_JAC(ISP,JSEA), ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)), &
 !                                              & VSTR(ISP), VDTR(ISP), VSDB(ISP), VDDB(ISP), VS(ISP), VD(ISP), &
 !                                              & SPEC(ISP), D_INP
@@ -1061,8 +1065,8 @@
 !!/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
 !/PDLIB            END DO
 !/PDLIB          END DO
-                 IF (IX == 3170) write(740+IAPROC,*) 'HSPROB', ISEA, JSEA, IT, SUM(B_JAC(:,JSEA)), &
-                                     SUM(ASPAR_JAC(:,PDLIB_I_DIAG(JSEA))), PDLIB_I_DIAG(JSEA), & 
+                 IF (4*SQRT(EMEAN) .gt. 1.) write(740+IAPROC,*) 'HSPROB', ISEA, JSEA, IT, SUM(B_JAC(:,JSEA)), &
+                                     SUM(ASPAR_JAC(:,PDLIB_I_DIAG(JSEA))), & 
                       &       SUM(SPEC), SUM(VS), SUM(VD), 4*SQRT(EMEAN) 
 !/PDLIB        ELSEIF (IMEM == 2) THEN
 !/PDLIB          SIDT   = PDLIB_SI(JSEA) * DTG
