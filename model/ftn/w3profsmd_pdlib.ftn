@@ -6008,6 +6008,16 @@
         ENDIF
       END IF
 
+      do ip = 1, np
+        IP_glob =iplg(IP)
+        JSEA    = JX_TO_JSEA(IP)
+        ISEA    = MAPFS(1,IP_glob)
+        JSEA    = JX_TO_JSEA(IP)
+        IF (ISEA == 3170) write(740+IAPROC,*) 'SOLVER ENTRY', ISEA, JSEA, SUM(B_JAC(:,JSEA)), &
+                                     SUM(ASPAR_JAC(:,PDLIB_I_DIAG(JSEA))), PDLIB_I_DIAG(JSEA)
+      enddo
+
+
 !/MEMCHECK      write(50000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION 4'
 !/MEMCHECK      call getMallocInfo(mallinfos)
 !/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
@@ -6016,6 +6026,15 @@
 !     geographical advection  
 !
       IF (IMEM == 1) call calcARRAY_JACOBI_VEC(DTG,FACX,FACY,VGX,VGY)
+
+      do ip = 1, np
+        IP_glob =iplg(IP)
+        ISEA    = MAPFS(1,IP_glob)
+        JSEA    = JX_TO_JSEA(IP)
+        IF (ISEA == 3170) write(740+IAPROC,*) 'SOLVER ENTRY', ISEA, JSEA, SUM(B_JAC(:,JSEA)), &
+                                     SUM(ASPAR_JAC(:,PDLIB_I_DIAG(JSEA))), PDLIB_I_DIAG(JSEA)
+      enddo
+
 
 !/DEBUGSOLVER     !WRITE(740+IAPROC,'(A20,20E20.10)') 'SUM BJAC 1', sum(B_JAC), SUM(ASPAR_JAC)
 
@@ -6087,6 +6106,10 @@
           ISEA  = MAPFS(1,IP_glob)
           eSI   = PDLIB_SI(IP)
           ACLOC = VA(:,JSEA)
+
+          write(740+IAPROC,*) 'SOLVER BEFORE', ISEA, JSEA, nbiter, SUM(B_JAC(:,JSEA)), &
+                                     SUM(ASPAR_JAC(:,PDLIB_I_DIAG(JSEA))), PDLIB_I_DIAG(JSEA)
+
 
           IF (.NOT. LCONVERGED(IP)) THEN
 #ifdef WEIGHTS

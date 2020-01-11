@@ -1335,6 +1335,10 @@
 !/PDLIB       ELSE
 !/PDLIB         DTGpre = DTG
 !/PDLIB       END IF
+!/PDLIB       IF (LSLOC) THEN
+!/PDLIB         B_JAC     = 0.
+!/PDLIB         ASPAR_JAC = 0.
+!/PDLIB       ENDIF
 
 !/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 13'
 !/MEMCHECK       call getMallocInfo(mallinfos)
@@ -1929,10 +1933,6 @@
   370     CONTINUE
 !
 !
-!!/PDLIB     IF (LSLOC) THEN
-!/PDLIB       B_JAC     = 0.
-!/PDLIB       ASPAR_JAC = 0.
-!!/PDLIB     ENDIF
 
           IF ( FLSOU ) THEN
 !
@@ -2053,11 +2053,11 @@
 !/DEBUGRUN          ENDIF
 !/DEBUGRUN        ENDDO
 !/DEBUGRUN      ENDDO
-!/DEBUGRUN      IF (SUM(VA) .NE. SUM(VA)) THEN
-!/DEBUGRUN        WRITE(740+IAPROC,*) 'NAN in ACTION 7', IX, IY, SUM(VA)
-!/DEBUGRUN        CALL FLUSH(740+IAPROC)
-!/DEBUGRUN        STOP
-!/DEBUGRUN      ENDIF
+      IF (SUM(VA) .NE. SUM(VA)) THEN
+        WRITE(740+IAPROC,*) 'NAN in ACTION 7', IX, IY, SUM(VA)
+        CALL FLUSH(740+IAPROC)
+        STOP
+      ENDIF
 !
 !/OMPG/!$OMP END DO
 !/OMPG/!$OMP END PARALLEL

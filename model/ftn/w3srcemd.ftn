@@ -522,7 +522,7 @@
       REAL                    :: eInc1, eInc2, eVS, eVD, JAC
       REAL                    :: DeltaSRC(NSPEC)
       REAL, PARAMETER         :: DTMINTOT = 0.01
-      LOGICAL                 :: LNEWLIMITER = .TRUE. 
+      LOGICAL                 :: LNEWLIMITER = .FALSE. 
 !/PDLIB  REAL                 :: PreVS, FAK, DVS, SIDT, FAKS, MAXDAC
 
 !/NNT      CHARACTER(LEN=17), SAVE :: FNAME = 'test_data_nnn.ww3'
@@ -533,12 +533,7 @@
 !
 !/T      FLTEST = .TRUE.
 !
-      IF (D_INP .LT. DMIN) THEN
-        SPEC = 0.d0 
-        RETURN 
-      ELSE
-        DEPTH  = MAX ( DMIN , D_INP )
-      ENDIF
+      DEPTH  = MAX ( DMIN , D_INP )
 
       IKS1 = 1
       ICESCALELN = MAX(0.,MIN(1.,1.-ICE*ICESCALES(1))) 
@@ -1043,8 +1038,8 @@
 !/DB1                  evS = -evS
 !/DB1                  evD = 2*evD
 !/DB1                ENDIF
-!/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * eVS
-!/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
+!!/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * eVS
+!!/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
 !/TR1                eVS = VSTR(ISP) * JAC 
 !/TR1                eVD = VDTR(ISP)
 !/TR1                IF (eVS .gt. 0.) THEN
@@ -1054,9 +1049,9 @@
 !/TR1                  evS = -evS
 !/TR1                  evD = 2*evD
 !/TR1                ENDIF
-!/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * eVS
-!/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
-!                     IF (IX == 36693) write(66666,*) IX, ISP, B_JAC(ISP,JSEA), ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)), &
+!!/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * eVS
+!!/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
+!                     IF (IX == 27211) write(740+IAPROC,*) IX, ISP, B_JAC(ISP,JSEA), ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)), &
 !                                              & VSTR(ISP), VDTR(ISP), VSDB(ISP), VDDB(ISP), VS(ISP), VD(ISP), &
 !                                              & SPEC(ISP), D_INP
 !                     
@@ -1066,6 +1061,9 @@
 !!/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
 !/PDLIB            END DO
 !/PDLIB          END DO
+                 IF (IX == 3170) write(740+IAPROC,*) 'HSPROB', ISEA, JSEA, IT, SUM(B_JAC(:,JSEA)), &
+                                     SUM(ASPAR_JAC(:,PDLIB_I_DIAG(JSEA))), PDLIB_I_DIAG(JSEA), & 
+                      &       SUM(SPEC), SUM(VS), SUM(VD), 4*SQRT(EMEAN) 
 !/PDLIB        ELSEIF (IMEM == 2) THEN
 !/PDLIB          SIDT   = PDLIB_SI(JSEA) * DTG
 !/PDLIB          DO IK=1,NK
