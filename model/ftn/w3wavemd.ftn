@@ -383,7 +383,7 @@
 !/PDLIB      USE PDLIB_W3PROFSMD, only : PDLIB_W3XYPUG, PDLIB_W3XYPUG_BLOCK_IMPLICIT, PDLIB_W3XYPUG_BLOCK_EXPLICIT
 !/PDLIB      USE PDLIB_W3PROFSMD, only : ALL_VA_INTEGRAL_PRINT, ALL_VAOLD_INTEGRAL_PRINT, ALL_FIELD_INTEGRAL_PRINT
 !/PDLIB      USE W3PARALL, only : PDLIB_NSEAL, PDLIB_NSEALM
-!/PDLIB      USE yowNodepool, only: npa, iplg
+!/PDLIB      USE yowNodepool, only: npa, iplg, np
 !/
       USE W3SERVMD
       USE W3TIMEMD
@@ -1356,7 +1356,7 @@
 !/PDLIB            VDTOT = 0.
 !/PDLIB          ENDIF
 
-!/PDLIB          DO JSEA = 1, NSEAL
+!/PDLIB          DO JSEA = 1, NP
 
 !/PDLIB            CALL INIT_GET_ISEA(ISEA, JSEA)
 
@@ -1982,7 +1982,7 @@
 !/BT4           PSIC=SED_PSIC(ISEA)
 
 !/DEBUGRUN          IF (JSEA == DEBUG_NODE) WRITE(*,*) 'W3WAVE TEST', ISEA, JSEA, SUM(VA(:,JSEA))
-
+                if (.false.) then
                 IF ( MAPSTA(IY,IX) .EQ. 1 .AND. FLAGST(ISEA)) THEN
                      TMP1   = WHITECAP(JSEA,1:4)
                      TMP2   = BEDFORMS(JSEA,1:3)
@@ -2040,6 +2040,7 @@
                     FCUT  (JSEA) = UNDEF
 !                    VA(:,JSEA)  = 0.
                 END IF
+                 endif 
 !/DEBUGRUN        WRITE(740+IAPROC,*) 'RET: min/max/sum(VA)=',minval(VA(:,JSEA)),maxval(VA(:,JSEA)),sum(VA(:,JSEA))
               END DO
 !/DEBUGRUN        WRITE(740+IAPROC,*) 'min/max/sum(VAtot)=', minval(VA), maxval(VA), sum(VA)

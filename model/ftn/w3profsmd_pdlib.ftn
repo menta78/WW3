@@ -5909,7 +5909,7 @@
       INTEGER JP_glob
       INTEGER is_converged, itmp
 
-      integer :: testknoten = 13366 
+      integer :: testknoten = 68227
 
       LOGICAL :: LSIG = .FALSE.
 
@@ -6015,9 +6015,9 @@
         JSEA    = JX_TO_JSEA(IP)
         ISEA    = MAPFS(1,IP_glob)
         JSEA    = JX_TO_JSEA(IP)
-        IF (ISEA == testknoten) write(740+IAPROC,*) 'SOLVER ENTRY', ISEA, JSEA, SUM(B_JAC(:,JSEA)), &
-                                &     SUM(ASPAR_JAC(:,PDLIB_I_DIAG(JSEA))), PDLIB_I_DIAG(JSEA), &
-                                &     NSEA, NP, NPA, NSEAL
+!!        write(740+IAPROC,*) 'SOLVER ENTRY', ISEA, JSEA, SUM(B_JAC(:,JSEA)), &
+!                                &     SUM(ASPAR_JAC(:,PDLIB_I_DIAG(JSEA))), PDLIB_I_DIAG(JSEA), &
+!                                &     NSEA, NP, NPA, NSEAL
       enddo
 
 
@@ -6167,9 +6167,6 @@
               END DO
             ENDIF ! IMEM
 
-          IF (ISEA == testknoten) write(740+IAPROC,*) 'SOLVER 2', ISEA, JSEA, nbiter, sum(ASPAR_DIAG), &
-                       &  SUM(B_JAC(:,IP)), sum(ACLOC), sum(esum)
-
 !/DEBUGSOLVERCOH          OffDiag(:, IP)=REAL(eOff)
 !/DEBUGSOLVERCOH          WRITE(740+IAPROC,*) 'Step 2: sum(eSum)=', sum(eSum), ' eOff=', sum(eOff)
             IF (FSREFRACTION) THEN
@@ -6284,8 +6281,6 @@
 !/DEBUGFREQSHIFT          END IF
 !/DEBUGFREQSHIFT        END DO
 !/DEBUGFREQSHIFT        WRITE(740+IAPROC,*) 'sum(eDiff/VAnew/VAold)=', sum(abs(eDiff)), sum(abs(VAnew)), sum(abs(VAold))
-          IF (ISEA == testknoten) write(740+IAPROC,*) 'SOLVER 3', ISEA, JSEA, nbiter, sum(ASPAR_DIAG), &
-                       &  SUM(B_JAC(:,IP)), sum(ACLOC), sum(esum)
 
 
             Sum_New=sum(eSum)
@@ -6303,7 +6298,7 @@
             esum = VA(1:NSPEC,IP) 
           ENDIF ! LCONVERGED
 !
-          IF (ISEA == testknoten) write(740+IAPROC,*) 'SOLVER 4', ISEA, JSEA, nbiter, sum(ASPAR_DIAG), & 
+          write(50000+IAPROC,*) 'SOLVER ITER', ISEA, JSEA, nbiter, sum(ASPAR_DIAG), & 
                        &  SUM(B_JAC(:,IP)), sum(ACLOC), sum(esum)
 
           IF (B_JGS_TERMINATE_DIFFERENCE) THEN
