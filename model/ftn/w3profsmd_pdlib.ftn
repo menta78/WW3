@@ -3802,7 +3802,8 @@
       REAL    :: eVal1, eVal2, eVal3
       REAL    :: DELTAL(3,NE)
       REAL    :: TRIA03, SIDT, CCOS, CSIN
-      REAL    :: SPEC(NSPEC), DEPTH
+      REAL    :: SPEC(NSPEC), DEPTH, CCOSA(NTH), CSINA(NTH) 
+      INTEGER :: IOBPTH1(NTH), IOBPTH2(NTH) 
 
 !/DEBUGSOLVER     WRITE(740+IAPROC,*) 'calcARRAY_JACOBI, begin'
 !/DEBUGSOLVER     FLUSH(740+IAPROC)
@@ -3816,6 +3817,9 @@
       DTK    = 0
       TMP3   = 0
 
+      CCOSA = FACX * ECOS
+      CSINA = FACX * ESIN
+
 !/MEMCHECK      write(50000+IAPROC,*) 'memcheck_____:', 'WW3_JACOBI SECTION 0'
 !/MEMCHECK      call getMallocInfo(mallinfos)
 !/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
@@ -3823,8 +3827,8 @@
 
         ITH    = 1 + MOD(ISP-1,NTH)
         IK     = 1 + (ISP-1)/NTH
-        CCOS   = FACX * ECOS(ITH)
-        CSIN   = FACY * ESIN(ITH)
+        CCOS   = CCOSA(ITH)
+        CSIN   = CSINA(ITH)
 
         DO IP = 1, NPA
           IP_GLOB = IPLG(IP) 
