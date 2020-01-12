@@ -3825,6 +3825,7 @@
         IK     = 1 + (ISP-1)/NTH
         CCOS   = FACX * ECOS(ITH)
         CSIN   = FACY * ESIN(ITH)
+
         DO IP = 1, NPA
           IP_GLOB = IPLG(IP) 
           CXY(1,IP) = CCOS * CG(IK,IP_GLOB)/CLATS(IP_GLOB)
@@ -3839,11 +3840,6 @@
 
         DO IE = 1, NE
           NI = INE(:,IE)
-          IF (SUM(IOBDP_LOC(NI)) .eq. 0) THEN
-            KP(1:3,IE) = 0.
-            DELTAL(1:3,IE) = 0.
-            CYCLE
-          ENDIF
           CXYY(1,:) = CXY(1,NI)
           CXYY(2,:) = CXY(2,NI)
           FL11 = CXYY(1,2)*PDLIB_IEN(1,IE)+CXYY(2,2)*PDLIB_IEN(2,IE)
@@ -3865,7 +3861,7 @@
         ENDDO
 
         J = 0 
-        DO IP = 1, npa
+        DO IP = 1, np
           IB1 = (1-IOBPA_LOC(IP)) * IOBPD_LOC(ITH,IP)
           IB2 = IOBPD_LOC(ITH,IP)
           IF (IOBDP_LOC(IP) .eq. 1) THEN
@@ -7171,7 +7167,7 @@
       USE W3IDATMD, ONLY: FLCUR
       USE W3ODATMD, only : IAPROC
       USE YOWNODEPOOL,    ONLY: PDLIB_SI, PDLIB_IEN, PDLIB_TRIA, ipgl, iplg, npa, np
-      use yowElementpool, ONLY: ne, INE
+      use yowElementpool, ONLY: NE, INE
 !/S      USE W3SERVMD, ONLY: STRACE
       
       IMPLICIT NONE
