@@ -1202,7 +1202,7 @@
 !/PDLIB            JSEA=-1
 !/PDLIB          ELSE
 !/PDLIB            IBELONG=1
-!/PDLIB            JSEA=JX_TO_JSEA(JX)
+!/PDLIB            JSEA = JX_TO_JSEA(JX)
 !/PDLIB          END IF
 !/PDLIB        ELSE
 !/PDLIB          IBELONG=0

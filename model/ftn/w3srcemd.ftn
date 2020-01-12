@@ -1080,9 +1080,9 @@
 !/PDLIB            END DO
 !/PDLIB          END DO
                  IF (4*SQRT(EMEAN) .gt. 1.) THEN
-                   write(20000+IAPROC,*) 'HSPROB', ISEA, JSEA, IT, SUM(B_JAC(:,JSEA)), &
-                                     SUM(ASPAR_JAC(:,PDLIB_I_DIAG(JSEA))), & 
-                      &       SUM(SPEC), SUM(VS), SUM(VD), 4*SQRT(EMEAN), & 
+                   write(20000+IAPROC,*) 'HSPROB', IX, ISEA, JSEA, IT, SUM(B_JAC(1:NSPEC,JSEA)), &
+                                     SUM(ASPAR_JAC(1:NSPEC,PDLIB_I_DIAG(JSEA))), & 
+                      &       SUM(VS), SUM(VD), SUM(SPEC), 4*SQRT(EMEAN), & 
                               IOBP_LOC(JSEA), IOBDP_LOC(JSEA), IOBPA_LOC(JSEA)
                   CALL FLUSH(20000+IAPROC)
                  ENDIF

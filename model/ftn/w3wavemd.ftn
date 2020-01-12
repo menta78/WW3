@@ -1340,6 +1340,9 @@
 !/PDLIB         ASPAR_JAC = 0.
 !/PDLIB       ENDIF
 
+      WRITE(70000+IAPROC,*) 'SUM VA W3WAVE AFTER INIT', SUM(VA)
+
+
 !/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 13'
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
@@ -1387,6 +1390,7 @@
 !/PDLIB!/DEBUGSRC      WRITE(740+IAPROC,*) 'ISEA/JSEA=', ISEA, JSEA
 !/PDLIB!/DEBUGSRC      WRITE(740+IAPROC,*) 'Before sum(VA)=', sum(VA(:,JSEA))
 !/PDLIB!/DEBUGSRC      FLUSH(740+IAPROC)
+                  WRITE(70000+IAPROC,*) 'SUM VA W3WAVE FOR IX =', IX, ISEA, JSEA, SUM(VA(:,JSEA))                       
 !/PDLIB                CALL W3SRCE(srce_imp_pre, IT, ISEA, JSEA, IX, IY, IMOD, &
 !/PDLIB                   VAOLD(:,JSEA), VA(:,JSEA),                        &
 !/PDLIB                   VSioDummy, VDioDummy, SHAVETOT(JSEA),  &
@@ -1440,6 +1444,8 @@
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(IAPROC+40000,mallInfos)
 
+          WRITE(70000+IAPROC,*) 'SUM VA W3WAVE 1', SUM(VA)
+
           IF ( FLZERO ) THEN
 !/T              WRITE (NDST,9022)
               GOTO 400
@@ -1458,6 +1464,9 @@
 !/DEBUGRUN              FLUSH(740+IAPROC)
               GOTO 380
           END IF
+
+          WRITE(70000+IAPROC,*) 'SUM VA W3WAVE 2', SUM(VA)
+
 !
 ! Estimation of the local maximum CFL for XY propagation
 !
@@ -1515,6 +1524,8 @@
 !/DEBUGRUN        STOP
 !/DEBUGRUN      ENDIF
 
+          WRITE(70000+IAPROC,*) 'SUM VA W3WAVE 3', SUM(VA)
+
 !
 !/T       IF (GTYPE .EQ. UNGTYPE) THEN 
 !/T         IF ( FLOGRD(9,3) ) THEN
@@ -1541,6 +1552,9 @@
 !
 ! 3.6 Perform Propagation = = = = = = = = = = = = = = = = = = = = = = =
 ! 3.6.1 Preparations
+
+          WRITE(70000+IAPROC,*) 'SUM VA W3WAVE 4', SUM(VA)
+
 !
 !/SEC1      DTGTEMP=DTG
 !/SEC1      DTG=DTG/NITERSEC1
@@ -1633,6 +1647,8 @@
 
 !/PDLIB!/DEBUGCOH  CALL ALL_VA_INTEGRAL_PRINT(IMOD, "Before spatial advection")
 !/TIMINGS         CALL PRINT_MY_TIME("Before spatial advection")
+
+          WRITE(70000+IAPROC,*) 'SUM VA W3WAVE 5', SUM(VA)
 !
 ! 3.6.3 Longitude-latitude
 !       (time step correction in routine)
@@ -1713,6 +1729,9 @@
 !/DEBUGRUN        FLUSH(740+IAPROC)
 !
 !
+
+          WRITE(70000+IAPROC,*) 'SUM VA W3WAVE 6', SUM(VA)
+
 
             IF ( FLOMP ) ALLOCATE ( FIELD(1-NY:NY*(NX+2)) )
 !
@@ -1852,6 +1871,7 @@
 !/DEBUGRUN        WRITE(740+IAPROC,*) 'ITLOCH=', ITLOCH
 !/DEBUGRUN        FLUSH(740+IAPROC)
 
+          WRITE(70000+IAPROC,*) 'SUM VA W3WAVE 8', SUM(VA)
 !
 ! 3.6.4 Intra-spectral part 2
 !
@@ -1929,6 +1949,8 @@
 ! 3.6 End propapgation  = = = = = = = = = = = = = = = = = = = = = = = =
 
 ! 3.7 Calculate and integrate source terms.
+
+          WRITE(70000+IAPROC,*) 'SUM VA W3WAVE 8', SUM(VA)
 !
   370     CONTINUE
 !
@@ -1982,7 +2004,6 @@
 !/BT4           PSIC=SED_PSIC(ISEA)
 
 !/DEBUGRUN          IF (JSEA == DEBUG_NODE) WRITE(*,*) 'W3WAVE TEST', ISEA, JSEA, SUM(VA(:,JSEA))
-                if (.false.) then
                 IF ( MAPSTA(IY,IX) .EQ. 1 .AND. FLAGST(ISEA)) THEN
                      TMP1   = WHITECAP(JSEA,1:4)
                      TMP2   = BEDFORMS(JSEA,1:3)
@@ -2040,7 +2061,6 @@
                     FCUT  (JSEA) = UNDEF
 !                    VA(:,JSEA)  = 0.
                 END IF
-                 endif 
 !/DEBUGRUN        WRITE(740+IAPROC,*) 'RET: min/max/sum(VA)=',minval(VA(:,JSEA)),maxval(VA(:,JSEA)),sum(VA(:,JSEA))
               END DO
 !/DEBUGRUN        WRITE(740+IAPROC,*) 'min/max/sum(VAtot)=', minval(VA), maxval(VA), sum(VA)
@@ -2059,6 +2079,8 @@
         CALL FLUSH(740+IAPROC)
         STOP
       ENDIF
+          WRITE(70000+IAPROC,*) 'SUM VA W3WAVE 9', SUM(VA)
+
 !
 !/OMPG/!$OMP END DO
 !/OMPG/!$OMP END PARALLEL

@@ -5920,6 +5920,8 @@
 !/MEMCHECK      call getMallocInfo(mallinfos)
 !/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
 
+      WRITE(70000+IAPROC,*) 'SUM VA ENTRY SOLVER', SUM(VA)
+
       CCURX  = FACX
       CCURY  = FACY
       CALL MPI_COMM_RANK(MPI_COMM_WCMP, myrank, ierr)
@@ -6009,17 +6011,6 @@
           ENDIF
         ENDIF
       END IF
-
-      do ip = 1, np
-        IP_glob =iplg(IP)
-        JSEA    = JX_TO_JSEA(IP)
-        ISEA    = MAPFS(1,IP_glob)
-        JSEA    = JX_TO_JSEA(IP)
-!!        write(740+IAPROC,*) 'SOLVER ENTRY', ISEA, JSEA, SUM(B_JAC(:,JSEA)), &
-!                                &     SUM(ASPAR_JAC(:,PDLIB_I_DIAG(JSEA))), PDLIB_I_DIAG(JSEA), &
-!                                &     NSEA, NP, NPA, NSEAL
-      enddo
-
 
 !/MEMCHECK      write(50000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION 4'
 !/MEMCHECK      call getMallocInfo(mallinfos)
@@ -6149,8 +6140,8 @@
               !WRITE(*,'(A10,10F20.10)') 'JAC4', SUM(ASPAR_DIAG_LOCAL), SUM(ASPAR_OFF_DIAG_LOCAL), SUM(B_JAC_LOCAL)
               !CALL calcARRAY_JACOBI3(IP,ICOUNT1,DTG,FACX,FACY,VGX,VGY,ASPAR_DIAG_LOCAL,ASPAR_OFF_DIAG_LOCAL,B_JAC_LOCAL)
               !WRITE(*,'(A10,10F20.10)') 'JAC3', SUM(ASPAR_DIAG_LOCAL), SUM(ASPAR_OFF_DIAG_LOCAL), SUM(B_JAC_LOCAL)
-              eSum       = B_JAC(1:NSPEC,IP)
-              ASPAR_DIAG = ASPAR_JAC(1:NSPEC,PDLIB_I_DIAG(IP))
+              eSum(1:NSPEC)       = B_JAC(1:NSPEC,IP)
+              ASPAR_DIAG(1:NSPEC) = ASPAR_JAC(1:NSPEC,PDLIB_I_DIAG(IP))
               !WRITE(*,*) 'TEST ASPAR B_JAC', IP, SUM(B_JAC(1:NSPEC,IP)), SUM(ASPAR_DIAG)
 !/DEBUGFREQSHIFT      WRITE(740+IAPROC,*) 'eSI=', eSI
 !/DEBUGFREQSHIFT      WRITE(740+IAPROC,*) 'sum(ASPAR_DIAG)=', sum(ASPAR_DIAG)
@@ -6298,8 +6289,8 @@
             esum = VA(1:NSPEC,IP) 
           ENDIF ! LCONVERGED
 !
-          write(50000+IAPROC,*) 'SOLVER ITER', ISEA, JSEA, nbiter, sum(ASPAR_DIAG), & 
-                       &  SUM(B_JAC(:,IP)), sum(ACLOC), sum(esum)
+          write(50000+IAPROC,*) 'SOLVER ITER', ISEA, JSEA, nbiter, & 
+                       &  SUM(B_JAC(:,IP)), sum(ASPAR_DIAG), sum(ACLOC), sum(esum)
 
           IF (B_JGS_TERMINATE_DIFFERENCE) THEN
             if (Sum_new .gt. thr8) then
@@ -6543,6 +6534,11 @@
         endif
       endif
 #endif
+
+      B_JAC = 0.
+      ASPAR_JAC = 0.
+
+      WRITE(70000+IAPROC,*) 'SUM VA EXIT SOLVER', SUM(VA)
 !
 !/MEMCHECK      write(50000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION 7'
 !/MEMCHECK      call getMallocInfo(mallinfos)
@@ -7450,16 +7446,18 @@
 !/DEBUGINIT    FLUSH(740+IAPROC)
       IF (IMEM == 1) THEN
         ALLOCATE(ASPAR_JAC(NSPEC, PDLIB_NNZ), stat=istat)
+        ASPAR_JAC = 0.
         if(istat /= 0) CALL PDLIB_ABORT(9)
       ELSE IF (IMEM == 2) THEN
         ALLOCATE(ASPAR_DIAG_ALL(NSPEC, npa), stat=istat)
+        ASPAR_DIAG_ALL = 0.
         if(istat /= 0) CALL PDLIB_ABORT(9)
       ENDIF
 !/DEBUGINIT    WRITE(740+IAPROC,*) 'JACOBI_INIT, step 2'
 !/DEBUGINIT    FLUSH(740+IAPROC)
       ALLOCATE(B_JAC(NSPEC,npa), stat=istat)
-      if(istat /= 0) CALL PDLIB_ABORT(10)
       B_JAC = 0.
+      if(istat /= 0) CALL PDLIB_ABORT(10)
 !/DEBUGINIT    WRITE(740+IAPROC,*) 'JACOBI_INIT, step 3'
 !/DEBUGINIT    FLUSH(740+IAPROC)
       ALLOCATE(CAD_THE(NSPEC,NSEAL), stat=istat)
