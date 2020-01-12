@@ -1056,8 +1056,8 @@
 !/DB1                  evS = -evS
 !/DB1                  evD = 2*evD
 !/DB1                ENDIF
-!!/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * eVS
-!!/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
+!/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * eVS
+!/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
 !/TR1                eVS = VSTR(ISP) * JAC 
 !/TR1                eVD = VDTR(ISP)
 !/TR1                IF (eVS .gt. 0.) THEN
@@ -1067,8 +1067,8 @@
 !/TR1                  evS = -evS
 !/TR1                  evD = 2*evD
 !/TR1                ENDIF
-!!/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * eVS
-!!/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
+!/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * eVS
+!/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
 !                     IF (IX == 27211) write(740+IAPROC,*) IX, ISP, B_JAC(ISP,JSEA), ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)), &
 !                                              & VSTR(ISP), VDTR(ISP), VSDB(ISP), VDDB(ISP), VS(ISP), VD(ISP), &
 !                                              & SPEC(ISP), D_INP
