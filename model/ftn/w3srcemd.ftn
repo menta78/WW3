@@ -968,15 +968,15 @@
         END DO  ! end of loop on IS 
 
         !IF (4*SQRT(EMEAN) .gt. 1.) THEN
-             write(10000+IAPROC,*) 'ISEA JSEA IT=', ISEA, JSEA, IT
-             write(10000+IAPROC,*) &
-             &       'VS=', SUM(VS), SUM(VSIN), SUM(VSNL), & 
-             &       SUM(VSDS)
-             write(10000+IAPROC,*) &
-             &       'VD=', SUM(VD), SUM(VDIN), SUM(VDNL), & 
-             &       SUM(VDDS)
-             write(10000+IAPROC,*) 'HS=', 4*SQRT(EMEAN), SUM(SPEC)
-            CALL FLUSH(10000+IAPROC)
+        !     write(10000+IAPROC,*) 'ISEA JSEA IT=', ISEA, JSEA, IT
+        !     write(10000+IAPROC,*) &
+        !     &       'VS=', SUM(VS), SUM(VSIN), SUM(VSNL), & 
+        !     &       SUM(VSDS)
+        !     write(10000+IAPROC,*) &
+        !     &       'VD=', SUM(VD), SUM(VDIN), SUM(VDNL), & 
+        !     &       SUM(VDDS)
+        !     write(10000+IAPROC,*) 'HS=', 4*SQRT(EMEAN), SUM(SPEC)
+        !    CALL FLUSH(10000+IAPROC)
         !ENDIF
         
 
@@ -1079,13 +1079,13 @@
 !!/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
 !/PDLIB            END DO
 !/PDLIB          END DO
-                 IF (4*SQRT(EMEAN) .gt. 1.) THEN
-                   write(20000+IAPROC,*) 'HSPROB', IX, ISEA, JSEA, IT, SUM(B_JAC(1:NSPEC,JSEA)), &
-                                     SUM(ASPAR_JAC(1:NSPEC,PDLIB_I_DIAG(JSEA))), & 
-                      &       SUM(VS), SUM(VD), SUM(SPEC), 4*SQRT(EMEAN), & 
-                              IOBP_LOC(JSEA), IOBDP_LOC(JSEA), IOBPA_LOC(JSEA)
-                  CALL FLUSH(20000+IAPROC)
-                 ENDIF
+!                 IF (4*SQRT(EMEAN) .gt. 1.) THEN
+!                   write(20000+IAPROC,*) 'HSPROB', IX, ISEA, JSEA, IT, SUM(B_JAC(1:NSPEC,JSEA)), &
+!                                     SUM(ASPAR_JAC(1:NSPEC,PDLIB_I_DIAG(JSEA))), & 
+!                      &       SUM(VS), SUM(VD), SUM(SPEC), 4*SQRT(EMEAN), & 
+!                              IOBP_LOC(JSEA), IOBDP_LOC(JSEA), IOBPA_LOC(JSEA)
+!                  CALL FLUSH(20000+IAPROC)
+!                 ENDIF
 !/PDLIB        ELSEIF (IMEM == 2) THEN
 !/PDLIB          SIDT   = PDLIB_SI(JSEA) * DTG
 !/PDLIB          DO IK=1,NK

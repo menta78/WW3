@@ -473,7 +473,7 @@ module yowpdlibMain
 #ifdef WEIGHTS
     if (lexist) then
       do i = 1, np
-        itmp = max(1,int(real((iweights(iplg(i))+100))/10.))
+        itmp = max(1,int(real((iweights(iplg(i))+100))))
         !vwgt(i) = max(1,int(real(iweights(iplg(i)))/maxval(iweights)) * 10)
         !vwgt(i) = max(1,iweights(iplg(i)))
         !vwgt(i) = max(1,itmp)
