@@ -6297,7 +6297,7 @@
 
           IF (B_JGS_TERMINATE_DIFFERENCE) THEN
             if (Sum_new .gt. thr8) then
-              DiffNew = sum(abs(ACLOC - eSum))!abs(Sum_new-Sum_prev)
+              DiffNew = sum(abs(ACLOC - eSum))**2!abs(Sum_new-Sum_prev)
               !write(*,'(4F20.10)') Sum_new, Sum_prev, DiffNew, abs(Sum_new-Sum_prev)
 !/DEBUGFREQSHIFT         WRITE(740+IAPROC,*) 'DiffNew=', DiffNew, ' Sum_new=', Sum_new
               p_is_converged = DiffNew/Sum_new
@@ -6372,8 +6372,8 @@
           !WRITE(740+IAPROC,*) myrank, 'solver', nbiter, is_converged, prop_conv, B_JGS_PMIN
 !/DEBUGSOLVER       WRITE(740+IAPROC,*) 'solver', nbiter, is_converged, prop_conv, B_JGS_PMIN
 !/DEBUGSOLVER       FLUSH(740+IAPROC)
+          IF (myrank == 0) WRITE(*,*) 'No. of solver iterations', nbiter, is_converged, prop_conv, B_JGS_PMIN
           IF (prop_conv .lt. B_JGS_PMIN) THEN
-            if (myrank == 0) WRITE(*,*) 'No. of solver iterations', nbiter, is_converged, prop_conv, B_JGS_PMIN
 !/DEBUGFREQSHIFT       WRITE(740+IAPROC,*) 'prop_conv=', prop_conv
 !/DEBUGFREQSHIFT       WRITE(740+IAPROC,*) 'NX=', NX
 !/DEBUGFREQSHIFT       WRITE(740+IAPROC,*) 'is_converged=', is_converged
