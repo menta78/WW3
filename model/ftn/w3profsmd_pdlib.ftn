@@ -171,8 +171,8 @@
       USE W3GDATMD, ONLY: FLCX, FLCY
 !/MEMCHECK      USE MallocInfo_m
       USE CONSTANTS, ONLY : GRAV, TPI
-      USE W3GDATMD, ONLY: XYB, XGRD, YGRD, NX, NSEA, NTRI, TRIGP, NSPEC, NSEAL, TRIA
-      USE W3GDATMD, ONLY: MAPSTA, MAPFS, GRIDS, NTH, SIG, NK, ZB
+      USE W3GDATMD, ONLY: XYB, XGRD, YGRD, NX, NSEA, NTRI, TRIGP, NSPEC, NSEAL
+      USE W3GDATMD, ONLY: MAPSTA, MAPFS, GRIDS, NTH, SIG, NK
       USE W3ADATMD, ONLY: IOBP_LOC, IOBPD_LOC, IOBPA_LOC, IOBDP_LOC
       USE W3GDATMD, ONLY: CCON, COUNTCON, INDEX_CELL, IE_CELL
       USE W3GDATMD, ONLY: IOBP, IOBPA, IOBPD, IOBDP, SI 
@@ -218,8 +218,6 @@
 !/DEBUGSOLVER     WRITE(740+IAPROC,*) 'NAPROC=', NAPROC
 !/DEBUGSOLVER     WRITE(740+IAPROC,*) 'NTPROC=', NTPROC
 !/DEBUGSOLVER     FLUSH(740+IAPROC)
-
-      DEALLOCATE(ZB)
 
       PDLIB_NSEAL = 0
 
@@ -6302,7 +6300,7 @@
           !             &  SUM(B_JAC(:,IP)), sum(ASPAR_DIAG), sum(ACLOC), sum(esum)
 
           IF (B_JGS_TERMINATE_DIFFERENCE) THEN
-            if (Sum_new .gt. thr8) then
+            if (Sum_new .gt. 0.d0) then
               DiffNew = sum(abs(ACLOC - eSum))**2!abs(Sum_new-Sum_prev)
               !write(*,'(4F20.10)') Sum_new, Sum_prev, DiffNew, abs(Sum_new-Sum_prev)
 !/DEBUGFREQSHIFT         WRITE(740+IAPROC,*) 'DiffNew=', DiffNew, ' Sum_new=', Sum_new
@@ -6379,7 +6377,7 @@
 !/DEBUGSOLVER       WRITE(740+IAPROC,*) 'solver', nbiter, is_converged, prop_conv, B_JGS_PMIN
 !/DEBUGSOLVER       FLUSH(740+IAPROC)
           IF (myrank == 0) WRITE(*,*) 'No. of solver iterations', nbiter, is_converged, prop_conv, B_JGS_PMIN
-          IF (prop_conv .lt. B_JGS_PMIN) THEN
+          IF (prop_conv .le. B_JGS_PMIN + TINY(1.)) THEN
 !/DEBUGFREQSHIFT       WRITE(740+IAPROC,*) 'prop_conv=', prop_conv
 !/DEBUGFREQSHIFT       WRITE(740+IAPROC,*) 'NX=', NX
 !/DEBUGFREQSHIFT       WRITE(740+IAPROC,*) 'is_converged=', is_converged
