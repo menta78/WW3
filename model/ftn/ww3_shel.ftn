@@ -413,6 +413,11 @@
 !
 !/DEBUGINIT      WRITE(740+IAPROC,*) 'ww3_shel, step 1'
 !/DEBUGINIT      FLUSH(740+IAPROC)
+
+!/MEMCHECK       WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 1'
+!/MEMCHECK       call getMallocInfo(mallinfos)
+!/MEMCHECK       call printMallInfo(10000+IAPROC,mallInfos)
+
       NDSI   = 10
       NDSS   = 90
       NDSO   =  6
@@ -544,6 +549,11 @@
 !
 !--- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ! 2.  Define input fields
+
+!/MEMCHECK       WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 2'
+!/MEMCHECK       call getMallocInfo(mallinfos)
+!/MEMCHECK       call printMallInfo(10000+IAPROC,mallInfos)
+
 !
 ! process ww3_prnc namelist
 !
@@ -690,6 +700,11 @@
                  .OR. FLH(1) .OR. FLH(2) .OR. FLH(3) .OR. FLH(4) .OR. FLH(8)
 !
         IF ( IAPROC .EQ. NAPOUT ) WRITE (NDSO,922)
+
+!/MEMCHECK       WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 3'
+!/MEMCHECK       call getMallocInfo(mallinfos)
+!/MEMCHECK       call printMallInfo(10000+IAPROC,mallInfos)
+
 !
 !       INFLAGS2 is just "initial value of INFLAGS1", i.e. does *not* get
 !          changed when model reads last record of ice.ww3
@@ -707,6 +722,7 @@
         CALL D2J(STOPDATE,STOPJULDAY,IERR)
 
 ! 2.3 Domain setup
+
 
         IOSTYP = NML_DOMAIN%IOSTYP
         CALL W3IOGR ( 'GRID', NDSF(5) )
@@ -748,6 +764,7 @@
         ODAT(23) = MAX ( 0 , ODAT(23) )
         ODAT(28) = MAX ( 0 , ODAT(28) )
         ODAT(33) = MAX ( 0 , ODAT(33) )
+
 
 ! 2.5 Output types
 
@@ -983,9 +1000,10 @@
 
 
       END IF ! FLGNML
-
-
-
+!
+!/MEMCHECK       WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 4 AFTER NML'
+!/MEMCHECK       call getMallocInfo(mallinfos)
+!/MEMCHECK       call printMallInfo(10000+IAPROC,mallInfos)
 !
 ! process old ww3_shel.inp format
 !
@@ -1129,7 +1147,19 @@
 !/DEBUGINIT      write(740+IAPROC,*), 'Before read 2002, case 6'
         READ (NDSI,*) IOSTYP
 !/DEBUGINIT      write(740+IAPROC,*), ' After read 2002, case 6'
+
+
+!/MEMCHECK       WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION BEFORE IOGR'
+!/MEMCHECK       call getMallocInfo(mallinfos)
+!/MEMCHECK       call printMallInfo(10000+IAPROC,mallInfos)
+
         CALL W3IOGR ( 'GRID', NDSF(5) )
+
+!/MEMCHECK       WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION AFTER IOGR'
+!/MEMCHECK       call getMallocInfo(mallinfos)
+!/MEMCHECK       call printMallInfo(10000+IAPROC,mallInfos)
+
+
         IF ( FLAGLL ) THEN
           FACTOR = 1.
         ELSE
@@ -1139,6 +1169,12 @@
 !/DEBUGINIT      write(740+IAPROC,*), 'ww3_shel, step 8'
 
 ! 2.4 Output dates
+
+!
+!/MEMCHECK       WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 5'
+!/MEMCHECK       call getMallocInfo(mallinfos)
+!/MEMCHECK       call printMallInfo(10000+IAPROC,mallInfos)
+!
 
         NPTS   = 0
         NOTYPE = 6
@@ -1287,13 +1323,25 @@
           END IF ! ODAT
         END DO ! J
 
+!
+!/MEMCHECK       WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 5a'
+!/MEMCHECK       call getMallocInfo(mallinfos)
+!/MEMCHECK       call printMallInfo(10000+IAPROC,mallInfos)
+!
+
         ! force minimal allocation to avoid memory seg fault
         IF ( .NOT.ALLOCATED(X) .AND. NPTS.EQ.0 ) ALLOCATE ( X(1), Y(1), PNAMES(1) )
 
+!
+!/MEMCHECK       WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 5b'
+!/MEMCHECK       call getMallocInfo(mallinfos)
+!/MEMCHECK       call printMallInfo(10000+IAPROC,mallInfos)
+!
 
 ! 2.6 Homogeneous field data
 
         IF ( FLHOM ) THEN
+!
           IF ( IAPROC .EQ. NAPOUT ) WRITE (NDSO,951)                  &
                           'Homogeneous field data (and moving grid) ...'
           NH     = 0
@@ -1399,25 +1447,22 @@
 
       END IF
 
-
-
-
-
-!
-! ----------------
-!
+!/MEMCHECK       WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 5 AFTER READ'
+!/MEMCHECK       call getMallocInfo(mallinfos)
+!/MEMCHECK       call printMallInfo(10000+IAPROC,mallInfos)
 
 ! 2.1 input fields
 
 ! 2.1.a Opening field and data files
 
       IF ( IAPROC .EQ. NAPOUT ) WRITE (NDSO,950)
+!
       IF ( FLFLG ) THEN
+!
         IF ( IAPROC .EQ. NAPOUT ) WRITE (NDSO,951)                  &
                                          'Preparing input files ...'
 !
-
-        DO J=JFIRST, 4
+        DO J = JFIRST, 4
 !/DEBUGINIT     write(740+IAPROC,*), 'J=',J,'INFLAGS1(J)=',INFLAGS1(J), 'FLAGSC(J)=', FLAGSC(J) 
           IF ( INFLAGS1(J) .AND. .NOT. FLAGSC(J)) THEN
             IF ( FLH(J) ) THEN
@@ -1452,6 +1497,11 @@
 !
       END IF ! FLFLG
 
+!
+!/MEMCHECK       WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 6 AFTER FIELD'
+!/MEMCHECK       call getMallocInfo(mallinfos)
+!/MEMCHECK       call printMallInfo(10000+IAPROC,mallInfos)
+!
 
 ! 2.2 Time setup
 
@@ -1486,6 +1536,11 @@
           WRITE (NDSO,940) 'IOSTYP NOT RECOGNIZED'
         END IF
       END IF
+
+!/MEMCHECK       WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_SHEL SECTION 7'
+!/MEMCHECK       call getMallocInfo(mallinfos)
+!/MEMCHECK       call printMallInfo(10000+IAPROC,mallInfos)
+
 
 
 ! 2.4 Output dates

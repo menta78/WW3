@@ -341,7 +341,9 @@ CONTAINS
       CALL SPATIAL_GRID    
       CALL NVECTRI
       CALL COORDMAX
+#ifndef PDLIB
       CALL AREA_SI(1)
+#endif
 !
       CLOSE(NDS)
       END SUBROUTINE READMSH
@@ -1246,16 +1248,14 @@ END SUBROUTINE
            CCON(I2) = CCON(I2) + 1
            CCON(I3) = CCON(I3) + 1
            TRIA03 = 1./3. * TRIA(IE)
-           write(*,*) I1, I2, I3, TRIA03
            SI(I1) = SI(I1) + TRIA03
            SI(I2) = SI(I2) + TRIA03
            SI(I3) = SI(I3) + TRIA03
          ENDDO
 
-         WRITE(*,*) NX, COUNTRI, 2, (4 * 2 * NX * COUNTRI) / 1024**2
 
          CELLVERTEX(:,:,:) = 0 ! Stores for each node the Elementnumbers of the connected Elements
-                               ! and the Position of the position of the Node in the Element Index
+                               ! and the Position of the Node in the Element Index
 
          WRITE(*,'("+TRACE......",A)') 'COMPUTE CELLVERTEX'
 
