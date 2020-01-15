@@ -6888,7 +6888,7 @@
 !/DEBUGSOLVER     FLUSH(740+IAPROC)
       END SUBROUTINE
 !/ ------------------------------------------------------------------- /
-      SUBROUTINE BLOCK_SOLVER_INIT
+      SUBROUTINE BLOCK_SOLVER_INIT(IMOD)
 !/
 !/                  +-----------------------------------+
 !/                  | WAVEWATCH III           NOAA/NCEP |
@@ -6950,6 +6950,8 @@
       USE W3ODATMD, ONLY: IAPROC
 !/
       IMPLICIT NONE
+
+      INTEGER, INTENT(IN) :: IMOD
 !
 !/ ------------------------------------------------------------------- /
 !/
@@ -7005,7 +7007,7 @@
       IF (FSTOTALIMP .and. B_JGS_USE_JACOBI) THEN
 !/DEBUGINIT    WRITE(740+IAPROC,*) 'BLOCK_SOLVER_INIT, step 4'
 !/DEBUGINIT    FLUSH(740+IAPROC)
-        CALL JACOBI_INIT
+        CALL JACOBI_INIT(IMOD) 
 !/DEBUGINIT    WRITE(740+IAPROC,*) 'BLOCK_SOLVER_INIT, step 5'
 !/DEBUGINIT    FLUSH(740+IAPROC)
       END IF
@@ -7469,7 +7471,7 @@
 !/
       END SUBROUTINE BLOCK_SOLVER_FINALIZE
 !/ ------------------------------------------------------------------- /
-      SUBROUTINE JACOBI_INIT
+      SUBROUTINE JACOBI_INIT(IMOD) 
 !/
 !/                  +-----------------------------------+
 !/                  | WAVEWATCH III           NOAA/NCEP |
@@ -7515,7 +7517,7 @@
 !
 !/ ------------------------------------------------------------------- /
 !/S      USE W3SERVMD, ONLY: STRACE
-      USE W3GDATMD, ONLY: NSPEC, B_JGS_BLOCK_GAUSS_SEIDEL
+      USE W3GDATMD, ONLY: NSPEC, B_JGS_BLOCK_GAUSS_SEIDEL, GRIDS
       use YOWNODEPOOL, ONLY: PDLIB_NNZ, npa, np
       USE yowfunction, ONLY: pdlib_abort
       USE W3GDATMD, ONLY: NTH, NK, NSEAL
@@ -7534,6 +7536,8 @@
 !/
 !/ ------------------------------------------------------------------- /
 !/
+      INTEGER, INTENT(IN) :: IMOD 
+
       INTEGER istat
 !/DEBUGINIT    WRITE(740+IAPROC,*) 'JACOBI_INIT, step 1'
 !/DEBUGINIT    FLUSH(740+IAPROC)
@@ -7583,6 +7587,29 @@
       END IF
 !/DEBUGINIT    WRITE(740+IAPROC,*) 'JACOBI_INIT, step 7'
 !/DEBUGINIT    FLUSH(740+IAPROC)
+      DEALLOCATE ( & 
+!                 GRIDS(IMOD)%TRIGP,                         &
+!                 GRIDS(IMOD)%XYB,                             &
+                 GRIDS(IMOD)%SI,                                &
+                 GRIDS(IMOD)%TRIA,                            &
+                 GRIDS(IMOD)%CROSSDIFF,                     &
+                 GRIDS(IMOD)%IEN,                           &
+                 GRIDS(IMOD)%LEN,                           &
+                 GRIDS(IMOD)%ANGLE,                         &
+                 GRIDS(IMOD)%ANGLE0,                        &
+                 GRIDS(IMOD)%CCON,                              &
+                 GRIDS(IMOD)%COUNTCON,                          &
+                 GRIDS(IMOD)%INDEX_CELL,                      &
+                 GRIDS(IMOD)%IE_CELL,                     &
+                 GRIDS(IMOD)%POS_CELL,                    &
+                 GRIDS(IMOD)%IAA,                             &
+                 GRIDS(IMOD)%JAA,                              &
+                 GRIDS(IMOD)%POSI,                      &
+                 GRIDS(IMOD)%I_DIAG,                            &
+                 GRIDS(IMOD)%JA_IE,                       &
+                 GRIDS(IMOD)%IOBPD,                         &
+                 GRIDS(IMOD)%IOBDP,                             &
+                 GRIDS(IMOD)%IOBPA  )
 !/
 !/ End of JACOBI_INIT ------------------------------------------------ /
 !/

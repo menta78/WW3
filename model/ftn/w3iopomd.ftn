@@ -212,7 +212,7 @@
                           RLGTYPE, CLGTYPE, UNGTYPE, GTYPE, FLAGLL,   &
                           ICLOSE,ICLOSE_NONE,ICLOSE_SMPL,ICLOSE_TRPL, &
                           MAPSTA, MAPFS, FILEXT, ZB, TRNX, TRNY
-      USE W3GDATMD, ONLY: XYB, TRIGP,MAXX, MAXY, DXYMAX  
+      USE W3GDATMD, ONLY: XYB, MAXX, MAXY, DXYMAX  
 !/RTD  !!  Use rotated N-Pole lat/lon and conversion sub.  JGLi12Jun2012
 !/RTD      USE W3GDATMD, ONLY: PoLat, PoLon, FLAGUNR    
 !/RTD      USE W3SERVMD, ONLY: W3LLTOEQ 
