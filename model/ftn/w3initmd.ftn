@@ -656,27 +656,41 @@
 !/PDLIB    IF (GTYPE .ne. UNGTYPE) THEN
 !/SETUP      CALL PREPARATION_FD_SCHEME(IMOD)
 !/PDLIB    ELSE
-!/PDLIB!/DEBUGINIT      WRITE(*,*) 'Before PDLIB_INIT, IMOD=', IMOD
+
+!/PDLIB!/DEBUGINIT     WRITE(740+IAPROC,*) 'Before PDLIB_INIT'
+
 !/PDLIB      CALL PDLIB_INIT(IMOD)
+
 !/MEMCHECK       WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2c'
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(10000+IAPROC,mallInfos)
+
 !/PDLIB!/DEBUGINIT     WRITE(740+IAPROC,*) 'After set up of NSEAL, NSEALM=', NSEALM
 !/PDLIB!/DEBUGINIT     WRITE(740+IAPROC,*) 'After PDLIB_INIT'
 !/PDLIB!/DEBUGINIT     WRITE(740+IAPROC,*) 'allocated(ISEA_TO_JSEA)=', allocated(ISEA_TO_JSEA)
 !/PDLIB!/DEBUGINIT     FLUSH(740+IAPROC)
-!/PDLIB!/DEBUGINIT      WRITE(*,*) 'After PDLIB_INIT, IMOD=', IMOD
+
 !/TIMINGS       CALL PRINT_MY_TIME("After PDLIB_INIT")
+
 !/PDLIB      CALL SYNCHRONIZE_IPGL_ETC_ARRAY(IMOD, IsMulti)
+
+!/MEMCHECK       WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2cc'
+!/MEMCHECK       call getMallocInfo(mallinfos)
+!/MEMCHECK       call printMallInfo(10000+IAPROC,mallInfos)
+
 !/PDLIB    END IF
+
 !/MEMCHECK       WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2d'
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(10000+IAPROC,mallInfos)
 
 ! Update of output parameter flags based on mod_def parameters (for 3D arrays)
+
 !/DEBUGINIT      WRITE(740+IAPROC,*) 'Before W3FLGRDUPDT'
 !/DEBUGINIT      FLUSH(740+IAPROC)
+
       CALL W3FLGRDUPDT ( NDSO, NDSE, FLGRD, FLGR2, FLGD, FLG2 )
+
 !!/DEBUGMPI     CALL TEST_MPI_STATUS("Case 9")
 !/TIMINGS       CALL PRINT_MY_TIME("After W3FLGRDUPDT")
 
@@ -1174,7 +1188,6 @@
       END DO
 !
 !/PDLIB     CALL SETDEPTH_PDLIB
-!/PDLIB     DEALLOCATE(TRIGP) 
 !
 !/DEBUGSTP    FLUSH(740+IAPROC)
 !/DEBUGINIT     WRITE(740+IAPROC,*) 'W3INIT, aft BLOCK_SOLVER_INIT, step 9'

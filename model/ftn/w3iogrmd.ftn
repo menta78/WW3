@@ -622,7 +622,6 @@
                 WRITE (NDSM)                                            &
                 X0, Y0, SX, SY, DXYMAX, XYB, TRIGP, TRIA,             &
                 MAXX, MAXY, IOBP 
-                DEALLOCATE(TRIA)
 #endif
             END SELECT !GTYPE
 !
