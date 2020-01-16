@@ -2013,8 +2013,7 @@
            ELSE IF (nbSel .eq. 0) THEN
              WRITE (NDSE,*) 'no scheme selected'
            END IF
-           WRITE (NDSE,*)'Select only one of EXPFSN, EXPFSFCT, EXPFSPSI'
-           WRITE (NDSE,*)'IMPFSN, IMPTOTAL'
+           WRITE (NDSE,*)'Select only one of EXPFSN, EXPFSFCT, EXPFSPSI, IMPFSN, IMPTOTAL'
            CALL EXTCDE ( 30 )
          END IF
        END IF
@@ -2922,27 +2921,28 @@
         SELECT CASE (UNSTSCHEME)
         CASE (1) 
           FSN = EXPFSN
-          PNAME2 = 'N Explicit (Fluctuation Splitting) '
+          PNAME2 = 'N Explicit'
         CASE (2) 
           FSPSI = EXPFSPSI
-          PNAME2 = 'PSI Explicit (Fluctuation Splitting)  '
+          PNAME2 = 'PSI Explicit'
         CASE (3) 
           FSFCT = EXPFSFCT
-          PNAME2 = ' Flux Corrected Transport Explicit'
+          PNAME2 = 'Flux Corrected Transport Explicit'
         CASE (4) 
           FSNIMP = IMPFSN 
-          PNAME2 = 'N Implicit (Fluctuation Splitting) '
+          PNAME2 = 'N Implicit fractional step'
           END SELECT
 !
         IF (SUM(UNSTSCHEMES).GT.1) WRITE(NDSO,1035)
-        WRITE (NDSO,2951) PNAME2
         IF (IMPTOTAL) THEN
           FSTOTALIMP = IMPTOTAL
-          PNAME2 = 'N Implicit (Fluctuation Splitting) for total implicit'
+          PNAME2 = 'N fully Implicit'
+          WRITE (NDSO,2951) PNAME2
         END IF
         IF (EXPTOTAL) THEN
           FSTOTALEXP = EXPTOTAL 
-          PNAME2 = 'N Explicit (Fluctuation Splitting) for one exchange explicit DC HPCF '
+          PNAME2 = 'N Block Explicit'
+          WRITE (NDSO,2951) PNAME2
         END IF
         IF (IMPREFRACTION .and. IMPTOTAL .AND. FLCTH) THEN
           FSREFRACTION = .TRUE.
