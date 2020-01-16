@@ -53,7 +53,6 @@
 !     The only point index which is needed is IX and NX stands for the total number of grid point.
 !     IY and NY are not needed anymore, they are set to 1 in the unstructured case
 !     Some noticeable arrays are:
-!                     XYB    : give the 2D coordinates of all grid points
 !                     TRIGP  : give the vertices of each triangle
 !  8. Structure :
 !
@@ -163,7 +162,6 @@ CONTAINS
 !     The only point index which is needed is IX and NX stands for the total number of grid point.
 !     IY and NY are not needed anymore, they are set to 1 in the unstructured case
 !     Some noticeable arrays are:
-!                     XYB    : give the 2D coordinates of all grid points
 !                     TRIGP  : give the vertices of each triangle
 !     GMSH file gives too much information that is not necessarily required so data processing is needed (data sort and nesting).
 !  8. Structure :
@@ -174,7 +172,7 @@ CONTAINS
 !
 !/ ------------------------------------------------------------------- /
       USE W3ODATMD, ONLY: NDSE, NDST, NDSO
-      USE W3GDATMD
+      USE W3GDATMD, ONLY: ZB, XGRD, YGRD, NTRI, NX, COUNTOT, TRIGP, NNZ, W3DIMUG
       USE W3SERVMD, ONLY: ITRACE, NEXTLN, EXTCDE
       USE CONSTANTS, only: LPDLIB
       USE W3ODATMD, ONLY: IAPROC
@@ -318,9 +316,9 @@ CONTAINS
 ! fills arrays
 !
       DO I = 1, NX
-        XYB(1,I) = XYBTMP2(1,I) 
-        XYB(2,I) = XYBTMP2(2,I) 
-        XYB(3,I) = XYBTMP2(3,I)
+        XGRD(1,I) = XYBTMP2(1,I) 
+        YGRD(1,I) = XYBTMP2(2,I) 
+        ZB(I)     = XYBTMP2(3,I)
       END DO
 !
 !/DEBUGSTP    WRITE(740,*) 'Writing XYB(3,:)'
@@ -332,7 +330,7 @@ CONTAINS
       DO I=1, NTRI
         ITMP = TRIGPTMP2(:,I)
         TRIGP(:,I) = ITMP 
-        END DO   
+      END DO   
 !   
       DEALLOCATE(TRIGPTMP2,XYBTMP2)   
 !
@@ -410,7 +408,6 @@ CONTAINS
 !     The only point index which is needed is IX and NX stands for the total number of grid point.
 !     IY and NY are not needed anymore, they are set to 1 in the unstructured case
 !     Some noticeable arrays are:
-!                     XYB    : give the 2D coordinates of all grid points
 !                     TRIGP  : give the vertices of each triangle
 !     GMSH file gives too much information that is not necessarily required so data processing is needed (data sort and nesting).
 !  8. Structure :
@@ -862,10 +859,10 @@ CONTAINS
 !
 ! cross product of edge-vector  (orientated anticlockwise)
 !                                   
-                   TRIA(K) = REAL( (XYB(2,I2)-XYB(2,I1))      &     !  (Y2-Y1)
-                                  *(XYB(1,I1)-XYB(1,I3))      &     ! *(X1-X3)
-                                  +(XYB(2,I3)-XYB(2,I1))      &     !  (Y3-Y1)*(X2-X1)
-                                  *(XYB(1,I2)-XYB(1,I1))      )*0.5
+                   TRIA(K) = REAL( (YGRD(1,I2)-YGRD(1,I1))      &     !  (Y2-Y1)
+                                  *(XGRD(1,I1)-XGRD(1,I3))      &     ! *(X1-X3)
+                                  +(YGRD(1,I3)-YGRD(1,I1))      &     !  (Y3-Y1)*(X2-X1)
+                                  *(XGRD(1,I2)-XGRD(1,I1))      )*0.5
 !
 ! test on negative triangle area, which means that the orientiation is not as assumed to be anticw. 
 ! therefore we swap the nodes !!! 
@@ -955,12 +952,12 @@ CONTAINS
             I2 = TRIGP(2,IE)
             I3 = TRIGP(3,IE)
                            
-            P1(1) = XYB(1,I1)
-            P1(2) = XYB(2,I1)
-            P2(1) = XYB(1,I2)
-            P2(2) = XYB(2,I2)
-            P3(1) = XYB(1,I3)
-            P3(2) = XYB(2,I3)
+            P1(1) = XGRD(1,I1)
+            P1(2) = YGRD(1,I1)
+            P2(1) = XGRD(1,I2)
+            P2(2) = YGRD(1,I2)
+            P3(1) = XGRD(1,I3)
+            P3(2) = YGRD(1,I3)
 !
 ! I1 -> I2, I2 -> I3, I3 -> I1 (anticlockwise orientation is preserved)
 !                    
@@ -1147,13 +1144,13 @@ END SUBROUTINE
 !     
 ! maximum of coordinates s
 !
-    MAXX = MAXVAL(XYB(1,:))
-    MAXY = MAXVAL(XYB(2,:))
+    MAXX = MAXVAL(XGRD(1,:))
+    MAXY = MAXVAL(YGRD(1,:))
 ! 
 ! minimum of coordinates 
 !
-    X0 = MINVAL(XYB(1,:))
-    Y0 = MINVAL(XYB(2,:))
+    X0 = MINVAL(XGRD(1,:))
+    Y0 = MINVAL(YGRD(1,:))
 ! 
 !maximum and minimum length of edges
 !
@@ -1542,14 +1539,14 @@ END SUBROUTINE
        I2=GRIDS(IMOD)%TRIGP(2,ITRI)
        I3=GRIDS(IMOD)%TRIGP(3,ITRI)
 ! coordinates of the first vertex A
-       x1=GRIDS(IMOD)%XYB(1,I1)
-       y1=GRIDS(IMOD)%XYB(2,I1)
+       x1=GRIDS(IMOD)%XGRD(1,I1)
+       y1=GRIDS(IMOD)%YGRD(1,I1)
 ! coordinates of the 2nd vertex B
-       x2=GRIDS(IMOD)%XYB(1,I2)
-       y2=GRIDS(IMOD)%XYB(2,I2)
+       x2=GRIDS(IMOD)%XGRD(1,I2)
+       y2=GRIDS(IMOD)%YGRD(1,I2)
 !coordinates of the 3rd vertex C
-       x3=GRIDS(IMOD)%XYB(1,I3)
-       y3=GRIDS(IMOD)%XYB(2,I3)
+       x3=GRIDS(IMOD)%XGRD(1,I3)
+       y3=GRIDS(IMOD)%YGRD(1,I3)
 !with M = (XTIN,YTIN) the target point ... 
 !vector product of AB and AC
        sg3=(y3-y1)*(x2-x1)-(x3-x1)*(y2-y1)
@@ -1717,14 +1714,14 @@ END SUBROUTINE
        I2=GRIDS(IMOD)%TRIGP(2,ITRI)
        I3=GRIDS(IMOD)%TRIGP(3,ITRI)
 ! coordinates of the first vertex A
-       x1=GRIDS(IMOD)%XYB(1,I1)
-       y1=GRIDS(IMOD)%XYB(2,I1)
+       x1=GRIDS(IMOD)%XGRD(1,I1)
+       y1=GRIDS(IMOD)%YGRD(1,I1)
 ! coordinates of the 2nd vertex B
-       x2=GRIDS(IMOD)%XYB(1,I2)
-       y2=GRIDS(IMOD)%XYB(2,I2)
+       x2=GRIDS(IMOD)%XGRD(1,I2)
+       y2=GRIDS(IMOD)%XGRD(1,I2)
 !coordinates of the 3rd vertex C
-       x3=GRIDS(IMOD)%XYB(1,I3)
-       y3=GRIDS(IMOD)%XYB(2,I3)
+       x3=GRIDS(IMOD)%XGRD(1,I3)
+       y3=GRIDS(IMOD)%YGRD(1,I3)
 !with M = (XTIN,YTIN) the target point ... 
 !vector product of AB and AC
        sg3=(y3-y1)*(x2-x1)-(x3-x1)*(y2-y1)
@@ -1769,14 +1766,14 @@ END SUBROUTINE
        I2=GRIDS(IMOD)%TRIGP(2,ITRI)
        I3=GRIDS(IMOD)%TRIGP(3,ITRI)
 ! coordinates of the first vertex A
-       x1=GRIDS(IMOD)%XYB(1,I1)
-       y1=GRIDS(IMOD)%XYB(2,I1)
+       x1=GRIDS(IMOD)%XGRD(1,I1)
+       y1=GRIDS(IMOD)%YGRD(1,I1)
 ! coordinates of the 2nd vertex B
-       x2=GRIDS(IMOD)%XYB(1,I2)
-       y2=GRIDS(IMOD)%XYB(2,I2)
+       x2=GRIDS(IMOD)%XGRD(1,I2)
+       y2=GRIDS(IMOD)%YGRD(1,I2)
 !coordinates of the 3rd vertex C
-       x3=GRIDS(IMOD)%XYB(1,I3)
-       y3=GRIDS(IMOD)%XYB(2,I3)
+       x3=GRIDS(IMOD)%XGRD(1,I3)
+       y3=GRIDS(IMOD)%YGRD(1,I3)
        D1=(XTIN-X1)**2+(YTIN-Y1)**2
        D2=(XTIN-X2)**2+(YTIN-Y2)**2
        D3=(XTIN-X3)**2+(YTIN-Y3)**2
@@ -1968,7 +1965,7 @@ END SUBROUTINE
 !/S      USE W3SERVMD, ONLY: STRACE
 !
     USE W3ODATMD, ONLY: NBI, NDSE, ISBPI, XBPI, YBPI
-    USE W3GDATMD, ONLY: NX, XYB, XGRD, YGRD, MAPSTA, MAPFS, MAPSF
+    USE W3GDATMD, ONLY: NX, XGRD, YGRD, MAPSTA, MAPFS, MAPSF
 
 
     REAL, INTENT(IN)         :: DISTMIN
@@ -2004,7 +2001,7 @@ END SUBROUTINE
       DIST0 = HUGE(1.)
       IS = 1
       DO J = 1, N
-        DIST = (XBPI(I) - XYB(1,IX1(J)))**2 + (YBPI(I) - XYB(2,IX1(J)))**2
+        DIST = (XBPI(I) - XGRD(1,IX1(J)))**2 + (YBPI(I) - YGRD(1,IX1(J)))**2
         IF (DIST.LT.DIST0) THEN 
           IS = MAPFS(1,IX1(J))
           DIST0 = DIST

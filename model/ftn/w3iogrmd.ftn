@@ -281,13 +281,13 @@
 !/ ------------------------------------------------------------------- /
 !/
 !/S      CALL STRACE (IENT, 'W3IOGR')
+
 !
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 1'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
 !/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 1'
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
-
 
       MESSAGE =(/ '     MOD DEF FILE WAS GENERATED WITH A DIFFERENT    ', &
                   '     WW3 VERSION OR USING A DIFFERENT SWITCH FILE.  ', &
@@ -380,6 +380,7 @@
 !
 ! test input parameters ---------------------------------------------- *
 !
+
       IF ( PRESENT(IMOD) ) THEN
           IGRD   = IMOD
         ELSE
@@ -613,15 +614,14 @@
               !removed
               COUNTCON=0
 #ifndef PDLIB 
-sfsdfsd
                 WRITE (NDSM)                                            &
-                X0, Y0, SX, SY, DXYMAX, XYB, TRIGP, TRIA,             &
+                X0, Y0, SX, SY, DXYMAX, TRIGP, TRIA,             &
                 LEN, IEN, ANGLE0, ANGLE, SI, MAXX, MAXY,   &
                 INDEX_CELL, CCON, COUNTCON, IE_CELL,  &
                 POS_CELL, IOBP, IOBPA, IOBPD, IAA, JAA, POSI
 #else 
                 WRITE (NDSM)                                            &
-                X0, Y0, SX, SY, DXYMAX, XYB, TRIGP, TRIA,             &
+                X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, ZB, TRIGP, TRIA,    &
                 MAXX, MAXY, IOBP 
 #endif
             END SELECT !GTYPE
@@ -728,13 +728,13 @@ sfsdfsd
 
 #ifndef PDLIB 
                 READ (NDSM,END=801 ,IOSTAT=IERR)                 &
-                X0, Y0, SX, SY, DXYMAX, XYB, TRIGP, TRIA,             &
+                X0, Y0, SX, SY, DXYMAX, TRIGP, TRIA,             &
                 LEN, IEN, ANGLE0, ANGLE, SI, MAXX, MAXY,   &
                 INDEX_CELL, CCON, COUNTCON, IE_CELL,  &
                 POS_CELL, IOBP, IOBPA, IOBDP, IOBPD, IAA, JAA, POSI
 #else 
                 READ (NDSM,END=801 ,IOSTAT=IERR)                 &
-                X0, Y0, SX, SY, DXYMAX, XYB, TRIGP, TRIA,             &
+                X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, ZB, TRIGP, TRIA,             &
                 MAXX, MAXY, IOBP
 #endif
 
@@ -745,9 +745,6 @@ sfsdfsd
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
 
-                XGRD(1,:)=XYB(1,:)
-                YGRD(1,:)=XYB(2,:)
-!/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.7'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
             END SELECT !GTYPE
 !

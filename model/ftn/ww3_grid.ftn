@@ -3282,7 +3282,7 @@
 !
         CALL READMSH(NDSG,FNAME)
         ALLOCATE(ZBIN(NX, NY),OBSX(NX,NY),OBSY(NX,NY))
-        ZBIN(:,1) = VSC*XYB(3,:)
+        ZBIN(:,1) = VSC * ZB(:)
 !/DEBUGSTP        WRITE(740,*) 'VSC=', VSC
 !/DEBUGSTP        WRITE(740,*) 'Printing ZBIN 1'
 !/DEBUGSTP        DO IX=1,NX
@@ -3291,8 +3291,8 @@
 !
 ! subgrid obstructions are not yet handled in unstructured grids
 !
-        OBSX(:,:)=0.
-        OBSY(:,:)=0.
+        OBSX(:,:) = 0.
+        OBSY(:,:) = 0.
 
       END IF
 !
@@ -4096,6 +4096,8 @@
       NLAND  = 0
       NBI    = 0
       NBT    = 0
+
+
 !
       DO IX=1, NX
         DO IY=1, NY
@@ -4105,6 +4107,9 @@
           IF ( TMPSTA(IY,IX) .EQ. 2 ) NBI    = NBI + 1
           END DO
         END DO
+
+
+        
 !
 !/SMC !Li   Moved before FLBPI is defined with NBI value.  JGLi05Jun2015
 !/SMC !Li   Overwrite NSEA with NCel for SMC grid. 
@@ -4133,8 +4138,8 @@
 !/O1                X = FACTOR * ( XGRDIN(IX,IY) )
 !/O1                Y = FACTOR * ( YGRDIN(IX,IY) )
 !/O1              ELSE
-!/O1                X = FACTOR * XYB(1,IX)
-!/O1                Y = FACTOR * XYB(2,IX)
+!/O1                X = FACTOR * XGRD(1,IX)
+!/O1                Y = FACTOR * YGRD(1,IX)
 !/O1                END IF
 !/O1            IF ( TMPSTA(IY,IX).EQ.2 ) THEN
 !/O1                  IF ( FLAGLL ) THEN
@@ -4186,20 +4191,13 @@
           DO IX=1, NX
             XGRD(IY,IX) = XGRDIN(IX,IY)
             YGRD(IY,IX) = YGRDIN(IX,IY)
-            END DO
           END DO
-          DEALLOCATE ( XGRDIN, YGRDIN )   
-          CALL W3GNTX ( 1, 6, 6 )  
+        END DO
+        DEALLOCATE ( XGRDIN, YGRDIN )   
+        CALL W3GNTX ( 1, 6, 6 )  
       ELSE 
-!
-!FA:  This distinction  between structured and unstructured
-! should be removed when XYB is replaced by XGRD and YGRD
-!
-        DO IX=1, NX
-          XGRD(:,IX) = XYB(1,IX)
-          YGRD(:,IX) = XYB(2,IX)
-          END DO
-        END IF   ! GTYPE
+!AR: This is already done in readmsh 
+      END IF   ! GTYPE
 !      
 !
 !!Li  MAPSTA = TMPSTA

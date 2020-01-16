@@ -3518,7 +3518,7 @@
          do i = 1,NX
             do j = 1,2
                pos=2*(i-1)+j
-               nodeCoords(pos)=XYB(j,i)
+               nodeCoords(pos)=(j,i)
             enddo
          enddo
 !/PDLIB      else
@@ -3529,7 +3529,11 @@
 !/PDLIB         do i = 1,npa
 !/PDLIB            do j = 1,2
 !/PDLIB               pos=2*(i-1)+j
-!/PDLIB               nodeCoords(pos)=XYB(j,iplg(i))
+!/PDLIB               if (j==1) then 
+!/PDLIB                 nodeCoords(pos)=xgrd(1,iplg(i))
+!/PDLIB               else 
+!/PDLIB                 nodeCoords(pos)=ygrd(1,iplg(i))
+!/PDLIB               endif
 !/PDLIB            enddo
 !/PDLIB         enddo
 !/PDLIB      endif
@@ -3893,7 +3897,11 @@
          do i = 1,NX
             do j = 1,2
                pos=2*(i-1)+j
-               nodeCoords(pos)=XYB(j,i)
+               if (j==1) then
+                 nodeCoords(pos)=xgrd(1,i)
+               else
+                 nodeCoords(pos)=ygrd(1,i)
+               endif
             enddo
          enddo
 !/PDLIB      else
@@ -3904,7 +3912,11 @@
 !/PDLIB         do i = 1,npa
 !/PDLIB            do j = 1,2
 !/PDLIB               pos=2*(i-1)+j
-!/PDLIB               nodeCoords(pos)=XYB(j,iplg(i))
+!/PDLIB               if (j==1) then
+!/PDLIB                 nodeCoords(pos) = xgrd(1,iplg(i))
+!/PDLIB               else
+!/PDLIB                 nodeCoords(pos) = ygrd(1,iplg(i))
+!/PDLIB               endif
 !/PDLIB            enddo
 !/PDLIB         enddo
 !/PDLIB      endif

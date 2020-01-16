@@ -65,7 +65,6 @@ module yowpdlibMain
     use yowSidepool,       only: ns, ns_global
     use yowExchangeModule, only: nConnDomains, setDimSize
     use yowRankModule,     only: initRankModule, ipgl_npa
-    use w3gdatmd,          only: XYB
 !/MEMCHECK      USE MallocInfo_m
 !/MEMCHECK USE W3ADATMD, ONLY: MALLINFOS
 
@@ -376,7 +375,7 @@ module yowpdlibMain
     use yowNodepool, only: np, npa, np_global, nodes, nodes_global, t_Node, iplg, np_perProcSum, np_perProc
     use yowSidepool, only: ns
     use yowElementpool, only: ne, ne_global
-    use w3gdatmd, only: xyb
+    use w3gdatmd, only: xgrd, ygrd
     use MPI
     implicit none
     integer, intent(in) :: MNP
@@ -508,8 +507,8 @@ module yowpdlibMain
     if(debugParmetis) write(710+myrank,*) np_global, ne_global, np, npa, ne
     do i = 1, np
       IP_glob = iplg(i)
-      xyz(2*(i-1)+1) = REAL(XYB(1,IP_glob))
-      xyz(2*(i-1)+2) = REAL(XYB(2,IP_glob))
+      xyz(2*(i-1)+1) = REAL(xgrd(1,IP_glob))
+      xyz(2*(i-1)+2) = REAL(ygrd(1,IP_glob))
       if(debugParmetis) then
         write(710+myrank,*) i, np, xyz(2*(i-1)+1), xyz(2*(i-1)+2)  
         call flush(710+myrank)
@@ -1049,7 +1048,7 @@ module yowpdlibMain
     use yowDatapool,    only: myrank
     use yowNodepool,    only: np_global, np, nodes_global, iplg, t_Node, ghostlg, ng, npa
     use yowNodepool,    only: x, y, z
-    use w3gdatmd,       only: XYB
+    use w3gdatmd,       only: xgrd, ygrd, zb  
     implicit none
     integer, intent(in) :: MNP
 
@@ -1150,16 +1149,16 @@ module yowpdlibMain
 
     do i=1, np
       IP_glob = iplg(i)
-      x(i) = XYB(1,IP_glob)
-      y(i) = XYB(2,IP_glob)
-      z(i) = XYB(3,IP_glob)
+      x(i) = xgrd(1,IP_glob)
+      y(i) = ygrd(1,IP_glob)
+      z(i) = zb(IP_glob)
     end do
 
     do i=1, ng
       IP_glob = ghostlg(i)
-      x(np+i) = XYB(1,IP_glob)
-      y(np+i) = XYB(2,IP_glob)
-      z(np+i) = XYB(3,IP_glob)
+      x(np+i) = xgrd(1,IP_glob)
+      y(np+i) = ygrd(1,IP_glob)
+      z(np+i) = zb(IP_glob)
     end do
     
   end subroutine

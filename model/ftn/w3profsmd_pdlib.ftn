@@ -171,7 +171,7 @@
       USE W3GDATMD, ONLY: FLCX, FLCY
 !/MEMCHECK      USE MallocInfo_m
       USE CONSTANTS, ONLY : GRAV, TPI
-      USE W3GDATMD, ONLY: XYB, XGRD, YGRD, NX, NSEA, NTRI, TRIGP, NSPEC, NSEAL
+      USE W3GDATMD, ONLY: XGRD, YGRD, NX, NSEA, NTRI, TRIGP, NSPEC, NSEAL
       USE W3GDATMD, ONLY: MAPSTA, MAPFS, GRIDS, NTH, SIG, NK
       USE W3ADATMD, ONLY: IOBP_LOC, IOBPD_LOC, IOBPA_LOC, IOBDP_LOC
       USE W3GDATMD, ONLY: CCON, COUNTCON, INDEX_CELL, IE_CELL
@@ -7589,7 +7589,6 @@
 !/DEBUGINIT    FLUSH(740+IAPROC)
       DEALLOCATE ( & 
 !                 GRIDS(IMOD)%TRIGP,                         &
-!                 GRIDS(IMOD)%XYB,                             &
                  GRIDS(IMOD)%SI,                                &
                  GRIDS(IMOD)%TRIA,                            &
                  GRIDS(IMOD)%CROSSDIFF,                     &

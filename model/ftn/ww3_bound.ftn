@@ -95,7 +95,7 @@
       USE W3ODATMD, ONLY: W3NOUT, W3SETO, FLBPI
 
       USE W3GDATMD, ONLY: NK, NTH, XFR, FR1, GNAME, W3NMOD, W3SETG, &
-                          NSEA, MAPSTA, XYB, GTYPE, XGRD, YGRD, X0, Y0, &
+                          NSEA, MAPSTA, GTYPE, XGRD, YGRD, X0, Y0, &
                           SX, SY, MAPSF, UNGTYPE, CLGTYPE, RLGTYPE 
       USE W3ODATMD, ONLY: NDSO, NDSE
       USE W3IOBCMD, ONLY: VERBPTBC, IDSTRBC
@@ -303,8 +303,8 @@
               XBPO(IBO)= XGRD(IY,IX)
               YBPO(IBO)= YGRD(IY,IX)
             CASE (UNGTYPE) 
-              XBPO(IBO)= XYB(1,IX)
-              YBPO(IBO)= XYB(2,IX)
+              XBPO(IBO)= XGRD(1,IX)
+              YBPO(IBO)= YGRD(1,IX)
               END SELECT !GTYPE
             END IF
           END DO
