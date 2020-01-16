@@ -640,6 +640,77 @@ module yowpdlibMain
   ! with the new data from parmetis, recalculate some variables
   !------------------------------------------------------------------------
 
+  ! Create for every boundary node a dummy node and for every dummy node two local elements
+  ! extend x,y,z, INE
+  ! rebuild  NCONE, CONE, NCONN, CONN
+  ! alter nd, nde
+  !subroutine dummyNodes
+   ! use yowExchangeModule
+   ! use yowNodepool, only: npa, nb, nd, PDLIB_NCONN, PDLIB_CONN, boundaryNodes, nodes, x, y, z, outwardNormal, XY, dummy2boundary, BNDprevnext
+   ! use yowElementpool, only: ne, nde, INE, NCONE, CONE
+   ! implicit none
+   ! integer :: i, IP, IPprev, IPnext, newIP, newIE
+   ! integer, allocatable :: INEnew(:,:)
+   ! real(rkind) :: vec(2), newPoint(2), newLength
+   ! real(rkind), allocatable :: xNew(:), yNew(:), zNew(:)
+ !
+ !    nd = nb
+ !
+ !    allocate(dummy2boundary(nd))
+ !
+ !    nde = 2*nd
+ !    allocate(INEnew(3,ne+nde))
+ !    INEnew(:,1:ne) = INE(:,1:ne)
+ !
+ !    allocate(xNew(npa+nd), yNew(npa+nd), zNew(npa+nd))
+ !    xNew(1:npa) = x(1:npa)
+ !    yNew(1:npa) = y(1:npa)
+ !    zNew(1:npa) = z(1:npa)
+ !
+ !    nd = 0
+ !    nde = 0
+  !   do i=1, nb
+  !     nd = nd + 1
+  !     IP = boundaryNodes(i)
+  !     dummy2boundary(nd) = IP
+  !
+  !     call BNDprevnext(IP, IPprev, IPnext)
+  !     newLength = max(distanceTo(XY(IP), XY(IPprev)), distanceTo(XY(IP), XY(IPnext)))
+  !     newPoint  = XY(IP) + outwardNormal(:,i) * newLength
+   !    newIP = npa+i
+   !    xNew(newIP) = newPoint(1)
+   !    yNew(newIP) = newPoint(2)
+   !    zNew(newIP) = z(IP)
+   !    NCONN(IP) = NCONN(IP) + 1
+   !    CONN(NCONN(IP),IP) = newIP
+   !
+   !    nde = nde +1
+  !     newIE = ne+nde
+  !     INEnew(1,newIE) = IP
+  !     INEnew(2,newIE) = IPprev
+  !     INEnew(3,newIE) = newIP
+  !     NCONE(IP) = NCONE(IP) +1
+  !     CONE(NCONE(IP),IP) = newIE
+  !
+  !     nde = nde +1
+  !     newIE = ne+nde
+  !     INEnew(1,newIE) = IP
+  !     INEnew(2,newIE) = newIP
+  !     INEnew(3,newIE) = IPnext
+  !     NCONE(IP) = NCONE(IP) +1
+  !     CONE(NCONE(IP),IP) = newIE
+  !   end do
+  !
+  !   call move_alloc(INEnew, INE)
+  !   call move_alloc(xNew, x)
+  !   call move_alloc(yNew, y)
+  !   call move_alloc(zNew, z)
+  !
+  !   ! Die Anzahl der angeschlossenen Knoten fuer Geisterknoten wird fuer findBoundaryNodes and Dummynodes gebraucht.
+  !   call exchange(NCONN)
+  !   call exchange(NCONE)
+  !end subroutine
+
   !> recalculate some variables
   !> parmetis change the number of sides per domain. So recalculate some variables
   !> alter: np, ns, np_perProc, np_perProcSum, iplg, ipgl, nodes_global%id

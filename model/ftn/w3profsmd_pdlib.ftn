@@ -407,6 +407,7 @@
       USE W3ADATMD, ONLY : IOBP_LOC, IOBPD_LOC, IOBDP_LOC, IOBPA_LOC 
       USE W3ODATMD, ONLY : IAPROC, NAPROC
       USE YOWNODEPOOL, ONLY: iplg, npa
+      use yowExchangeModule, ONLY : PDLIB_exchange1DREAL
       USE yowfunction, ONLY: pdlib_abort
       USE W3ODATMD, ONLY: IAPROC
 !/
@@ -425,6 +426,7 @@
       INTEGER :: IBND_MAP, ISEA, JSEA, IX, IP, IP_glob
       INTEGER, INTENT(in) :: IMOD
       INTEGER :: Status(NX), istat
+      REAL :: rtmp(nseal)
 !/S      CALL STRACE (IENT, 'PDLIB_MAPSTA_INIT')
 !/DEBUGINIT      WRITE(*,*) 'Passing by PDLIB_MAPSTA_INIT IAPROC=', IAPROC
       IF (IAPROC .gt. NAPROC) THEN
@@ -455,14 +457,17 @@
       END DO
 
       DO IP = 1, npa
-        IP_glob = iplg(IP)
+        IP_glob         = iplg(IP)
         IOBP_loc(IP)    = IOBP(IP_glob)
+        IOBPD_loc(:,IP) = IOBPD(:,IP_glob)
       END DO
-      DEALLOCATE(IOBP)
+ 
+      !rtmp = IOBP_loc
+      !CALL PDLIB_exchange1DREAL(rtmp)
+      !IOBP_loc = rtmp
 
-      CALL SET_UG_IOBP_PDLIB_INIT
+      !CALL SET_UG_IOBP_PDLIB_INIT
       CALL SET_IOBPA_PDLIB
-
 !/
 !/ End of W3SPR4 ----------------------------------------------------- /
 !/
@@ -5914,7 +5919,7 @@
       INTEGER JP_glob
       INTEGER is_converged, itmp
 
-      integer :: testknoten = 68227
+      integer :: testknoten = 32
 
       LOGICAL :: LSIG = .FALSE.
 
@@ -6297,7 +6302,13 @@
           ENDIF ! LCONVERGED
 !
           !write(50000+IAPROC,*) 'SOLVER ITER', ISEA, JSEA, nbiter, & 
-          !             &  SUM(B_JAC(:,IP)), sum(ASPAR_DIAG), sum(ACLOC), sum(esum)
+          !             &  SUM(B_JAC(:,IP)), sum(ASPAR_DIAG), sum(ACLOC), sum(esum), 
+          !if (isea == testknoten) then
+          !  write(740+IAPROC,*) p_is_converged, sum(ASPAR_DIAG), SUM(B_JAC(:,IP)), &
+          !       & sum(ACLOC), sum(esum), iobp_loc(jsea), iobpa_loc(jsea), iobdp_loc(jsea)
+          !endif
+          !write(740+IAPROC,*) isea, jsea, ip, sum(ASPAR_DIAG), SUM(B_JAC(:,IP)), sum(ACLOC), & 
+          !          & sum(esum), iobp_loc(ip), iobpd_loc(ith,ip), iobpa_loc(ip), iobdp_loc(ip)
 
           IF (B_JGS_TERMINATE_DIFFERENCE) THEN
             if (Sum_new .gt. 0.d0) then
@@ -6305,7 +6316,6 @@
               !write(*,'(4F20.10)') Sum_new, Sum_prev, DiffNew, abs(Sum_new-Sum_prev)
 !/DEBUGFREQSHIFT         WRITE(740+IAPROC,*) 'DiffNew=', DiffNew, ' Sum_new=', Sum_new
               p_is_converged = DiffNew/Sum_new
-!/DEBUGSOLVER   write(740+IAPROC,'(10E20.10)') p_is_converged, sum(ASPAR_DIAG), SUM(B_JAC(:,IP)), DiffNew, Sum_new, sum(ACLOC), sum(esum)
             else
               p_is_converged = zero
             endif
@@ -7254,7 +7264,7 @@
                           ECOS, ESIN, IEN, NTRI, TRIGP,               &
                           IOBP,IOBPD, IOBPA,                          &
 !/REF1                    REFPARS, REFLC, REFLD,                      &
-                          ANGLE0, ANGLE
+                          ANGLE0, ANGLE, NSEAL
 
       USE W3ODATMD, ONLY: TBPI0, TBPIN, FLBPI
       USE W3ADATMD, ONLY: CG, CX, CY, ATRNX, ATRNY, ITIME, CFLXYMAX
@@ -7263,6 +7273,7 @@
       USE W3ODATMD, only : IAPROC
       USE YOWNODEPOOL,    ONLY: PDLIB_SI, PDLIB_IEN, PDLIB_TRIA, ipgl, iplg, npa, np
       use yowElementpool, ONLY: NE, INE
+      use yowExchangeModule, ONLY : PDLIB_exchange1DREAL
 !/S      USE W3SERVMD, ONLY: STRACE
       
       IMPLICIT NONE
@@ -7281,6 +7292,8 @@
       REAL(KIND=8), PARAMETER :: THR    = TINY(1.)
       INTEGER                 :: I1, I2, I3
       INTEGER                 :: ITMP(NX), NEXTVERT(NX), PREVVERT(NX)
+      INTEGER                 :: MAX_IOBPD, MIN_IOBPD
+      REAL                    :: rtmp(NPA)
       CHARACTER(60) :: FNAME
 !/S      INTEGER, SAVE           :: IENT = 0
 !/ ------------------------------------------------------------------- /                                     
@@ -7296,25 +7309,23 @@
         DYP2 = - PDLIB_IEN(1,IE)
         DXP3 =   PDLIB_IEN(4,IE)
         DYP3 = - PDLIB_IEN(3,IE)
-        DO ITH=1,NTH
-          EVX=ECOS(ITH)
-          EVY=ESIN(ITH)
-          DO I=1,3
-            IF (I.eq.1) THEN
-              x1=   DXP1
-              y1=   DYP1
-              x2= - DXP3
-              y2= - DYP3
-              IP=   I1
-            END IF
-            IF (I.eq.2) THEN
+        DO ITH = 1, NTH
+          EVX = ECOS(ITH)
+          EVY = ESIN(ITH)
+          DO I = 1, 3
+            IF (I .eq. 1) THEN
+              x1 =   DXP1
+              y1 =   DYP1
+              x2 = - DXP3
+              y2 = - DYP3
+              IP =   I1
+            ELSE IF (I.eq.2) THEN
               x1 =   DXP2
               y1 =   DYP2
               x2 = - DXP1
               y2 = - DYP1
               IP =   I2
-            END IF
-            IF (I.eq.3) THEN
+            ELSE IF (I.eq.3) THEN
               x1 =   DXP3
               y1 =   DYP3
               x2 = - DXP2
@@ -7334,6 +7345,20 @@
           END DO
         END DO
       END DO
+
+      DO ITH = 1, NTH 
+        rtmp = REAL(IOBPD_LOC(ITH,1:NPA))
+        CALL PDLIB_exchange1Dreal(rtmp)  
+        IOBPD_LOC(ITH,1:NPA) = INT(rtmp)
+      ENDDO
+      MAX_IOBPD = MAXVAL(IOBPD_LOC) 
+      MIN_IOBPD = MINVAL(IOBPD_LOC)
+ 
+      IF (MAX_IOBPD .gt. 1 .OR. MIN_IOBPD .lt. 0) THEN
+        WRITE(*,*) 'MAX_IOBPD - MIN_IOBPD', MAX_IOBPD, MIN_IOBPD
+        STOP 'MAX_IOBPD ERRROR' 
+      ENDIF
+      
 !/DEBUGSETUGIOBP      WRITE(740+IAPROC,*) 'Calling SETUGIOBP, step 5'
 !/DEBUGSETUGIOBP      FLUSH(740+IAPROC)
       DO IP = 1, NPA
@@ -7471,6 +7496,101 @@
 !/
       END SUBROUTINE BLOCK_SOLVER_FINALIZE
 !/ ------------------------------------------------------------------- /
+      SUBROUTINE DEALLOCATE_PDLIB_GLOBAL(IMOD)
+!/
+!/                  +-----------------------------------+
+!/                  | WAVEWATCH III           NOAA/NCEP |
+!/                  |                                   |  
+!/                  | Aron Roland (BGS IT&E GmbH)       |
+!/                  | Mathieu Dutour-Sikiric (IRB)      |
+!/                  |                                   |
+!/                  |                        FORTRAN 90 |
+!/                  | Last update :        01-June-2018 |
+!/                  +-----------------------------------+
+!/
+!/    01-June-2018 : Origination.                        ( version 6.04 )
+!/
+!  1. Purpose : Init jacobi solver 
+!  2. Method :
+!  3. Parameters :
+!
+!     Parameter list
+!     ----------------------------------------------------------------
+!     ----------------------------------------------------------------
+!
+!  4. Subroutines used :
+!
+!      Name      Type  Module   Description
+!     ----------------------------------------------------------------
+!      STRACE    Subr. W3SERVMD Subroutine tracing.
+!     ----------------------------------------------------------------
+!
+!  5. Called by :
+!
+!      Name      Type  Module   Description
+!     ----------------------------------------------------------------
+!     ----------------------------------------------------------------
+!
+!  6. Error messages :
+!  7. Remarks
+!  8. Structure :
+!  9. Switches :
+!
+!     !/S  Enable subroutine tracing.
+!
+! 10. Source code :
+!
+!/ ------------------------------------------------------------------- /
+!/S      USE W3SERVMD, ONLY: STRACE
+      USE W3GDATMD, ONLY: NSPEC, B_JGS_BLOCK_GAUSS_SEIDEL, GRIDS
+      use YOWNODEPOOL, ONLY: PDLIB_NNZ, npa, np
+      USE yowfunction, ONLY: pdlib_abort
+      USE W3GDATMD, ONLY: NTH, NK, NSEAL
+      USE W3PARALL, ONLY: IMEM
+!/DEBUGINIT    USE W3ODATMD, ONLY : IAPROC
+!/
+      IMPLICIT NONE
+!/
+!/ ------------------------------------------------------------------- /
+!/ Parameter list
+!/
+!/ ------------------------------------------------------------------- /
+!/ Local PARAMETERs
+!/
+!/S      INTEGER, SAVE           :: IENT = 0
+!/
+!/ ------------------------------------------------------------------- /
+!/
+      INTEGER, INTENT(IN) :: IMOD
+
+      DEALLOCATE ( &
+                 GRIDS(IMOD)%TRIGP,                         &
+                 GRIDS(IMOD)%SI,                                &
+                 GRIDS(IMOD)%TRIA,                            &
+                 GRIDS(IMOD)%CROSSDIFF,                     &
+                 GRIDS(IMOD)%IEN,                           &
+                 GRIDS(IMOD)%LEN,                           &
+                 GRIDS(IMOD)%ANGLE,                         &
+                 GRIDS(IMOD)%ANGLE0,                        &
+                 GRIDS(IMOD)%CCON,                              &
+                 GRIDS(IMOD)%COUNTCON,                          &
+                 GRIDS(IMOD)%INDEX_CELL,                      &
+                 GRIDS(IMOD)%IE_CELL,                     &
+                 GRIDS(IMOD)%POS_CELL,                    &
+                 GRIDS(IMOD)%IAA,                             &
+                 GRIDS(IMOD)%JAA,                              &
+                 GRIDS(IMOD)%POSI,                      &
+                 GRIDS(IMOD)%I_DIAG,                            &
+                 GRIDS(IMOD)%JA_IE,                       &
+                 GRIDS(IMOD)%IOBP,                         &
+                 GRIDS(IMOD)%IOBPD,                         &
+                 GRIDS(IMOD)%IOBDP,                             &
+                 GRIDS(IMOD)%IOBPA  )
+!/
+!/ End of DEALLOCATE_PDLIB_GLOBAL ------------------------------------------------ /
+!/
+      END SUBROUTINE DEALLOCATE_PDLIB_GLOBAL
+
       SUBROUTINE JACOBI_INIT(IMOD) 
 !/
 !/                  +-----------------------------------+
@@ -7551,7 +7671,7 @@
       ENDIF
 !/DEBUGINIT    WRITE(740+IAPROC,*) 'JACOBI_INIT, step 2'
 !/DEBUGINIT    FLUSH(740+IAPROC)
-      ALLOCATE(B_JAC(NSPEC,npa), stat=istat)
+      ALLOCATE(B_JAC(NSPEC,NSEAL), stat=istat)
       if(istat /= 0) CALL PDLIB_ABORT(10)
 !/DEBUGINIT    WRITE(740+IAPROC,*) 'JACOBI_INIT, step 3'
 !/DEBUGINIT    FLUSH(740+IAPROC)
@@ -7587,28 +7707,6 @@
       END IF
 !/DEBUGINIT    WRITE(740+IAPROC,*) 'JACOBI_INIT, step 7'
 !/DEBUGINIT    FLUSH(740+IAPROC)
-      DEALLOCATE ( & 
-!                 GRIDS(IMOD)%TRIGP,                         &
-                 GRIDS(IMOD)%SI,                                &
-                 GRIDS(IMOD)%TRIA,                            &
-                 GRIDS(IMOD)%CROSSDIFF,                     &
-                 GRIDS(IMOD)%IEN,                           &
-                 GRIDS(IMOD)%LEN,                           &
-                 GRIDS(IMOD)%ANGLE,                         &
-                 GRIDS(IMOD)%ANGLE0,                        &
-                 GRIDS(IMOD)%CCON,                              &
-                 GRIDS(IMOD)%COUNTCON,                          &
-                 GRIDS(IMOD)%INDEX_CELL,                      &
-                 GRIDS(IMOD)%IE_CELL,                     &
-                 GRIDS(IMOD)%POS_CELL,                    &
-                 GRIDS(IMOD)%IAA,                             &
-                 GRIDS(IMOD)%JAA,                              &
-                 GRIDS(IMOD)%POSI,                      &
-                 GRIDS(IMOD)%I_DIAG,                            &
-                 GRIDS(IMOD)%JA_IE,                       &
-                 GRIDS(IMOD)%IOBPD,                         &
-                 GRIDS(IMOD)%IOBDP,                             &
-                 GRIDS(IMOD)%IOBPA  )
 !/
 !/ End of JACOBI_INIT ------------------------------------------------ /
 !/

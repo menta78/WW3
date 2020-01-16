@@ -622,7 +622,7 @@
 #else 
                 WRITE (NDSM)                                            &
                 X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, ZB, TRIGP, TRIA,    &
-                MAXX, MAXY, IOBP 
+                MAXX, MAXY, IOBPD, IOBP 
 #endif
             END SELECT !GTYPE
 !
@@ -735,7 +735,7 @@
 #else 
                 READ (NDSM,END=801 ,IOSTAT=IERR)                 &
                 X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, ZB, TRIGP, TRIA,             &
-                MAXX, MAXY, IOBP
+                MAXX, MAXY, IOBPD, IOBP
 #endif
 
 
