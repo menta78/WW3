@@ -6312,7 +6312,7 @@
 
           IF (B_JGS_TERMINATE_DIFFERENCE) THEN
             if (Sum_new .gt. 0.d0) then
-              DiffNew = sum(abs(ACLOC - eSum))/sum(abs(eSum))!abs(Sum_new-Sum_prev)
+              DiffNew = sum(abs(ACLOC - eSum))!abs(Sum_new-Sum_prev)
               !write(*,'(4F20.10)') Sum_new, Sum_prev, DiffNew, abs(Sum_new-Sum_prev)
 !/DEBUGFREQSHIFT         WRITE(740+IAPROC,*) 'DiffNew=', DiffNew, ' Sum_new=', Sum_new
               p_is_converged = DiffNew/Sum_new
