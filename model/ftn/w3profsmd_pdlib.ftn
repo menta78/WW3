@@ -7591,6 +7591,34 @@
 !/
       END SUBROUTINE DEALLOCATE_PDLIB_GLOBAL
 
+      SUBROUTINE MAP_AND_DEALLOC_GL_IOBP(IMOD)
+!/ ------------------------------------------------------------------- /
+
+      use YOWNODEPOOL, ONLY: PDLIB_NNZ, npa, np, iplg
+      USE yowfunction, ONLY: pdlib_abort
+      USE W3GDATMD, ONLY: NTH, NK, NSEAL, IOBP, IOBDP, IOBPD, IOBPA, GRIDS
+      USE W3ADATMD, ONLY: IOBP_LOC, IOBPA_LOC, IOBDP_LOC, IOBPD_LOC
+      USE W3PARALL, ONLY: IMEM
+!/DEBUGINIT    USE W3ODATMD, ONLY : IAPROC
+!/
+      IMPLICIT NONE
+!/
+      INTEGER, INTENT(IN) :: IMOD
+      INTEGER             :: IP, IP_GLOB
+
+      DO IP = 1, NPA
+        IP_GLOB = IPLG(IP)
+        IOBP_LOC(IP)    = IOBP(IP_GLOB)
+        IOBPD_LOC(:,IP) = IOBPD(:,IP_GLOB)
+      ENDDO
+      DEALLOCATE(GRIDS(IMOD)%IOBP)
+      DEALLOCATE(GRIDS(IMOD)%IOBPD)
+!/
+!/ End of MAP_GL_IOBP ------------------------------------------------ /
+!/
+      END SUBROUTINE MAP_AND_DEALLOC_GL_IOBP
+
+
       SUBROUTINE JACOBI_INIT(IMOD) 
 !/
 !/                  +-----------------------------------+
