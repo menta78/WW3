@@ -348,7 +348,8 @@
 !/ ------------------------------------------------------------------- /
 !/ Parameter list
 !/
-      INTEGER, INTENT(IN)     :: ISEA, NKCFL, MAPFS(NY*NX)
+      INTEGER*2, INTENT(IN)     :: MAPFS(NY*NX)
+      INTEGER, INTENT(IN)     :: ISEA, NKCFL
       REAL, INTENT(IN)        :: FACX, FACY, DT, VGX, VGY
       REAL, INTENT(INOUT)     :: CFLXYMAX
 !/
