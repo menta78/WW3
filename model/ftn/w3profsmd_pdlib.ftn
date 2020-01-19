@@ -7582,8 +7582,8 @@
                  GRIDS(IMOD)%POSI,                      &
                  GRIDS(IMOD)%I_DIAG,                            &
                  GRIDS(IMOD)%JA_IE,                       &
-                 GRIDS(IMOD)%IOBP,                         &
-                 GRIDS(IMOD)%IOBPD,                         &
+                 !GRIDS(IMOD)%IOBP,                         &
+                 !GRIDS(IMOD)%IOBPD,                         &
                  GRIDS(IMOD)%IOBDP,                             &
                  GRIDS(IMOD)%IOBPA  )
 !/

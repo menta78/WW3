@@ -621,7 +621,7 @@
                 POS_CELL, IOBP, IOBPA, IOBPD, IAA, JAA, POSI
 #else 
                 WRITE (NDSM)                                            &
-                X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, ZB, TRIGP, TRIA,    &
+                X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, TRIGP, TRIA,    &
                 MAXX, MAXY, IOBPD, IOBP 
 #endif
             END SELECT !GTYPE
@@ -734,7 +734,7 @@
                 POS_CELL, IOBP, IOBPA, IOBDP, IOBPD, IAA, JAA, POSI
 #else 
                 READ (NDSM,END=801 ,IOSTAT=IERR)                 &
-                X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, ZB, TRIGP, TRIA,             &
+                X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, TRIGP, TRIA,  &
                 MAXX, MAXY, IOBPD, IOBP
 #endif
 
