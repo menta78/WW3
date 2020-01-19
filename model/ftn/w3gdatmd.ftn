@@ -696,6 +696,8 @@
                                  POS_CELL(:), &
                                  IAA(:), JAA(:), POSI(:,:), INDEX_CELL(:),       &
                                  I_DIAG(:), JA_IE(:,:,:)
+!/PDLIB INTEGER*2, POINTER    :: IOBP_loc(:)
+!/PDLIB INTEGER*1, POINTER    :: IOBPD_loc(:,:), IOBPA_loc(:), IOBDP_loc(:)
         INTEGER*2, POINTER    :: IOBP(:)
         INTEGER*1, POINTER    :: IOBPD(:,:), IOBDP(:), IOBPA(:)
         INTEGER, POINTER      :: EDGES(:,:), NEIGH(:,:)
@@ -957,6 +959,8 @@
                                  IAA(:), JAA(:), POSI(:,:),                   &
                                  I_DIAG(:), JA_IE(:,:,:),                     &
                                  INDEX_CELL(:)
+!/PDLIB INTEGER*2, POINTER    :: IOBP_loc(:)
+!/PDLIB INTEGER*1, POINTER    :: IOBPD_loc(:,:), IOBPA_loc(:), IOBDP_loc(:)
       INTEGER*2, POINTER      :: IOBP(:)
       INTEGER*1, POINTER      :: IOBPD(:,:), IOBDP(:), IOBPA(:)
       REAL(8), POINTER        :: TRIA(:)
@@ -2015,6 +2019,10 @@
       IOBPD     => GRIDS(IMOD)%IOBPD
       IOBDP     => GRIDS(IMOD)%IOBDP
       IOBPA     => GRIDS(IMOD)%IOBPA
+!/PDLIB      IOBP_loc     => GRIDS(IMOD)%IOBP_loc
+!/PDLIB      IOBPD_loc     => GRIDS(IMOD)%IOBPD_loc
+!/PDLIB      IOBPA_loc     => GRIDS(IMOD)%IOBPA_loc
+!/PDLIB      IOBDP_loc     => GRIDS(IMOD)%IOBDP_loc
       TRIA     => GRIDS(IMOD)%TRIA
       CROSSDIFF => GRIDS(IMOD)%CROSSDIFF
       MAXX     => GRIDS(IMOD)%MAXX
