@@ -719,7 +719,8 @@
 !/ ------------------------------------------------------------------- /
 !/ Parameter list
 !/
-      INTEGER*2, INTENT(IN)     :: MAPSTA(NY*NX), MAPFS(NY*NX)
+      INTEGER*2, INTENT(IN)   :: MAPSTA(NY*NX)
+      INTEGER  , INTENT(IN)   :: MAPFS(NY*NX)
       INTEGER, INTENT(IN)     :: ISP
       REAL, INTENT(IN)        :: DTG, VGX, VGY
       REAL, INTENT(INOUT)     :: VQ(1-NY:NY*(NX+2))
@@ -1793,7 +1794,8 @@
 !/ ------------------------------------------------------------------- /
 !/ Parameter list
 !/
-      INTEGER*2, INTENT(IN)     :: MAPSTA(NY*NX), MAPFS(NY*NX)
+      INTEGER*2, INTENT(IN)   :: MAPSTA(NY*NX)
+      INTEGER  , INTENT(IN)   :: MAPFS(NY*NX)
       INTEGER, INTENT(IN)     :: ISEA
       REAL, INTENT(IN)        :: DTG, VGX, VGY
       REAL, INTENT(INOUT)     :: CFLXYMAX

@@ -613,8 +613,8 @@
         INTEGER          :: ICLOSE
         INTEGER          :: NX, NY, NSEA, NSEAL, TRFLAG
 !/SEC1     INTEGER          :: NITERSEC1
-        INTEGER*2, POINTER :: MAPSTA(:,:), MAPST2(:,:),            &
-                            MAPFS(:,:), MAPSF(:,:)
+        INTEGER*2, POINTER :: MAPSTA(:,:), MAPST2(:,:)
+        INTEGER  , POINTER :: MAPFS(:,:), MAPSF(:,:)
 !
 !/SMC !!Li     Cell and face arrays for SMC grid.  
 !/SMC        INTEGER               :: NCel, NUFc, NVFc, NRLv, MRFct
@@ -976,8 +976,8 @@
 !/IC4      REAL, POINTER           :: IC4_FC(:)
 !/IC5      REAL,    POINTER        :: IC5PARS(:)
 !/IS2      REAL,    POINTER        :: IS2PARS(:)
-      INTEGER*2, POINTER        :: MAPSTA(:,:), MAPST2(:,:),            &
-                                 MAPFS(:,:), MAPSF(:,:)
+        INTEGER*2, POINTER :: MAPSTA(:,:), MAPST2(:,:)
+        INTEGER  , POINTER :: MAPFS(:,:), MAPSF(:,:)
 !
 !/SMC        INTEGER, POINTER      :: NCel, NUFc, NVFc, NRLv, MRFct
 !/SMC        INTEGER, POINTER      :: NLvCel(:), NLvUFc(:), NLvVFc(:)

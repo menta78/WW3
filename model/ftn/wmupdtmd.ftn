@@ -1154,7 +1154,8 @@
       LOGICAL                 :: MAP1(NX,NY), MAP2(NX,NY),            &
                                  MAP3(NX,NY), FLAGUP
 !
-      INTEGER, POINTER        :: NXI, NYI, MAP(:,:), MAPI(:,:)
+      INTEGER, POINTER        :: NXI, NYI
+      INTEGER*2, POINTER      :: MAP(:,:), MAPI(:,:)
       REAL, POINTER           :: X0I, Y0I, SXI, SYI
       INTEGER, POINTER        :: ICLOSE
 !/T1      CHARACTER(LEN=17)       :: FORMAT1
@@ -1702,7 +1703,8 @@
       LOGICAL                 :: MAP1(NX,NY), MAP2(NX,NY),            &
                                  MAP3(NX,NY), FLAGUP
 !
-      INTEGER, POINTER        :: NXI, NYI, MAP(:,:), MAPI(:,:)
+      INTEGER*2, POINTER        :: MAP(:,:), MAPI(:,:)
+      INTEGER, POINTER        :: NXI, NYI
       REAL, POINTER           :: X0I, Y0I, SXI, SYI
       INTEGER, POINTER        :: ICLOSE
 !/T1      CHARACTER(LEN=17)       :: FORMAT1
