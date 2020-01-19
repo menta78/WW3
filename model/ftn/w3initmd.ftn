@@ -756,6 +756,9 @@
 !/MEMCHECK      call getMallocInfo(mallinfos)
 !/MEMCHECK      call printMallInfo(10000+IAPROC,mallInfos)
 !/DEBUGMPI      CALL TEST_MPI_STATUS("Case 12")
+
+             CALL MPI_BARRIER ( MPI_COMM, IERR_MPI )
+
 !
 !
 ! 2.c.2 Allocate arrays
