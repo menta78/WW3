@@ -767,7 +767,8 @@ CONTAINS
 !/ Local parameters
 !/
       INTEGER                 ::  IBC, IX
-      INTEGER                 ::  MASK(NX), STATUS(NX)
+      INTEGER                 ::  MASK(NX)
+      INTEGER                 ::  STATUS(NX)
 !
       MASK(:)=1
       CALL SET_IOBP (MASK, STATUS)

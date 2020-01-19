@@ -697,7 +697,7 @@
                                  POS_CELL(:), &
                                  IAA(:), JAA(:), POSI(:,:), INDEX_CELL(:),       &
                                  I_DIAG(:), JA_IE(:,:,:)
-        INTEGER*2, POINTER    :: IOBP(:)
+        INTEGER, POINTER    :: IOBP(:)
         INTEGER*1, POINTER    :: IOBPD(:,:), IOBDP(:), IOBPA(:)
         INTEGER, POINTER      :: EDGES(:,:), NEIGH(:,:)
         REAL(8), POINTER      :: TRIA(:)
@@ -958,7 +958,7 @@
                                  IAA(:), JAA(:), POSI(:,:),                   &
                                  I_DIAG(:), JA_IE(:,:,:),                     &
                                  INDEX_CELL(:)
-      INTEGER*2, POINTER      :: IOBP(:)
+      INTEGER, POINTER      :: IOBP(:)
       INTEGER*1, POINTER      :: IOBPD(:,:), IOBDP(:), IOBPA(:)
       REAL(8), POINTER        :: TRIA(:)
       REAL, POINTER           :: CROSSDIFF(:,:)
