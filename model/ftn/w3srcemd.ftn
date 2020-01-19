@@ -1069,9 +1069,9 @@
 !/TR1                ENDIF
 !/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * eVS
 !/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
-                    IF (IX == 32) write(740+IAPROC,*) IX, ISP, B_JAC(ISP,JSEA), ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)), &
-                                              & VSTR(ISP), VDTR(ISP), VSDB(ISP), VDDB(ISP), VS(ISP), VD(ISP), &
-                                              & SPEC(ISP), D_INP,IOBPD_LOC(ITH,JSEA)
+                     !IF (IX == 32) write(740+IAPROC,*) IX, ISP, B_JAC(ISP,JSEA), ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)), &
+                     !                         & VSTR(ISP), VDTR(ISP), VSDB(ISP), VDDB(ISP), VS(ISP), VD(ISP), &
+                     !                         & SPEC(ISP), D_INP,IOBPD_LOC(ITH,JSEA)
                      
 !!/VEG1              eVS = eVS + DBLE(VSVG(ISP)) * JAC 
 !!/VEG1              eVD = evD + MIN(0.,DBLE(VDVG(ISP)))
@@ -1079,12 +1079,12 @@
 !!/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
 !/PDLIB            END DO
 !/PDLIB          END DO
-                 IF (ISEA == 32) THEN
-                   write(740+IAPROC,*) IX, ISEA, JSEA, IT, SUM(B_JAC(1:NSPEC,JSEA)), &
-                                     SUM(ASPAR_JAC(1:NSPEC,PDLIB_I_DIAG(JSEA))), & 
-                      &       SUM(VS), SUM(VD), SUM(SPEC), 4*SQRT(EMEAN), DEPTH, & 
-                              IOBP_LOC(JSEA), IOBDP_LOC(JSEA), IOBPA_LOC(JSEA)
-                 ENDIF
+                 !IF (ISEA == 32) THEN
+                 !  write(740+IAPROC,*) IX, ISEA, JSEA, IT, SUM(B_JAC(1:NSPEC,JSEA)), &
+                 !                    SUM(ASPAR_JAC(1:NSPEC,PDLIB_I_DIAG(JSEA))), & 
+                 !     &       SUM(VS), SUM(VD), SUM(SPEC), 4*SQRT(EMEAN), DEPTH, & 
+                 !             IOBP_LOC(JSEA), IOBDP_LOC(JSEA), IOBPA_LOC(JSEA)
+                 !ENDIF
 !/PDLIB        ELSEIF (IMEM == 2) THEN
 !/PDLIB          SIDT   = PDLIB_SI(JSEA) * DTG
 !/PDLIB          DO IK=1,NK
