@@ -614,17 +614,17 @@
               !Init COUNTCON to zero, it needs to be set somewhere or
               !removed
               COUNTCON=0
-#ifndef PDLIB 
+              IF (.NOT. LPDLIB) THEN
                 WRITE (NDSM)                                            &
                 X0, Y0, SX, SY, DXYMAX, TRIGP, TRIA,             &
                 LEN, IEN, ANGLE0, ANGLE, SI, MAXX, MAXY,   &
                 INDEX_CELL, CCON, COUNTCON, IE_CELL,  &
                 POS_CELL, IOBP, IOBPA, IOBPD, IAA, JAA, POSI
-#else 
+              ELSE
                 WRITE (NDSM)                                            &
                 X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, TRIGP, TRIA,    &
                 MAXX, MAXY, IOBPD, IOBP 
-#endif
+              END IF
             END SELECT !GTYPE
 !
           WRITE (NDSM)                                                &
@@ -727,17 +727,17 @@
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.6'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
 
-#ifndef PDLIB 
+              IF (.NOT. LPDLIB) THEN
                 READ (NDSM,END=801 ,IOSTAT=IERR)                 &
                 X0, Y0, SX, SY, DXYMAX, TRIGP, TRIA,             &
                 LEN, IEN, ANGLE0, ANGLE, SI, MAXX, MAXY,   &
                 INDEX_CELL, CCON, COUNTCON, IE_CELL,  &
                 POS_CELL, IOBP, IOBPA, IOBDP, IOBPD, IAA, JAA, POSI
-#else 
+              ELSE
                 READ (NDSM,END=801 ,IOSTAT=IERR)                 &
                 X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, TRIGP, TRIA,  &
                 MAXX, MAXY, IOBPD, IOBP
-#endif
+              END IF
 
 
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.6.4'

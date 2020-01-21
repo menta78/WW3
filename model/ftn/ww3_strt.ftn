@@ -178,6 +178,7 @@
 !     USE W3GDATMD, ONLY: W3NMOD, W3SETG
 !     USE W3WDATMD, ONLY: W3NDAT, W3SETW, W3DIMW
 !/NL1      USE W3ADATMD, ONLY: W3NAUX, W3SETA
+!/PDLIB      USE CONSTANTS, ONLY: LPDLIB
       USE W3ODATMD, ONLY: W3NOUT, W3SETO
       USE W3SERVMD, ONLY: ITRACE, NEXTLN, EJ5P, EXTCDE
 !/S      USE W3SERVMD, ONLY : STRACE
@@ -220,6 +221,7 @@
       CHARACTER               :: COMSTR*1, INXOUT*4
 !/EXPORTWWM      INTEGER                 :: ISPEC
       LOGICAL                 :: FLONE,NOSIX
+!/PDLIB     LPDLIB = .TRUE.
 !/
 !/ ------------------------------------------------------------------- /
 !
