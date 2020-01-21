@@ -222,10 +222,6 @@
       USE W3SERVMD, ONLY: EXTCDE
 !/S      USE W3SERVMD, ONLY: STRACE
       USE W3TRIAMD
-
-!/MEMCHECK    USE MallocInfo_m
-!/MEMCHECK USE W3ADATMD, ONLY: MALLINFOS
-
 !
       IMPLICIT NONE
 !/
@@ -274,11 +270,6 @@
 !
       CALL W3DMO2 ( IMOD, NDSE, NDST, NPT )
       GRDID  = FILEXT
-
-!/MEMCHECK       WRITE(10000+IAPROC,*) 'memcheck_____:', 'W3IOPP Section 1'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(10000+IAPROC,mallInfos)
-
 !
       NOPTS  = 0
 !
@@ -315,7 +306,7 @@
         ELSE 
           CALL IS_IN_UNGRID(IMOD, XPT(IPT), YPT(IPT), itout, IX, IY, RD)
           INGRID = (ITOUT.GT.0) 
-        END IF
+          END IF
 !
         IF ( .NOT.INGRID ) THEN
           IF ( IAPROC .EQ. NAPERR ) THEN
@@ -323,10 +314,10 @@
               WRITE (NDSE,1000) XPT(IPT), YPT(IPT), PNAMES(IPT)
             ELSE
               WRITE (NDSE,1001) XPT(IPT), YPT(IPT), PNAMES(IPT)
+              END IF
             END IF
-          END IF
           CYCLE
-        END IF
+          END IF
 !
 !/T     DO K = 1,4
 !/T       WRITE (NDST,9012) IX(K), IY(K), RD(K)
@@ -368,10 +359,6 @@
         PTNME(NOPTS) = PNAMES(IPT)
 !
         END DO ! End loop over output points (IPT). 
-
-!/MEMCHECK       WRITE(10000+IAPROC,*) 'memcheck_____:', 'W3IOPP Section 2'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(10000+IAPROC,mallInfos)
 !
 !/RTD       DEALLOCATE( EquLon, EquLat, StdLon, StdLat, AnglPT )
 !

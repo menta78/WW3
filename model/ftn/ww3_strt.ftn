@@ -178,7 +178,6 @@
 !     USE W3GDATMD, ONLY: W3NMOD, W3SETG
 !     USE W3WDATMD, ONLY: W3NDAT, W3SETW, W3DIMW
 !/NL1      USE W3ADATMD, ONLY: W3NAUX, W3SETA
-!/PDLIB      USE CONSTANTS, ONLY: LPDLIB
       USE W3ODATMD, ONLY: W3NOUT, W3SETO
       USE W3SERVMD, ONLY: ITRACE, NEXTLN, EJ5P, EXTCDE
 !/S      USE W3SERVMD, ONLY : STRACE
@@ -189,7 +188,6 @@
       USE W3IOGRMD, ONLY: W3IOGR
       USE W3IORSMD, ONLY: W3IORS
       USE W3GSRUMD, ONLY: W3DIST
-!/PDLIB      USE PDLIB_W3PROFSMD, ONLY : PDLIB_INIT
 !/
       USE W3GDATMD
       USE W3WDATMD
@@ -222,7 +220,6 @@
       CHARACTER               :: COMSTR*1, INXOUT*4
 !/EXPORTWWM      INTEGER                 :: ISPEC
       LOGICAL                 :: FLONE,NOSIX
-!/PDLIB     LPDLIB = .TRUE.
 !/
 !/ ------------------------------------------------------------------- /
 !
@@ -282,7 +279,6 @@
       CALL W3IOGR ( 'READ', NDSM )
 !
       IF ( IAPROC .EQ. NAPOUT ) WRITE (NDSO,902) GNAME
-!/PDLIB      CALL PDLIB_INIT(1)
 !
 ! 2.b MPP initializations
 !

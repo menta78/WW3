@@ -613,23 +613,17 @@
               !Init COUNTCON to zero, it needs to be set somewhere or
               !removed
               COUNTCON=0
-              IF (.NOT. LPDLIB) THEN
+#ifndef PDLIB 
                 WRITE (NDSM)                                            &
                 X0, Y0, SX, SY, DXYMAX, TRIGP, TRIA,             &
                 LEN, IEN, ANGLE0, ANGLE, SI, MAXX, MAXY,   &
                 INDEX_CELL, CCON, COUNTCON, IE_CELL,  &
-                POS_CELL, IOBP, IOBPA, IOBDP, IOBPD, IAA, JAA, POSI
-              ELSE
+                POS_CELL, IOBP, IOBPA, IOBPD, IAA, JAA, POSI
+#else 
                 WRITE (NDSM)                                            &
-<<<<<<< HEAD
                 X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, ZB, TRIGP, TRIA,    &
                 MAXX, MAXY, IOBPD, IOBP 
 #endif
-=======
-                X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, TRIGP, TRIA,    &
-                MAXX, MAXY, IOBPD, IOBP
-              END IF
->>>>>>> 26afddbcc0c70c5f72499cb78cf63aa88885e109
             END SELECT !GTYPE
 !
           WRITE (NDSM)                                                &
@@ -732,21 +726,17 @@
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.6'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
 
-              IF (.NOT. LPDLIB) THEN
+#ifndef PDLIB 
                 READ (NDSM,END=801 ,IOSTAT=IERR)                 &
                 X0, Y0, SX, SY, DXYMAX, TRIGP, TRIA,             &
                 LEN, IEN, ANGLE0, ANGLE, SI, MAXX, MAXY,   &
                 INDEX_CELL, CCON, COUNTCON, IE_CELL,  &
                 POS_CELL, IOBP, IOBPA, IOBDP, IOBPD, IAA, JAA, POSI
-              ELSE
+#else 
                 READ (NDSM,END=801 ,IOSTAT=IERR)                 &
-<<<<<<< HEAD
                 X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, ZB, TRIGP, TRIA,             &
-=======
-                X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, TRIGP, TRIA, &
->>>>>>> 26afddbcc0c70c5f72499cb78cf63aa88885e109
                 MAXX, MAXY, IOBPD, IOBP
-              END IF
+#endif
 
 
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.6.4'
@@ -754,6 +744,7 @@
 !/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 6'
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
+
 !/DEBUGIOGR     FLUSH(740+IAPROC)
             END SELECT !GTYPE
 !
@@ -761,19 +752,10 @@
 !/DEBUGIOGR     FLUSH(740+IAPROC)
           IF (GTYPE.NE.UNGTYPE) CALL W3GNTX ( IGRD, NDSE, NDST ) 
 
-!/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 6b'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
-
-
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.9'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
           READ (NDSM,END=801 ,IOSTAT=IERR)                     &
                ZB, MAPTMP, MAPFS, MAPSF, TRFLAG
-!/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 6c'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
-
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.10'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
 !
@@ -795,10 +777,6 @@
           MAPSF(:,3) = MAPSF(:,2) + (MAPSF(:,1)-1)*NY
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.12'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
-!/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 6c'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
-
 
           IF ( TRFLAG .NE. 0 ) THEN
               READ (NDSM,END=801 ,IOSTAT=IERR) TRNX, TRNY
@@ -810,7 +788,7 @@
 
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.13'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
-          READ (NDSM,END=801 ,IOSTAT=IERR)                            &
+          READ (NDSM,END=801 ,IOSTAT=IERR)                     &
                DTCFL, DTCFLI, DTMAX, DTMIN, DMIN, CTMAX,              &
                FICE0, FICEN, FICEL, PFMOVE, FLDRY, FLCX, FLCY,        &
                FLCTH, FLCK, FLSOU, FLBPI, FLBPO, CLATS, CLATIS,       &
@@ -818,15 +796,10 @@
                IICEDISP, ICESCALES(1:4), NOLEAP, CMPRTRCK, IICEHFAC,  &
                IICEDDISP, IICEHDISP, IICEFDISP, BTBETA
 
-!/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 6d'
-!/MEMCHECK       call getMallocInfo(mallinfos)
-!/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
-
-
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.14'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
 
-              READ(NDSM,END=801 ,IOSTAT=IERR) GRIDSHIFT
+              READ(NDSM,END=801 ,IOSTAT=IERR)GRIDSHIFT
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.15'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
 !/SEC1         READ (NDSM,IOSTAT=IERR) NITERSEC1
