@@ -2953,8 +2953,7 @@
 !/ ------------------------------------------------------------------- /
 !/ Parameter list
 !/
-      INTEGER, INTENT(IN)     :: MAPSTA(NY*NX)
-      INTEGER, INTENT(IN)     :: ISPEC
+      INTEGER, INTENT(IN)     :: ISPEC, MAPSTA(NY*NX)
       REAL, INTENT(IN)        :: FIELD(1-NY:NY*(NX+2))
 !/
 !/ ------------------------------------------------------------------- /

@@ -379,8 +379,7 @@
 !/ ------------------------------------------------------------------- /
 !/ Parameter list
 !/
-      INTEGER, INTENT(IN)   :: MAPSF(MSEA,2)
-      INTEGER, INTENT(IN)     :: MSEA, NSEA, MX, MY
+      INTEGER, INTENT(IN)     :: MSEA, NSEA, MX, MY, MAPSF(MSEA,2)
       REAL, INTENT(IN)        :: S(MSEA)
       REAL, INTENT(OUT)       :: XY(MX,MY)
 !/

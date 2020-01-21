@@ -365,7 +365,7 @@
 !/PDLIB      use yowNodepool, only: npa
 !/PDLIB      use yowRankModule, only : rank
      USE W3GDATMD, ONLY: GTYPE, UNGTYPE
-!/PDLIB      USE PDLIB_W3PROFSMD, ONLY : PDLIB_MAPSTA_INIT, SETDEPTH_PDLIB, MAP_AND_DEALLOC_GL_IOBP 
+!/PDLIB      USE PDLIB_W3PROFSMD, ONLY : PDLIB_MAPSTA_INIT, SETDEPTH_PDLIB
 !/PDLIB      USE PDLIB_W3PROFSMD, ONLY : BLOCK_SOLVER_INIT, PDLIB_INIT, DEALLOCATE_PDLIB_GLOBAL
 !/PDLIB      use yowDatapool, only: istatus
 !/SETUP      USE W3WAVSET, ONLY : PREPARATION_FD_SCHEME
@@ -648,6 +648,7 @@
 !/DEBUGMPI     CALL TEST_MPI_STATUS("Case 8")
       CALL W3IOGR ( 'READ', NDS(5), IMOD, FEXT )
 
+
 !/MEMCHECK       WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2b'
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(10000+IAPROC,mallInfos)
@@ -702,10 +703,6 @@
 !
 ! 2.b Save MAPSTA
 !
-!
-!!/PDLIB  CALL MAP_AND_DEALLOC_GL_IOBP(IMOD)
-!
-!
       ALLOCATE ( MAPTST(NY,NX) )
       MAPTST  = MAPSTA 
 
@@ -756,7 +753,7 @@
 !/MEMCHECK      call getMallocInfo(mallinfos)
 !/MEMCHECK      call printMallInfo(10000+IAPROC,mallInfos)
 !/DEBUGMPI      CALL TEST_MPI_STATUS("Case 12")
-
+!
 !
 ! 2.c.2 Allocate arrays
 !
@@ -764,41 +761,23 @@
 !/DEBUGINIT     WRITE(740+IAPROC,*) 'Calling W3DIMW at W3INIT, case 1'
 !/DEBUGINIT     FLUSH(740+IAPROC)
           CALL W3DIMW ( IMOD, NDSE, NDST )
-!/MEMCHECK      WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2h'
-!/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(10000+IAPROC,mallInfos)
-!/DEBUGMPI      CALL TEST_MPI_STATUS("Case 12")
         ELSE
 !/DEBUGINIT     WRITE(740+IAPROC,*) 'Calling W3DIMW at W3INIT, case 2'
 !/DEBUGINIT     FLUSH(740+IAPROC)
           CALL W3DIMW ( IMOD, NDSE, NDST, .FALSE. )
-!/MEMCHECK      WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2i'
-!/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(10000+IAPROC,mallInfos)
-!/DEBUGMPI      CALL TEST_MPI_STATUS("Case 12")
         END IF
 !/DEBUGINIT     WRITE(740+IAPROC,*) ' 1: NSEAL=', NSEAL
 !/DEBUGINIT     WRITE(740+IAPROC,*) ' maxval(UST)=', maxval(UST)
 !/DEBUGINIT     FLUSH(740+IAPROC)
 !/TIMINGS       CALL PRINT_MY_TIME("After W3DIMW")
       CALL W3DIMA ( IMOD, NDSE, NDST )
-!/MEMCHECK      WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2j'
-!/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(10000+IAPROC,mallInfos)
-!/DEBUGMPI      CALL TEST_MPI_STATUS("Case 12")
       CALL W3DIMI ( IMOD, NDSE, NDST , FLAGSTIDEIN )
-!/MEMCHECK      WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2k'
-!/MEMCHECK      call getMallocInfo(mallinfos)
-!/MEMCHECK      call printMallInfo(10000+IAPROC,mallInfos)
-!/DEBUGMPI      CALL TEST_MPI_STATUS("Case 12")
-
 !!/DEBUGMPI     CALL TEST_MPI_STATUS("Case 13")
 !/TIMINGS       CALL PRINT_MY_TIME("After W3DIMI")
 
 !/MEMCHECK      WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 3'
 !/MEMCHECK      call getMallocInfo(mallinfos)
 !/MEMCHECK      call printMallInfo(10000+IAPROC,mallInfos)
-
 !
 ! 2.c.3 Calculated expected number of prop. calls per processor
 !

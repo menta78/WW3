@@ -613,7 +613,8 @@
         INTEGER          :: ICLOSE
         INTEGER          :: NX, NY, NSEA, NSEAL, TRFLAG
 !/SEC1     INTEGER          :: NITERSEC1
-        INTEGER  , POINTER :: MAPFS(:,:), MAPSF(:,:),  MAPST2(:,:), MAPSTA(:,:)
+        INTEGER, POINTER :: MAPSTA(:,:), MAPST2(:,:),            &
+                            MAPFS(:,:), MAPSF(:,:)
 !
 !/SMC !!Li     Cell and face arrays for SMC grid.  
 !/SMC        INTEGER               :: NCel, NUFc, NVFc, NRLv, MRFct
@@ -693,13 +694,9 @@
         REAL, POINTER         :: ANGLE(:,:),ANGLE0(:,:)
         INTEGER               :: COUNTRI,COUNTOT,NNZ, NBEDGE
         INTEGER, POINTER      :: CCON(:), COUNTCON(:), IE_CELL(:), &
-                                 POS_CELL(:), &
+                                 POS_CELL(:), IOBP(:), IOBPD(:,:), IOBDP(:), IOBPA(:),   &
                                  IAA(:), JAA(:), POSI(:,:), INDEX_CELL(:),       &
                                  I_DIAG(:), JA_IE(:,:,:)
-!/PDLIB INTEGER*2, POINTER    :: IOBP_loc(:)
-!/PDLIB INTEGER*1, POINTER    :: IOBPD_loc(:,:), IOBPA_loc(:), IOBDP_loc(:)
-        INTEGER*2, POINTER    :: IOBP(:)
-        INTEGER*1, POINTER    :: IOBPD(:,:), IOBDP(:), IOBPA(:)
         INTEGER, POINTER      :: EDGES(:,:), NEIGH(:,:)
         REAL(8), POINTER      :: TRIA(:)
         REAL, POINTER         :: CROSSDIFF(:,:)
@@ -955,14 +952,10 @@
       REAL(8), POINTER        :: IEN(:,:), LEN(:,:), SI(:)
       REAL, POINTER           :: ANGLE(:,:),ANGLE0(:,:)
       INTEGER,  POINTER       :: CCON(:),  COUNTCON(:), IE_CELL(:),           &
-                                 POS_CELL(:), &
+                                 POS_CELL(:), IOBP(:), IOBPD(:,:), IOBDP(:), IOBPA(:),  &
                                  IAA(:), JAA(:), POSI(:,:),                   &
                                  I_DIAG(:), JA_IE(:,:,:),                     &
                                  INDEX_CELL(:)
-!/PDLIB INTEGER*2, POINTER    :: IOBP_loc(:)
-!/PDLIB INTEGER*1, POINTER    :: IOBPD_loc(:,:), IOBPA_loc(:), IOBDP_loc(:)
-      INTEGER*2, POINTER      :: IOBP(:)
-      INTEGER*1, POINTER      :: IOBPD(:,:), IOBDP(:), IOBPA(:)
       REAL(8), POINTER        :: TRIA(:)
       REAL, POINTER           :: CROSSDIFF(:,:)
       REAL,POINTER            :: MAXX, MAXY, DXYMAX 
@@ -979,7 +972,8 @@
 !/IC4      REAL, POINTER           :: IC4_FC(:)
 !/IC5      REAL,    POINTER        :: IC5PARS(:)
 !/IS2      REAL,    POINTER        :: IS2PARS(:)
-     INTEGER, POINTER :: MAPFS(:,:), MAPSF(:,:), MAPST2(:,:), MAPSTA(:,:)
+      INTEGER, POINTER        :: MAPSTA(:,:), MAPST2(:,:),            &
+                                 MAPFS(:,:), MAPSF(:,:)
 !
 !/SMC        INTEGER, POINTER      :: NCel, NUFc, NVFc, NRLv, MRFct
 !/SMC        INTEGER, POINTER      :: NLvCel(:), NLvUFc(:), NLvVFc(:)
@@ -2019,10 +2013,6 @@
       IOBPD     => GRIDS(IMOD)%IOBPD
       IOBDP     => GRIDS(IMOD)%IOBDP
       IOBPA     => GRIDS(IMOD)%IOBPA
-!/PDLIB      IOBP_loc     => GRIDS(IMOD)%IOBP_loc
-!/PDLIB      IOBPD_loc     => GRIDS(IMOD)%IOBPD_loc
-!/PDLIB      IOBPA_loc     => GRIDS(IMOD)%IOBPA_loc
-!/PDLIB      IOBDP_loc     => GRIDS(IMOD)%IOBDP_loc
       TRIA     => GRIDS(IMOD)%TRIA
       CROSSDIFF => GRIDS(IMOD)%CROSSDIFF
       MAXX     => GRIDS(IMOD)%MAXX
