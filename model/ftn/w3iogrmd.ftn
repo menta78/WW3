@@ -752,10 +752,19 @@
 !/DEBUGIOGR     FLUSH(740+IAPROC)
           IF (GTYPE.NE.UNGTYPE) CALL W3GNTX ( IGRD, NDSE, NDST ) 
 
+!/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 6b'
+!/MEMCHECK       call getMallocInfo(mallinfos)
+!/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
+
+
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.9'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
           READ (NDSM,END=801 ,IOSTAT=IERR)                     &
                ZB, MAPTMP, MAPFS, MAPSF, TRFLAG
+!/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 6c'
+!/MEMCHECK       call getMallocInfo(mallinfos)
+!/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
+
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.10'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
 !
@@ -777,6 +786,10 @@
           MAPSF(:,3) = MAPSF(:,2) + (MAPSF(:,1)-1)*NY
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.12'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
+!/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 6c'
+!/MEMCHECK       call getMallocInfo(mallinfos)
+!/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
+
 
           IF ( TRFLAG .NE. 0 ) THEN
               READ (NDSM,END=801 ,IOSTAT=IERR) TRNX, TRNY
@@ -796,10 +809,15 @@
                IICEDISP, ICESCALES(1:4), NOLEAP, CMPRTRCK, IICEHFAC,  &
                IICEDDISP, IICEHDISP, IICEFDISP, BTBETA
 
+!/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 6d'
+!/MEMCHECK       call getMallocInfo(mallinfos)
+!/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
+
+
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.14'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
 
-              READ(NDSM,END=801 ,IOSTAT=IERR)GRIDSHIFT
+              READ(NDSM,END=801 ,IOSTAT=IERR) GRIDSHIFT
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.15'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
 !/SEC1         READ (NDSM,IOSTAT=IERR) NITERSEC1
