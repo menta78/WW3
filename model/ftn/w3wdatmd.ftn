@@ -406,6 +406,7 @@
 ! -------------------------------------------------------------------- /
 ! 2.  Allocate arrays
 !
+      Print *, 'NSEA=', NSEA, ' NSEAL=', NSEAL
       CALL SET_UP_NSEAL_NSEALM(NSEAL_DUMMY, NSEALM)
 !/DEBUGINIT    WRITE(740+IAPROC,*) 'W3DIMW, step 7'
 !/DEBUGINIT    FLUSH(740+IAPROC)
@@ -413,6 +414,8 @@
 !/DEBUGINIT    WRITE(740+IAPROC,*) 'W3DIMW, step 8'
 !/DEBUGINIT    FLUSH(740+IAPROC)
 !
+      Print *, 'FL_ALL=', FL_ALL
+      Print *, 'NSPEC=', NSPEC, 'NSEALM=', NSEALM
       IF ( FL_ALL ) THEN
 !/DEBUGINIT    WRITE(740+IAPROC,*) 'W3DIMW, step 8'
 !/DEBUGINIT    FLUSH(740+IAPROC)
