@@ -1352,8 +1352,6 @@
 !/DEBUGINIT            write(740+IAPROC,*), 'Before read 2002, case 11'
             READ (NDSI,*) IDTST
 !/DEBUGINIT            write(740+IAPROC,*), ' After read 2002, case 11'
-
-
             ! Exit if illegal id
             IF ( IDTST.NE.IDSTR(-7) .AND. IDTST.NE.IDSTR(-6) .AND.   &
                  IDTST.NE.IDSTR(-5) .AND. IDTST.NE.IDSTR(-4) .AND.   &

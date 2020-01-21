@@ -753,7 +753,12 @@
 !/MEMCHECK      call getMallocInfo(mallinfos)
 !/MEMCHECK      call printMallInfo(10000+IAPROC,mallInfos)
 !/DEBUGMPI      CALL TEST_MPI_STATUS("Case 12")
+<<<<<<< HEAD
 !
+=======
+
+!!/PDLIB             CALL MPI_BARRIER ( MPI_COMM, IERR_MPI )
+>>>>>>> 26afddbcc0c70c5f72499cb78cf63aa88885e109
 !
 ! 2.c.2 Allocate arrays
 !
@@ -774,10 +779,13 @@
       CALL W3DIMI ( IMOD, NDSE, NDST , FLAGSTIDEIN )
 !!/DEBUGMPI     CALL TEST_MPI_STATUS("Case 13")
 !/TIMINGS       CALL PRINT_MY_TIME("After W3DIMI")
+<<<<<<< HEAD
 
 !/MEMCHECK      WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 3'
 !/MEMCHECK      call getMallocInfo(mallinfos)
 !/MEMCHECK      call printMallInfo(10000+IAPROC,mallInfos)
+=======
+>>>>>>> 26afddbcc0c70c5f72499cb78cf63aa88885e109
 !
 ! 2.c.3 Calculated expected number of prop. calls per processor
 !
@@ -898,7 +906,7 @@
 !/TIMINGS       CALL PRINT_MY_TIME("Before W3IORS")
       CALL W3IORS ( 'READ', NDS(6), SIG(NK), INTYPE, IMOD )
 !/TIMINGS       CALL PRINT_MY_TIME("After W3IORS")
-!/MEMCHECK      WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 3a'
+!/MEMCHECK      WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 3'
 !/MEMCHECK      call getMallocInfo(mallinfos)
 !/MEMCHECK      call printMallInfo(10000+IAPROC,mallInfos)
 
@@ -1118,7 +1126,12 @@
 ! 4.d Preprocessing for point output.
 !
       IF ( FLOUT(2) ) CALL W3IOPP ( NPT, XPT, YPT, PNAMES, IMOD )
-!/PDLIB        CALL DEALLOCATE_PDLIB_GLOBAL(IMOD)
+
+!/MEMCHECK       WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 5a'
+!/MEMCHECK       call getMallocInfo(mallinfos)
+!/MEMCHECK       call printMallInfo(10000+IAPROC,mallInfos)
+
+!!/PDLIB        CALL DEALLOCATE_PDLIB_GLOBAL(IMOD)
 !
 !/T      WRITE (NDST,9040)
 !/T      DO J=1, 5
@@ -1187,6 +1200,10 @@
           VA(:,JSEA) = 0.
         END IF
       END DO
+
+!/MEMCHECK       WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 5b'
+!/MEMCHECK       call getMallocInfo(mallinfos)
+!/MEMCHECK       call printMallInfo(10000+IAPROC,mallInfos)
 !
 !/PDLIB     CALL SETDEPTH_PDLIB
 !
