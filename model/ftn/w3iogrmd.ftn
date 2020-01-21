@@ -372,7 +372,6 @@
       FNAMEP = TNAMEP
       FNAMEG = TNAMEG
       FNAMEI = TNAMEI
-      Print *, 'LPDLIB=', LPDLIB
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 2'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
 !
@@ -619,11 +618,11 @@
                 X0, Y0, SX, SY, DXYMAX, TRIGP, TRIA,             &
                 LEN, IEN, ANGLE0, ANGLE, SI, MAXX, MAXY,   &
                 INDEX_CELL, CCON, COUNTCON, IE_CELL,  &
-                POS_CELL, IOBP, IOBPA, IOBPD, IAA, JAA, POSI
+                POS_CELL, IOBP, IOBPA, IOBDP, IOBPD, IAA, JAA, POSI
               ELSE
                 WRITE (NDSM)                                            &
                 X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, TRIGP, TRIA,    &
-                MAXX, MAXY, IOBPD, IOBP 
+                MAXX, MAXY, IOBPD, IOBP
               END IF
             END SELECT !GTYPE
 !
@@ -735,7 +734,7 @@
                 POS_CELL, IOBP, IOBPA, IOBDP, IOBPD, IAA, JAA, POSI
               ELSE
                 READ (NDSM,END=801 ,IOSTAT=IERR)                 &
-                X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, TRIGP, TRIA,  &
+                X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, TRIGP, TRIA, &
                 MAXX, MAXY, IOBPD, IOBP
               END IF
 
@@ -745,7 +744,6 @@
 !/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 6'
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
-
 !/DEBUGIOGR     FLUSH(740+IAPROC)
             END SELECT !GTYPE
 !
@@ -789,7 +787,7 @@
 
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.13'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
-          READ (NDSM,END=801 ,IOSTAT=IERR)                     &
+          READ (NDSM,END=801 ,IOSTAT=IERR)                            &
                DTCFL, DTCFLI, DTMAX, DTMIN, DMIN, CTMAX,              &
                FICE0, FICEN, FICEL, PFMOVE, FLDRY, FLCX, FLCY,        &
                FLCTH, FLCK, FLSOU, FLBPI, FLBPO, CLATS, CLATIS,       &
