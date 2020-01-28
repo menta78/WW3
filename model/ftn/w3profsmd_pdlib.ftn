@@ -5888,7 +5888,7 @@
       REAL  :: CAD(NSPEC), CAS(NSPEC), ACLOC(NSPEC)
       REAL  :: CP_SIG(NSPEC), CM_SIG(NSPEC)
       REAL  :: eFactM1, eFactP1
-      REAL*8  :: Sum_Prev, Sum_New, p_is_converged, DiffNew, prop_conv
+      REAL  :: Sum_Prev, Sum_New, p_is_converged, DiffNew, prop_conv
       REAL  :: Sum_L2, Sum_L2_GL
       REAL  :: DMM(0:NK2)
       REAL  :: eDiff(NSPEC), eProd(NSPEC)
@@ -5919,7 +5919,7 @@
       INTEGER JP_glob
       INTEGER is_converged, itmp
 
-      integer :: testknoten = 32
+      integer :: testknoten = 923
 
       LOGICAL :: LSIG = .FALSE.
 
@@ -6303,10 +6303,10 @@
 !
           !write(50000+IAPROC,*) 'SOLVER ITER', ISEA, JSEA, nbiter, & 
           !             &  SUM(B_JAC(:,IP)), sum(ASPAR_DIAG), sum(ACLOC), sum(esum), 
-          !if (isea == testknoten) then
-          !  write(740+IAPROC,*) p_is_converged, sum(ASPAR_DIAG), SUM(B_JAC(:,IP)), &
-          !       & sum(ACLOC), sum(esum), iobp_loc(jsea), iobpa_loc(jsea), iobdp_loc(jsea)
-          !endif
+          if (isea == testknoten) then
+            write(740+IAPROC,*) p_is_converged, sum(ASPAR_DIAG), SUM(B_JAC(:,IP)), &
+                 & sum(ACLOC), sum(esum), iobp_loc(jsea), iobpa_loc(jsea), iobdp_loc(jsea)
+          endif
           !write(740+IAPROC,*) isea, jsea, ip, sum(ASPAR_DIAG), SUM(B_JAC(:,IP)), sum(ACLOC), & 
           !          & sum(esum), iobp_loc(ip), iobpd_loc(ith,ip), iobpa_loc(ip), iobdp_loc(ip)
 
