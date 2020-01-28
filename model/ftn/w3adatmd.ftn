@@ -472,8 +472,10 @@
 !/SMC        INTEGER, POINTER      :: MAPX2(:), MAPY2(:), MAPAXY(:),       &
 !/SMC                                 MAPXY(:), MAPTH2(:), MAPWN2(:)
 !
-!/PDLIB      INTEGER, POINTER      :: IOBP_LOC(:), IOBPD_LOC(:,:)
+!/PDLIB      INTEGER*1, POINTER    :: IOBPD_LOC(:,:)
+!/PDLIB      INTEGER, POINTER      :: IOBP_LOC(:)
 !/PDLIB      INTEGER, POINTER      :: IOBDP_LOC(:), IOBPA_LOC(:)
+
 !
 ! Warning Defined but not set if UGTYPE .EQ. .T. 
             INTEGER, POINTER      :: ITER(:,:)
@@ -591,7 +593,8 @@
 !/SMC      INTEGER, POINTER        :: MAPX2(:), MAPY2(:), MAPAXY(:),       &
 !/SMC                                 MAPXY(:), MAPTH2(:), MAPWN2(:)
 
-!/PDLIB      INTEGER, POINTER      :: IOBP_LOC(:), IOBPD_LOC(:,:)
+!/PDLIB      INTEGER*1, POINTER    :: IOBPD_LOC(:,:)
+!/PDLIB      INTEGER, POINTER      :: IOBP_LOC(:)
 !/PDLIB      INTEGER, POINTER      :: IOBDP_LOC(:), IOBPA_LOC(:)
 !
           INTEGER, POINTER        :: ITER(:,:)
