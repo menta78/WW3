@@ -683,11 +683,16 @@
 !
 ! unstructured data
 !
-        INTEGER               :: NTRI
-        INTEGER, POINTER      :: TRIGP(:,:)
-!/PDLIB        INTEGER               :: NBND_MAP
-!/PDLIB        INTEGER, POINTER      :: INDEX_MAP(:)
-!/PDLIB        INTEGER, POINTER      :: MAPSTA_LOC(:)
+        INTEGER              :: NTRI
+        INTEGER, POINTER     :: TRIGP(:,:)
+!/PDLIB        INTEGER :: NBND_MAP
+!/PDLIB        INTEGER, POINTER     :: INDEX_MAP(:)
+!/PDLIB        INTEGER, POINTER     :: MAPSTA_LOC(:)
+!/PDLIB        INTEGER*1, POINTER   :: IOBPD_LOC(:,:)
+!/PDLIB        INTEGER*2, POINTER   :: IOBP_LOC(:)
+!/PDLIB        INTEGER*1, POINTER   :: IOBDP_LOC(:)
+!/PDLIB        INTEGER*1, POINTER   :: IOBPA_LOC(:)
+
         REAL(8), POINTER      :: LEN(:,:),SI(:), IEN(:,:)
 
         REAL                  :: MAXX, MAXY, DXYMAX
@@ -947,9 +952,14 @@
       INTEGER, POINTER        :: NTRI,COUNTRI,COUNTOT,NNZ
       INTEGER                 :: optionCall = 3 ! take care all other options are basically wrong
       INTEGER, POINTER        :: TRIGP(:,:)
-!/PDLIB      INTEGER, POINTER        :: NBND_MAP
+!/PDLIB      INTEGER, POINTER     :: NBND_MAP
 !/PDLIB      INTEGER, POINTER        :: INDEX_MAP(:)
 !/PDLIB      INTEGER, POINTER        :: MAPSTA_LOC(:)
+!/PDLIB        INTEGER*1, POINTER   :: IOBPD_LOC(:,:)
+!/PDLIB        INTEGER*2, POINTER   :: IOBP_LOC(:)
+!/PDLIB        INTEGER*1, POINTER   :: IOBDP_LOC(:)
+!/PDLIB        INTEGER*1, POINTER   :: IOBPA_LOC(:)
+
       REAL(8), POINTER        :: IEN(:,:), LEN(:,:), SI(:)
       REAL, POINTER           :: ANGLE(:,:),ANGLE0(:,:)
       INTEGER,  POINTER       :: CCON(:),  COUNTCON(:), IE_CELL(:),           &
@@ -1986,9 +1996,6 @@
       GNAME  => GRIDS(IMOD)%GNAME
       FILEXT => GRIDS(IMOD)%FILEXT
       TRIGP  => GRIDS(IMOD)%TRIGP
-!/PDLIB      NBND_MAP => GRIDS(IMOD)%NBND_MAP
-!/PDLIB      INDEX_MAP => GRIDS(IMOD)%INDEX_MAP
-!/PDLIB      MAPSTA_LOC => GRIDS(IMOD)%MAPSTA_LOC
       NTRI     => GRIDS(IMOD)%NTRI
       COUNTRI     => GRIDS(IMOD)%COUNTRI
       SI     => GRIDS(IMOD)%SI
