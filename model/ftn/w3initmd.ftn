@@ -761,16 +761,25 @@
 !/DEBUGINIT     WRITE(740+IAPROC,*) 'Calling W3DIMW at W3INIT, case 1'
 !/DEBUGINIT     FLUSH(740+IAPROC)
           CALL W3DIMW ( IMOD, NDSE, NDST )
+!/MEMCHECK      WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2h'
+!/MEMCHECK      call getMallocInfo(mallinfos)
+!/MEMCHECK      call printMallInfo(10000+IAPROC,mallInfos)
         ELSE
 !/DEBUGINIT     WRITE(740+IAPROC,*) 'Calling W3DIMW at W3INIT, case 2'
 !/DEBUGINIT     FLUSH(740+IAPROC)
           CALL W3DIMW ( IMOD, NDSE, NDST, .FALSE. )
+!/MEMCHECK      WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2i'
+!/MEMCHECK      call getMallocInfo(mallinfos)
+!/MEMCHECK      call printMallInfo(10000+IAPROC,mallInfos)
         END IF
 !/DEBUGINIT     WRITE(740+IAPROC,*) ' 1: NSEAL=', NSEAL
 !/DEBUGINIT     WRITE(740+IAPROC,*) ' maxval(UST)=', maxval(UST)
 !/DEBUGINIT     FLUSH(740+IAPROC)
 !/TIMINGS       CALL PRINT_MY_TIME("After W3DIMW")
       CALL W3DIMA ( IMOD, NDSE, NDST )
+!/MEMCHECK      WRITE(10000+IAPROC,*) 'memcheck_____:', 'WW3_INIT SECTION 2j'
+!/MEMCHECK      call getMallocInfo(mallinfos)
+!/MEMCHECK      call printMallInfo(10000+IAPROC,mallInfos)
       CALL W3DIMI ( IMOD, NDSE, NDST , FLAGSTIDEIN )
 !!/DEBUGMPI     CALL TEST_MPI_STATUS("Case 13")
 !/TIMINGS       CALL PRINT_MY_TIME("After W3DIMI")
