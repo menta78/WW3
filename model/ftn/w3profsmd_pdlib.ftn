@@ -7682,7 +7682,6 @@
         if(istat /= 0) CALL PDLIB_ABORT(9)
       ELSE IF (IMEM == 2) THEN
         ALLOCATE(ASPAR_DIAG_ALL(NSPEC, npa), stat=istat)
-        ASPAR_DIAG_ALL = 0.
         if(istat /= 0) CALL PDLIB_ABORT(9)
       ENDIF
 !/DEBUGINIT    WRITE(740+IAPROC,*) 'JACOBI_INIT, step 2'
@@ -7693,13 +7692,11 @@
 !/DEBUGINIT    FLUSH(740+IAPROC)
       ALLOCATE(CAD_THE(NSPEC,NSEAL), stat=istat)
       if(istat /= 0) CALL PDLIB_ABORT(11)
-      CAD_THE = 0.
 !/DEBUGINIT    WRITE(740+IAPROC,*) 'JACOBI_INIT, step 4'
 !/DEBUGINIT    FLUSH(740+IAPROC)
       IF (FreqShiftMethod .eq. 1) THEN
         ALLOCATE(CAS_SIG(NSPEC,NSEAL), stat=istat)
         if(istat /= 0) CALL PDLIB_ABORT(11)
-        CAS_SIG = 0.
 !/DEBUGINIT    WRITE(740+IAPROC,*) 'JACOBI_INIT, step 5, FreqShiftMethod=', FreqShiftMethod
 !/DEBUGINIT    FLUSH(740+IAPROC)
       ELSE IF (FreqShiftMethod .eq. 2) THEN
@@ -7711,7 +7708,6 @@
         if(istat /= 0) CALL PDLIB_ABORT(11)
 !/DEBUGINIT    WRITE(740+IAPROC,*) 'After istat test'
 !/DEBUGINIT    FLUSH(740+IAPROC)
-        CWNB_SIG_M2(:,:) = 0.
 !/DEBUGINIT    WRITE(740+IAPROC,*) 'After CWNB_SIG_M2 setting to zero'
 !/DEBUGINIT    FLUSH(740+IAPROC)
       END IF
