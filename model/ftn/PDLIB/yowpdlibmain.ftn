@@ -576,7 +576,7 @@ module yowpdlibMain
       call flush(710+myrank)
     endif
 
-    if(debugParmetis) write(710+myrank,*) "Run ParMETIS now..."
+    !if(debugParmetis) write(710+myrank,*) "Run ParMETIS now..."
     call ParMETIS_V3_PartGeomKway(vtxdist, xadj, adjncy, &
                                   vwgt, & !vwgt - ignore weights
                                   adjwgt, & ! adjwgt - ignore weights
