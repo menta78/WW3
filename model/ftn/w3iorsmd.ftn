@@ -811,7 +811,7 @@
 ! Updates reflections maps: 
 !
               IF (GTYPE.EQ.UNGTYPE) THEN 
-                CALL SET_UG_IOBP
+!AR: not needed since already initialized on w3iogr                CALL SET_UG_IOBP
 !/REF1              ELSE 
 !/REF1                CALL W3SETREF
                 ENDIF 

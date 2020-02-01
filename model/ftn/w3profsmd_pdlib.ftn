@@ -403,8 +403,7 @@
 !/S      USE W3SERVMD, ONLY: STRACE
 !
       USE W3GDATMD, ONLY : INDEX_MAP, NBND_MAP, NSEA, NSEAL, MAPSTA, GRIDS, NX, NTH
-      USE W3GDATMD, ONLY : IOBP, IOBDP, IOBPA, IOBPD, MAPSTA_LOC, NBND_MAP, INDEX_MAP
-      USE W3GDATMD, ONLY : IOBP_LOC, IOBPD_LOC, IOBDP_LOC, IOBPA_LOC 
+      USE W3GDATMD, ONLY : MAPSTA_LOC, NBND_MAP, INDEX_MAP
       USE W3ODATMD, ONLY : IAPROC, NAPROC
       USE YOWNODEPOOL, ONLY: iplg, npa
       use yowExchangeModule, ONLY : PDLIB_exchange1DREAL
@@ -460,6 +459,88 @@
           INDEX_MAP(IBND_MAP) = Status(IX)
         END IF
       END DO
+!/
+!/ End of W3SPR4 ----------------------------------------------------- /
+!/
+      END SUBROUTINE
+!/ ------------------------------------------------------------------- /      
+      SUBROUTINE PDLIB_IOBP_INIT(IMOD)
+!/
+!/                  +-----------------------------------+
+!/                  | WAVEWATCH III           NOAA/NCEP |
+!/                  |                                   |  
+!/                  | Aron Roland (BGS IT&E GmbH)       |
+!/                  | Mathieu Dutour-Sikiric (IRB)      |
+!/                  |                                   |
+!/                  |                        FORTRAN 90 |
+!/                  | Last update :        01-June-2018 |
+!/                  +-----------------------------------+
+!/
+!/    01-June-2018 : Origination.                        ( version 6.04 )
+!/
+!  1. Purpose : Init mapsta part for pdlib
+!  2. Method :
+!  3. Parameters :
+!
+!     Parameter list
+!     ----------------------------------------------------------------
+!     ----------------------------------------------------------------
+!
+!  4. Subroutines used :
+!
+!      Name      Type  Module   Description
+!     ----------------------------------------------------------------
+!      STRACE    Subr. W3SERVMD Subroutine tracing.
+!     ----------------------------------------------------------------
+!
+!  5. Called by :
+!
+!      Name      Type  Module   Description
+!     ----------------------------------------------------------------
+!     ----------------------------------------------------------------
+!
+!  6. Error messages :
+!  7. Remarks
+!  8. Structure :
+!  9. Switches :
+!
+!     !/S  Enable subroutine tracing.
+!
+! 10. Source code :
+!
+!/ ------------------------------------------------------------------- /
+!/S      USE W3SERVMD, ONLY: STRACE
+!
+      USE W3GDATMD, ONLY : INDEX_MAP, NBND_MAP, NSEA, NSEAL, GRIDS, NX, NTH
+      USE W3GDATMD, ONLY : IOBP, IOBDP, IOBPA, IOBPD, NBND_MAP, INDEX_MAP
+      USE W3GDATMD, ONLY : IOBP_LOC, IOBPD_LOC, IOBDP_LOC, IOBPA_LOC 
+      USE W3ODATMD, ONLY : IAPROC, NAPROC
+      USE YOWNODEPOOL, ONLY: iplg, npa
+      use yowExchangeModule, ONLY : PDLIB_exchange1DREAL
+      USE yowfunction, ONLY: pdlib_abort
+      USE W3ODATMD, ONLY: IAPROC
+!/
+      IMPLICIT NONE
+!/
+!/ ------------------------------------------------------------------- /
+!/ Parameter list
+!/
+!/ ------------------------------------------------------------------- /
+!/ Local PARAMETERs
+!/
+!/S      INTEGER, SAVE           :: IENT = 0
+!/
+!/ ------------------------------------------------------------------- /
+!/
+      INTEGER :: IBND_MAP, ISEA, JSEA, IX, IP, IP_glob
+      INTEGER, INTENT(in) :: IMOD
+      INTEGER :: Status(NX), istat
+      REAL :: rtmp(nseal)
+!/S      CALL STRACE (IENT, 'PDLIB_MAPSTA_INIT')
+!/DEBUGINIT      WRITE(*,*) 'Passing by PDLIB_MAPSTA_INIT IAPROC=', IAPROC
+      IF (IAPROC .gt. NAPROC) THEN
+        RETURN
+      END IF
 
       ALLOCATE(GRIDS(IMOD)%IOBP_LOC(NPA), stat=istat)
       if(istat /= 0) CALL PDLIB_ABORT(7)
@@ -489,7 +570,7 @@
 !/
 !/ End of W3SPR4 ----------------------------------------------------- /
 !/
-      END SUBROUTINE
+      END SUBROUTINE      
 !/ ------------------------------------------------------------------- /
       SUBROUTINE PDLIB_W3XYPUG ( ISP, FACX, FACY, DTG, VGX, VGY, LCALC )
 !/
@@ -7679,23 +7760,28 @@
 !/DEBUGINIT    FLUSH(740+IAPROC)
       IF (IMEM == 1) THEN
         ALLOCATE(ASPAR_JAC(NSPEC, PDLIB_NNZ), stat=istat)
+        ASPAR_JAC = 0.
         if(istat /= 0) CALL PDLIB_ABORT(9)
       ELSE IF (IMEM == 2) THEN
         ALLOCATE(ASPAR_DIAG_ALL(NSPEC, npa), stat=istat)
+        ASPAR_DIAG_ALL = 0.
         if(istat /= 0) CALL PDLIB_ABORT(9)
       ENDIF
 !/DEBUGINIT    WRITE(740+IAPROC,*) 'JACOBI_INIT, step 2'
 !/DEBUGINIT    FLUSH(740+IAPROC)
       ALLOCATE(B_JAC(NSPEC,NSEAL), stat=istat)
+      B_JAC = 0.
       if(istat /= 0) CALL PDLIB_ABORT(10)
 !/DEBUGINIT    WRITE(740+IAPROC,*) 'JACOBI_INIT, step 3'
 !/DEBUGINIT    FLUSH(740+IAPROC)
       ALLOCATE(CAD_THE(NSPEC,NSEAL), stat=istat)
+      CAD_THE = 0.
       if(istat /= 0) CALL PDLIB_ABORT(11)
 !/DEBUGINIT    WRITE(740+IAPROC,*) 'JACOBI_INIT, step 4'
 !/DEBUGINIT    FLUSH(740+IAPROC)
       IF (FreqShiftMethod .eq. 1) THEN
         ALLOCATE(CAS_SIG(NSPEC,NSEAL), stat=istat)
+        CAS_SIG = 0.
         if(istat /= 0) CALL PDLIB_ABORT(11)
 !/DEBUGINIT    WRITE(740+IAPROC,*) 'JACOBI_INIT, step 5, FreqShiftMethod=', FreqShiftMethod
 !/DEBUGINIT    FLUSH(740+IAPROC)
@@ -7705,6 +7791,7 @@
         ALLOCATE(CWNB_SIG_M2(1-NTH:NSPEC,NSEAL), stat=istat)
 !/DEBUGINIT    WRITE(740+IAPROC,*) 'After CWNB_SIG_M2 allocation, istat=', istat
 !/DEBUGINIT    FLUSH(740+IAPROC)
+        CWNB_SIG_M2 = 0.
         if(istat /= 0) CALL PDLIB_ABORT(11)
 !/DEBUGINIT    WRITE(740+IAPROC,*) 'After istat test'
 !/DEBUGINIT    FLUSH(740+IAPROC)
@@ -7715,6 +7802,7 @@
 !/DEBUGINIT    FLUSH(740+IAPROC)
       IF (.NOT. B_JGS_BLOCK_GAUSS_SEIDEL) THEN
         ALLOCATE(U_JAC(NSPEC,npa), stat=istat)
+        U_JAC = 0.
         if(istat /= 0) CALL PDLIB_ABORT(12)
       END IF
 !/DEBUGINIT    WRITE(740+IAPROC,*) 'JACOBI_INIT, step 7'
