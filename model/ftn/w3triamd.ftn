@@ -339,7 +339,7 @@ CONTAINS
       CALL SPATIAL_GRID    
       CALL NVECTRI
       CALL COORDMAX
-      !CALL AREA_SI(1)
+      CALL AREA_SI(1)
 !
       CLOSE(NDS)
       END SUBROUTINE READMSH
@@ -766,7 +766,7 @@ CONTAINS
 !/
       INTEGER                 ::  IBC, IX
       INTEGER                 ::  MASK(NX)
-      INTEGER*2                 ::  STATUS(NX)
+      INTEGER*2               ::  STATUS(NX)
 !
       MASK(:)=1
       CALL SET_IOBP (MASK, STATUS)
@@ -2254,7 +2254,7 @@ END SUBROUTINE
 !/S      INTEGER, SAVE           :: IENT = 0
 
         INTEGER, INTENT(IN)             :: MNP, MNE, TRIGP(3,MNE)
-        INTEGER*2, INTENT(INOUT)          :: IOBP(MNP)
+        INTEGER*2, INTENT(INOUT)        :: IOBP(MNP)
         INTEGER, INTENT(INOUT)          :: NEIGHBOR_PREV(MNP)
         INTEGER, INTENT(INOUT)          :: NEIGHBOR_NEXT(MNP)
 

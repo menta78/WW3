@@ -701,6 +701,8 @@
         TAUWX=TAUWX*TAUWB/TAUW
         TAUWY=TAUWY*TAUWB/TAUW
         END IF
+
+      !IF(IX == 1232) WRITE(*,'(A10,4F20.10)') 'ST4 WIND INPUT END', SUM(S), SUM(D)
 ! 
       RETURN
 !
@@ -2140,7 +2142,7 @@
 ! COMPUTES SOURCES TERM from diagonal term
 !
       SRHS = DDIAG * A
-      !IF(IX == DEBUG_NODE) WRITE(*,'(A10,4F20.10)') 'ST4 DISSIP 2', SUM(SRHS), SUM(DDIAG), SSDSC(3)*RENEWALFREQ, DTURB
+      !IF(IX == 1232) WRITE(*,'(A10,4F20.10)') 'ST4 DISSIP 2', SUM(SRHS), SUM(DDIAG), SSDSC(3)*RENEWALFREQ, DTURB
 !
 ! Adds non-diagonal part: high and low frequency generation 
 !

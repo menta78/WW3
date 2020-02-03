@@ -1032,17 +1032,17 @@
 !/PDLIB          DO IK = 1, NK
 !/PDLIB            JAC = CLATSL/CG1(IK) 
 !/PDLIB            DO ITH = 1, NTH
-!/PDLIB              ISP=ITH + (IK-1)*NTH
+!/PDLIB              ISP = ITH + (IK-1)*NTH
 !/PDLIB              VD(ISP) = MIN(0., VD(ISP))
 !/PDLIB              IF (LNEWLIMITER) THEN
 !/PDLIB                MAXDAC = MAX(DAM(ISP),DAM2(ISP))
 !/PDLIB              ELSE
 !/PDLIB                MAXDAC = DAM(ISP)
 !/PDLIB              ENDIF
-!/PDLIB              FAKS      = DTG / MAX ( 1. , (1.-DTG*VD(ISP)))
-!/PDLIB              DVS       = VS(ISP) * FAKS
-!/PDLIB              DVS       = SIGN(MIN(MAXDAC,ABS(DVS)),DVS)
-!/PDLIB              PreVS     = DVS / FAKS
+!/PDLIB              FAKS   = DTG / MAX ( 1. , (1.-DTG*VD(ISP)))
+!/PDLIB              DVS    = VS(ISP) * FAKS
+!/PDLIB              DVS    = SIGN(MIN(MAXDAC,ABS(DVS)),DVS)
+!/PDLIB              PreVS  = DVS / FAKS
 !/PDLIB              eVS = PreVS / CG1(IK) * CLATSL
 !/PDLIB              eVD = MIN(0.,VD(ISP))
 !/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * (eVS - eVD*VA(ISP,JSEA)*JAC)
@@ -1069,9 +1069,10 @@
 !/TR1                ENDIF
 !/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * eVS
 !/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
-                     !IF (IX == 32) write(740+IAPROC,*) IX, ISP, B_JAC(ISP,JSEA), ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)), &
-                     !                         & VSTR(ISP), VDTR(ISP), VSDB(ISP), VDDB(ISP), VS(ISP), VD(ISP), &
-                     !                         & SPEC(ISP), D_INP,IOBPD_LOC(ITH,JSEA)
+                     !IF (IX == 1232) write(740+IAPROC,*) IX, ISP, B_JAC(ISP,JSEA), ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)), &
+                     !                         & VSLN(ISP), VSIN(ISP), VDIN(ISP), VSDS(ISP), VDDS(ISP), &
+                     !                         & VSTR(ISP), VDTR(ISP), VSDB(ISP), VDDB(ISP), VSNL(ISP), VDNL(ISP), &
+                     !                         & SPEC(ISP)
                      
 !!/VEG1              eVS = eVS + DBLE(VSVG(ISP)) * JAC 
 !!/VEG1              eVD = evD + MIN(0.,DBLE(VDVG(ISP)))

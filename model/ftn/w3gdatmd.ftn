@@ -688,10 +688,10 @@
 !/PDLIB        INTEGER :: NBND_MAP
 !/PDLIB        INTEGER, POINTER     :: INDEX_MAP(:)
 !/PDLIB        INTEGER, POINTER     :: MAPSTA_LOC(:)
-!/PDLIB        INTEGER*1, POINTER   :: IOBPD_LOC(:,:)
+!/PDLIB        INTEGER*2, POINTER   :: IOBPD_LOC(:,:)
 !/PDLIB        INTEGER*2, POINTER   :: IOBP_LOC(:)
-!/PDLIB        INTEGER*1, POINTER   :: IOBDP_LOC(:)
-!/PDLIB        INTEGER*1, POINTER   :: IOBPA_LOC(:)
+!/PDLIB        INTEGER*2, POINTER   :: IOBDP_LOC(:)
+!/PDLIB        INTEGER*2, POINTER   :: IOBPA_LOC(:)
 
         REAL(8), POINTER      :: LEN(:,:),SI(:), IEN(:,:)
 
@@ -703,7 +703,7 @@
                                  IAA(:), JAA(:), POSI(:,:), INDEX_CELL(:),       &
                                  I_DIAG(:), JA_IE(:,:,:)
         INTEGER*2, POINTER    :: IOBP(:)
-        INTEGER*1, POINTER    :: IOBPD(:,:), IOBDP(:), IOBPA(:)
+        INTEGER*2, POINTER    :: IOBPD(:,:), IOBDP(:), IOBPA(:)
         INTEGER, POINTER      :: EDGES(:,:), NEIGH(:,:)
         REAL(8), POINTER      :: TRIA(:)
         REAL, POINTER         :: CROSSDIFF(:,:)
@@ -956,10 +956,10 @@
 !/PDLIB      INTEGER, POINTER     :: NBND_MAP
 !/PDLIB      INTEGER, POINTER        :: INDEX_MAP(:)
 !/PDLIB      INTEGER, POINTER        :: MAPSTA_LOC(:)
-!/PDLIB        INTEGER*1, POINTER   :: IOBPD_LOC(:,:)
+!/PDLIB        INTEGER*2, POINTER   :: IOBPD_LOC(:,:)
 !/PDLIB        INTEGER*2, POINTER   :: IOBP_LOC(:)
-!/PDLIB        INTEGER*1, POINTER   :: IOBDP_LOC(:)
-!/PDLIB        INTEGER*1, POINTER   :: IOBPA_LOC(:)
+!/PDLIB        INTEGER*2, POINTER   :: IOBDP_LOC(:)
+!/PDLIB        INTEGER*2, POINTER   :: IOBPA_LOC(:)
 
       REAL(8), POINTER        :: IEN(:,:), LEN(:,:), SI(:)
       REAL, POINTER           :: ANGLE(:,:),ANGLE0(:,:)
@@ -969,7 +969,7 @@
                                  I_DIAG(:), JA_IE(:,:,:),                     &
                                  INDEX_CELL(:)
       INTEGER*2, POINTER      :: IOBP(:)
-      INTEGER*1, POINTER      :: IOBPD(:,:), IOBDP(:), IOBPA(:)
+      INTEGER*2, POINTER      :: IOBPD(:,:), IOBDP(:), IOBPA(:)
       REAL(8), POINTER        :: TRIA(:)
       REAL, POINTER           :: CROSSDIFF(:,:)
       REAL,POINTER            :: MAXX, MAXY, DXYMAX 

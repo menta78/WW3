@@ -338,16 +338,16 @@
         IS0_pdlib(ISP) = IS0_pdlib(ISP) + NTH
       END DO
 
-      !DO JSEA=1, PDLIB_NSEAL
-      !  IP = JSEA
-      !  IP_glob = iplg(IP)
-      !  ISEA = MAPFS(1,IP_glob)
-      !  write(*,*) JSEA, PDLIB_NSEAL, IP, IP_glob, ISEA
-      !  IF (ISEA .ne. IP_glob) THEN
-      !    WRITE(*,*) 'ISEA .ne. IP_glob'
-      !    CALL PDLIB_ABORT(20)
-      !  ENDIF
-      !ENDDO
+      DO JSEA=1, PDLIB_NSEAL
+        IP      = JSEA
+        IP_glob = iplg(IP)
+        ISEA    = MAPFS(1,IP_glob)
+        IF (ISEA .ne. IP_glob) THEN
+          WRITE(*,*) JSEA, PDLIB_NSEAL, IP, IP_glob, ISEA
+          WRITE(*,*) 'ISEA .ne. IP_glob'
+          CALL PDLIB_ABORT(20)
+        ENDIF
+      ENDDO
 !
 !
 !/
@@ -5987,7 +5987,7 @@
       REAL  :: CAD(NSPEC), CAS(NSPEC), ACLOC(NSPEC)
       REAL  :: CP_SIG(NSPEC), CM_SIG(NSPEC)
       REAL  :: eFactM1, eFactP1
-      REAL  :: Sum_Prev, Sum_New, p_is_converged, DiffNew, prop_conv
+      REAL*8  :: Sum_Prev, Sum_New, p_is_converged, DiffNew, prop_conv
       REAL  :: Sum_L2, Sum_L2_GL
       REAL  :: DMM(0:NK2)
       REAL  :: eDiff(NSPEC), eProd(NSPEC)
@@ -6385,7 +6385,6 @@
 !/DEBUGFREQSHIFT        WRITE(740+IAPROC,*) 'sum(eDiff/VAnew/VAold)=', sum(abs(eDiff)), sum(abs(VAnew)), sum(abs(VAold))
 
 
-            Sum_New=sum(eSum)
 
             IF (B_JGS_LIMITER) THEN
               CALL ACTION_LIMITER_LOCAL(IP, eSum, ACLOC, DTG)
@@ -6402,24 +6401,34 @@
 !
           !write(50000+IAPROC,*) 'SOLVER ITER', ISEA, JSEA, nbiter, & 
           !             &  SUM(B_JAC(:,IP)), sum(ASPAR_DIAG), sum(ACLOC), sum(esum), 
-          if (isea == testknoten) then
-            write(740+IAPROC,*) p_is_converged, sum(ASPAR_DIAG), SUM(B_JAC(:,IP)), &
-                 & sum(ACLOC), sum(esum), iobp_loc(jsea), iobpa_loc(jsea), iobdp_loc(jsea)
-          endif
+          !if (isea == testknoten) then
+          !  write(740+IAPROC,*) p_is_converged, sum(ASPAR_DIAG), SUM(B_JAC(:,IP)), &
+          !       & sum(ACLOC), sum(esum), iobp_loc(jsea), iobpa_loc(jsea), iobdp_loc(jsea)
+          !endif
           !write(740+IAPROC,*) isea, jsea, ip, sum(ASPAR_DIAG), SUM(B_JAC(:,IP)), sum(ACLOC), & 
           !          & sum(esum), iobp_loc(ip), iobpd_loc(ith,ip), iobpa_loc(ip), iobdp_loc(ip)
 
           IF (B_JGS_TERMINATE_DIFFERENCE) THEN
+            Sum_New = sum(eSum)
             if (Sum_new .gt. 0.d0) then
-              DiffNew = sum(abs(ACLOC - eSum))/sum(abs(eSum))!abs(Sum_new-Sum_prev)
-              !write(*,'(4F20.10)') Sum_new, Sum_prev, DiffNew, abs(Sum_new-Sum_prev)
+              DiffNew = 0.d0 
+              Sum_prev = 0.d0 
+              DO ISP =1, NSPEC
+                if (eSum(isp) .gt. 0.d0) then 
+                  DiffNew  = DiffNew + (eSum(isp) - acloc(isp))
+                  Sum_prev = Sum_prev + eSum(isp)
+                endif
+              ENDDO
+              !DiffNew = abs(sum(ACLOC-eSum))/Sum_new
+              DiffNew = DiffNew / Sum_prev
+             ! write(*,'(I10,4F20.10)') jsea, Sum_new, Sum_prev, DiffNew
 !/DEBUGFREQSHIFT         WRITE(740+IAPROC,*) 'DiffNew=', DiffNew, ' Sum_new=', Sum_new
-              p_is_converged = DiffNew/Sum_new
+              p_is_converged = DiffNew
             else
               p_is_converged = zero
             endif
 !/DEBUGFREQSHIFT         WRITE(740+IAPROC,*) 'p_is_converged=', p_is_converged
-            IF (p_is_converged .lt. B_JGS_DIFF_THR) then
+            IF (p_is_converged .lt. B_JGS_DIFF_THR .and. nbiter .gt. 1) then
               is_converged   = is_converged + 1
               lconverged(ip) = .true.
             ELSE
@@ -6462,7 +6471,6 @@
         !
         ! Terminate via number of iteration
         !
-        nbIter = nbIter + 1
         IF (B_JGS_TERMINATE_MAXITER) THEN
           IF (nbIter .gt. B_JGS_MAXITER) THEN
 !/DEBUGSOLVER       WRITE(740+IAPROC,*) 'Exiting by TERMINATE_MAXITER'
@@ -6565,7 +6573,7 @@
 !/MEMCHECK      call getMallocInfo(mallinfos)
 !/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
 
-
+        nbiter = nbiter + 1 
       END DO ! Open Do Loop ... End of Time Interval 
 !/DEBUGSOLVER     WRITE(740+IAPROC,*) 'nbIter=', nbIter, ' B_JGS_MAXITER=', B_JGS_MAXITER
 !/DEBUGSOLVER     FLUSH(740+IAPROC)

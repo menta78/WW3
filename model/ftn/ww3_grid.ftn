@@ -4221,7 +4221,6 @@
       TRNY   = 0.
 !
 !Li  Shelter MAPSTA etc LLG definitions for SMC by logical RGLGRD !
-!AR  This is only .FALSE. for SMC ..
       IF( RGLGRD ) THEN
       ISEA   = 0
       DO IY=1, NY
@@ -4659,6 +4658,10 @@
 ! AR: this is not anymore needed and will be deleted ...
 !
       IF (GTYPE.EQ.UNGTYPE) THEN 
+        !WRITE(*,*) MAPSTA
+        !WRITE(*,*) '-----------------------'
+        !WRITE(*,*) TMPSTA 
+        !STOP
         CALL SET_UG_IOBP 
 !/REF1      ELSE
 !/REF1        CALL W3SETREF
