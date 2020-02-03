@@ -623,6 +623,7 @@
                 WRITE (NDSM)                                            &
                 X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, ZB, TRIGP, TRIA,    &
                 MAXX, MAXY, IOBPD, IOBP 
+                
 #endif
             END SELECT !GTYPE
 !
@@ -735,7 +736,16 @@
 #else 
                 READ (NDSM,END=801 ,IOSTAT=IERR)                 &
                 X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, ZB, TRIGP, TRIA,             &
-                MAXX, MAXY, IOBPD, IOBP
+                MAXX, MAXY, IOBPD, IOBP 
+                write(20000+IAPROC,*) 'SIZE OF XO YO', SIZEOF(X0), SIZEOF(Y0)
+                write(20000+IAPROC,*) 'SIZE OF SX SY', SIZEOF(SX), SIZEOF(SY)
+                write(20000+IAPROC,*) 'SIZE OF GRID', SIZEOF(XGRD), SIZEOF(YGRD), SIZEOF(ZB)
+                write(20000+IAPROC,*) 'SIZE OF TRIG', SIZEOF(TRIGP), SIZEOF(TRIA)
+                write(20000+IAPROC,*) 'SIZE OF MAXX', SIZEOF(MAXX), SIZEOF(MAXY)
+                write(20000+IAPROC,*) 'SIZE OF IOBP', SIZEOF(IOBPD), SIZEOF(IOBP)
+                WRITE(20000+IAPROC,*) 'SUM', (SIZEOF(X0)+SIZEOF(Y0)+SIZEOF(SX)+SIZEOF(SY)+ &
+                &  SIZEOF(XGRD)+SIZEOF(YGRD)+SIZEOF(ZB)+SIZEOF(TRIGP)+SIZEOF(TRIA)+&
+                &  SIZEOF(MAXX)+SIZEOF(MAXY)+SIZEOF(IOBPD)+SIZEOF(IOBP))/1024./1024.
 #endif
 
 
