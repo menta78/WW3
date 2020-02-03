@@ -6411,16 +6411,16 @@
           IF (B_JGS_TERMINATE_DIFFERENCE) THEN
             Sum_New = sum(eSum)
             if (Sum_new .gt. 0.d0) then
-              DiffNew = 0.d0 
-              Sum_prev = 0.d0 
-              DO ISP =1, NSPEC
-                if (eSum(isp) .gt. 0.d0) then 
-                  DiffNew  = DiffNew + (eSum(isp) - acloc(isp))
-                  Sum_prev = Sum_prev + eSum(isp)
-                endif
-              ENDDO
-              !DiffNew = abs(sum(ACLOC-eSum))/Sum_new
-              DiffNew = DiffNew / Sum_prev
+              !DiffNew = 0.d0 
+              !Sum_prev = 0.d0 
+              !DO ISP =1, NSPEC
+              !  if (eSum(isp) .gt. 0.d0) then 
+              !    DiffNew  = DiffNew + abs(eSum(isp) - acloc(isp))
+              !    Sum_prev = Sum_prev + eSum(isp)
+              !  endif
+              !ENDDO
+              DiffNew = abs(sum(ACLOC-eSum))/Sum_new
+              !DiffNew = DiffNew / Sum_prev
              ! write(*,'(I10,4F20.10)') jsea, Sum_new, Sum_prev, DiffNew
 !/DEBUGFREQSHIFT         WRITE(740+IAPROC,*) 'DiffNew=', DiffNew, ' Sum_new=', Sum_new
               p_is_converged = DiffNew
