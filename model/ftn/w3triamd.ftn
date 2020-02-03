@@ -339,7 +339,9 @@ CONTAINS
       CALL SPATIAL_GRID    
       CALL NVECTRI
       CALL COORDMAX
+#ifndef PDLIB 
       CALL AREA_SI(1)
+#endif
 !
       CLOSE(NDS)
       END SUBROUTINE READMSH
