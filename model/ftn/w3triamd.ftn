@@ -508,7 +508,7 @@ CONTAINS
 !/S      USE W3SERVMD, ONLY: STRACE
 !
 
-!/PDLIB      use yowElementpool, only: ne_global, INE_global
+!/PDLIB      use yowElementpool, only: ne_global
 !/PDLIB      use yowNodepool, only: np_global
       USE W3GDATMD, ONLY : TRIGP, NTRI, NX
       IMPLICIT NONE
@@ -1895,7 +1895,7 @@ END SUBROUTINE
 !/PDLIB       DO IE = 1, NE 
 !/PDLIB         NI      = INE(:,IE)
 !/PDLIB         IE_GL   = IELG(IE)
-!/PDLIB         NI_GL   = INE_GLOBAL(:,IE_GL)
+!/PDLIB         NI_GL   = TRIGP(:,IE_GL)
 !/PDLIB         LATMEAN = 1./3. * SUM(CLATIS(MAPFS(1,NI_GL)))
 !/PDLIB         WEI_LOCAL(NI) = WEI_LOCAL(NI) + 2.*PDLIB_TRIA(IE)
 !/PDLIB         DEDX(1)     = PDLIB_IEN(1,IE)

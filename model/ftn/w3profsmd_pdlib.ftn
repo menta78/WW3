@@ -7133,7 +7133,7 @@
 !/DEBUGINIT    FLUSH(740+IAPROC)
       END SUBROUTINE
 !/ ------------------------------------------------------------------ /
-      SUBROUTINE SETDEPTH_PDLIB
+      SUBROUTINE SET_IOBDP_PDLIB
 !/
 !/                  +-----------------------------------+
 !/                  | WAVEWATCH III           NOAA/NCEP |
@@ -7215,7 +7215,7 @@
 !/
 !/ End of SETDEPTH_PDLIB --------------------------------------------- /
 !/
-      END SUBROUTINE SETDEPTH_PDLIB
+      END SUBROUTINE SET_IOBDP_PDLIB
 
 
       SUBROUTINE SET_IOBPA_PDLIB
@@ -7670,7 +7670,7 @@
       INTEGER, INTENT(IN) :: IMOD
 
       DEALLOCATE ( &
-                 GRIDS(IMOD)%TRIGP,                         &
+!                 GRIDS(IMOD)%TRIGP,                         &
                  GRIDS(IMOD)%SI,                                &
                  GRIDS(IMOD)%TRIA,                            &
                  GRIDS(IMOD)%CROSSDIFF,                     &
