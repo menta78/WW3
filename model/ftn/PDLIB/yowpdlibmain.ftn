@@ -97,7 +97,7 @@ module yowpdlibMain
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(70000+myrank,mallInfos)
 !/DEBUGINIT    Print *, '3: After prePartition'
-    call findConnNodes(MNE,INE_global)
+    call findConnNodes(INE_global)
 !/MEMCHECK       WRITE(70000+myrank,*) 'memcheck_____:', 'WW3_PDLIB SECTION 5'
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(70000+myrank,mallInfos)
@@ -140,7 +140,7 @@ module yowpdlibMain
 !/MEMCHECK       WRITE(70000+myrank,*) 'memcheck_____:', 'WW3_PDLIB SECTION 10'
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(70000+myrank,mallInfos)
-    call postPartition2(MNP, MNE, INE_global)
+    call postPartition2(INE_global)
 !/MEMCHECK       WRITE(70000+myrank,*) 'memcheck_____:', 'WW3_PDLIB SECTION 11'
 !/MEMCHECK       call getMallocInfo(mallinfos)
 !/MEMCHECK       call printMallInfo(70000+myrank,mallInfos)
@@ -333,14 +333,14 @@ module yowpdlibMain
   !> loop over all elements and their nodes. get then the neighbor nodes
   !> finally calculate the number of sides
   !> alter: maxConnNodes, connNodes_data, ns, ns_global, node%nConnNodes
-  subroutine findConnNodes(MNE, INE_global)
+  subroutine findConnNodes(INE_global)
     use yowerr,       only: parallel_abort
     use yowNodepool,    only: np, np_global, nodes_global, nodes, maxConnNodes, t_Node, connNodes_data
     use yowElementpool, only: ne_global
     use yowSidepool,    only: ns, ns_global
     implicit none
 
-    integer, intent(in) :: MNE, INE_global(3,MNE) 
+    integer, intent(in) :: INE_global(3,ne_global) 
     integer :: i, j, stat
     type(t_Node), pointer :: node
     integer JPREV, JNEXT
@@ -1159,15 +1159,15 @@ module yowpdlibMain
 
   !> this collects all data which depends on ghost information
   !> alter: ne, INE, x, y, z, ielg
-  subroutine postPartition2(MNP, MNE, INE_global)
+  subroutine postPartition2(INE_global)
     use yowElementpool, only: ne, ne_global, INE, belongto, ielg
-    use yowerr,       only: parallel_abort
+    use yowerr,         only: parallel_abort
     use yowDatapool,    only: myrank
     use yowNodepool,    only: np_global, np, nodes_global, iplg, t_Node, ghostlg, ng, npa
     use yowNodepool,    only: x, y, z
     use w3gdatmd,       only: xgrd, ygrd, zb  
     implicit none
-    integer, intent(in) :: MNP, MNE, INE_global(3,MNE)
+    integer, intent(in) :: INE_global(3,ne_global)
 
     integer :: i, j, k, stat, IP_glob
     type(t_Node), pointer :: node
