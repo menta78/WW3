@@ -621,9 +621,8 @@
                 POS_CELL, IOBP, IOBPA, IOBPD, IAA, JAA, POSI
 #else 
                 WRITE (NDSM)                                            &
-                X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, ZB, TRIGP, TRIA,    &
+                X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, ZB, TRIGP,    &
                 MAXX, MAXY, IOBPD, IOBP 
-                
 #endif
             END SELECT !GTYPE
 !
@@ -735,7 +734,7 @@
                 POS_CELL, IOBP, IOBPA, IOBDP, IOBPD, IAA, JAA, POSI
 #else 
                 READ (NDSM,END=801 ,IOSTAT=IERR)                 &
-                X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, ZB, TRIGP, TRIA,             &
+                X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, ZB, TRIGP,&
                 MAXX, MAXY, IOBPD, IOBP 
                 write(20000+IAPROC,*) 'SIZE OF XO YO', SIZEOF(X0), SIZEOF(Y0)
                 write(20000+IAPROC,*) 'SIZE OF SX SY', SIZEOF(SX), SIZEOF(SY)

@@ -562,6 +562,8 @@
         IOBPD_loc(:,IP) = IOBPD(:,IP_glob)
       END DO
       !DEALLOCATE(IOBP,IOBPD)
+      IOBP => NULL()
+      IOBPD => NULL()
       DEALLOCATE(GRIDS(IMOD)%IOBP,GRIDS(IMOD)%IOBPD)
 !
 !AR: the new stuff does not work still correct in parallel due to the wrong halo for this kind of problem.
