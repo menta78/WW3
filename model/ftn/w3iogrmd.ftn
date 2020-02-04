@@ -621,7 +621,7 @@
                 POS_CELL, IOBP, IOBPA, IOBPD, IAA, JAA, POSI
 #else 
                 WRITE (NDSM)                                            &
-                X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, ZB, TRIGP,    &
+                X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, TRIGP,    &
                 MAXX, MAXY, IOBPD, IOBP 
 #endif
             END SELECT !GTYPE
@@ -734,7 +734,7 @@
                 POS_CELL, IOBP, IOBPA, IOBDP, IOBPD, IAA, JAA, POSI
 #else 
                 READ (NDSM,END=801 ,IOSTAT=IERR)                 &
-                X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, ZB, TRIGP,&
+                X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, TRIGP,&
                 MAXX, MAXY, IOBPD, IOBP 
                 write(20000+IAPROC,*) 'SIZE OF XO YO', SIZEOF(X0), SIZEOF(Y0)
                 write(20000+IAPROC,*) 'SIZE OF SX SY', SIZEOF(SX), SIZEOF(SY)
@@ -761,6 +761,10 @@
 !/DEBUGIOGR     FLUSH(740+IAPROC)
           IF (GTYPE.NE.UNGTYPE) CALL W3GNTX ( IGRD, NDSE, NDST ) 
 
+!/MEMCHECK       write(20000+IAPROC,*) 'memcheck_____:', 'WIOGR SECTION 6a'
+!/MEMCHECK       call getMallocInfo(mallinfos)
+!/MEMCHECK       call printMallInfo(20000+IAPROC,mallInfos)
+
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.9'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
           READ (NDSM,END=801 ,IOSTAT=IERR)                     &
@@ -783,6 +787,7 @@
 !/DEBUGIOGR     FLUSH(740+IAPROC)
           MAPSTA = MOD(MAPTMP+2,8) - 2
           MAPST2 = (MAPTMP-MAPSTA) / 8
+          DEALLOCATE ( MAPTMP )
           MAPSF(:,3) = MAPSF(:,2) + (MAPSF(:,1)-1)*NY
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.12'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
@@ -857,7 +862,6 @@
 !
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 9'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
-      DEALLOCATE ( MAPTMP )
 !
 !/T      WRITE (NDST,9015) DTCFL, DTCFLI, DTMAX, DTMIN,               &
 !/T                        DMIN, CTMAX, FICE0, FICEN, FICEL, PFMOVE,  &
