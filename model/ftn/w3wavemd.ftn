@@ -1408,8 +1408,8 @@
 !/PDLIB                CALL W3SRCE(srce_imp_pre, IT, ISEA, JSEA, IX, IY, IMOD, &
 !/PDLIB                   VAOLD(:,JSEA), VA(:,JSEA),                        &
 !/PDLIB                   VSioDummy, VDioDummy, SHAVETOT(JSEA),  &
-!/PDLIB                   ALPHA(1:NK,JSEA), WN1,               &
-!/PDLIB                   CG1, CLATS(ISEA), DW(ISEA), U10(ISEA),            &
+!/PDLIB                   ALPHA(1:NK,JSEA), WN1(1:NK),               &
+!/PDLIB                   CG1(1:NK), CLATS(ISEA), DW(ISEA), U10(ISEA),            &
 !/PDLIB                   U10D(ISEA), AS(ISEA), UST(ISEA),               &
 !/PDLIB                   USTDIR(ISEA), CX(ISEA), CY(ISEA),              &
 !/PDLIB                   ICE(ISEA), ICEH(ISEA), ICEF(ISEA),             &
@@ -2038,8 +2038,8 @@
 !/PDLIB                 CALL W3SRCE(srce_imp_post,IT,ISEA,JSEA,IX,IY,IMOD,  &
 !/PDLIB                      VAOLD(:,JSEA), VA(:,JSEA),                  &
 !/PDLIB                      VSioDummy,VDioDummy,SHAVETOT(JSEA), &
-!/PDLIB                      ALPHA(1:NK,JSEA), WN1,            &
-!/PDLIB                      CG1, CLATS(ISEA), DW(ISEA), U10(ISEA),         &
+!/PDLIB                      ALPHA(1:NK,JSEA), WN1(1:NK),            &
+!/PDLIB                      CG1(1:NK), CLATS(ISEA), DW(ISEA), U10(ISEA),         &
 !/PDLIB                      U10D(ISEA), AS(ISEA), UST(ISEA),            &
 !/PDLIB                      USTDIR(ISEA), CX(ISEA), CY(ISEA),           &
 !/PDLIB                      ICE(ISEA), ICEH(ISEA), ICEF(ISEA),          &
@@ -2058,8 +2058,8 @@
                        CALL W3SRCE(srce_direct, IT, ISEA, JSEA, IX, IY, IMOD, &
                             VAoldDummy, VA(:,JSEA),                     &
                             VSioDummy, VDioDummy, SHAVETOTioDummy,      &
-                            ALPHA(1:NK,JSEA), WN1,            &
-                            CG1, CLATS(ISEA), DW(ISEA), U10(ISEA),         &
+                            ALPHA(1:NK,JSEA), WN1(1:NK),            &
+                            CG1(1:NK), CLATS(ISEA), DW(ISEA), U10(ISEA),         &
                             U10D(ISEA), AS(ISEA), UST(ISEA),            &
                             USTDIR(ISEA), CX(ISEA), CY(ISEA),           &
                             ICE(ISEA), ICEH(ISEA), ICEF(ISEA),          &
