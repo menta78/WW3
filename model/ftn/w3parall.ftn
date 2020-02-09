@@ -412,11 +412,13 @@
       USE CONSTANTS, ONLY : LPDLIB
       USE W3GDATMD, ONLY: NK, NK2, NTH, NSPEC, SIG, DSIP, ECOS, ESIN, &
                           EC2, ESC, ES2, FACHFA, MAPWN, FLCTH, FLCK,  &
-                          CTMAX, DMIN, DTH, CTHG0S, MAPSF
+                          CTMAX, DMIN, DTH, CTHG0S, MAPSF, SIG
       USE W3ADATMD, ONLY: CG, WN, DCXDX, DCXDY, DCYDX, DCYDY, DDDX,   &
                           DDDY, DW
       USE W3IDATMD, ONLY: FLCUR
-      USE W3ODATMD, only : IAPROC
+      USE W3ODATMD, only : IAPROC 
+      USE W3DISPMD, ONLY : WAVNU_LOCAL
+  
       IMPLICIT NONE
 !/
 !/ ------------------------------------------------------------------- /
@@ -434,7 +436,7 @@
       REAL :: FRK(NK), FRG(NK), DSDD(0:NK+1)
       REAL :: FACTH, DCXY, DCYX, DCXXYY, DTTST
       REAL :: eDCXDX, eDCXDY, eDCYDX, eDCYDY, eDDDX, eDDDY, eCTHG0
-      REAL :: VCFLT(NSPEC), DEPTH, FDG
+      REAL :: VCFLT(NSPEC), DEPTH, FDG, CG1(0:NK+1), WN1(0:NK+1)
       REAL :: FDDMAX, CFLTHMAX, VELNOFILT, CTMAX_eff
 !/S      CALL STRACE (IENT, 'PROP_REFRACTION_PR3')
 
@@ -448,15 +450,22 @@
       FDG    = FACTH * eCTHG0
       DEPTH  = MAX ( DMIN , DW(ISEA) )
       DO IK=0, NK+1
-        IF ( DEPTH*WN(IK,ISEA) .LT. 5. ) THEN
-          DSDD(IK) = MAX ( 0. , CG(IK,ISEA)*WN(IK,ISEA)-0.5*SIG(IK) ) / DEPTH
+#ifdef CGTABLE
+        CG1(IK) = CG(IK,ISEA)
+        WN1(IK) = WN(IK,ISEA) 
+#else
+        CALL WAVNU_LOCAL(SIG(IK),DEPTH,WN1(IK),CG1(IK))
+#endif
+
+        IF ( DEPTH*WN1(IK) .LT. 5. ) THEN
+          DSDD(IK) = MAX ( 0. , CG1(IK)*WN1(IK)-0.5*SIG(IK) ) / DEPTH
         ELSE
           DSDD(IK) = 0.
         END IF
       END DO
       DO IK=1, NK
-        FRK(IK) = FACTH * DSDD(IK) / WN(IK,ISEA)
-        FRG(IK) = FDG * CG(IK,ISEA)
+        FRK(IK) = FACTH * DSDD(IK) / WN1(IK)
+        FRG(IK) = FDG * CG1(IK)
       END DO
       IF (FLCUR) THEN
         eDCXDX = DCXDX(1,IP)
@@ -475,14 +484,14 @@
 !
 !/REFRX! 3.c @C/@x refraction and great-circle propagation
 !/REFRX          DO IK=1, NK
-!/REFRX            FRK(IK) = FACTH * CG(IK,ISEA) * WN(IK,ISEA) / SIG(IK)
+!/REFRX            FRK(IK) = FACTH * CG1(IK) * WN1(IK) / SIG(IK)
 !/REFRX          END DO
 !
       CTMAX_eff=CTMAX/DTG
       DO ISP=1, NSPEC
         VELNOFILT = VCFLT(ISP)                                       &
            + FRG(MAPWN(ISP)) * ECOS(ISP)                             &
-           + FRK(MAPWN(ISP)) * (ESIN(ISP)*eDDDX - ECOS(ISP)*eDDDY)
+           + FRK(MAPWN(ISP)) *(ESIN(ISP)*eDDDX - ECOS(ISP)*eDDDY)
 !
 ! Puts filtering on total velocity (including currents and great circle effects)
 ! the filtering limits VCFLT to be less than CTMAX 

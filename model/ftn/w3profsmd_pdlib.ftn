@@ -231,7 +231,6 @@
 !/DEBUGSOLVER     FLUSH(740+IAPROC)
 !
         CALL initFromGridDim(NX,NTRI,TRIGP,NSPEC,MPI_COMM_WCMP)
-
 !
 !/DEBUGSOLVER     WRITE(740+IAPROC,*) 'After initFromGridDim'
 !/DEBUGSOLVER     FLUSH(740+IAPROC)
@@ -3869,7 +3868,7 @@
       USE W3GDATMD, ONLY: NK, NK2, NTH, NSPEC, FACHFA, DMIN
       USE W3GDATMD, ONLY: IOBP_LOC, IOBPD_LOC, IOBPA_LOC, IOBDP_LOC
       USE W3GDATMD, ONLY: NSEAL, CLATS
-      USE W3GDATMD, ONLY: MAPSTA
+      USE W3GDATMD, ONLY: MAPSTA, SIG
       USE W3WDATMD, ONLY: VA
       USE W3ADATMD, ONLY: CG, DW, WN, CX, CY
 !/MEMCHECK USE W3ADATMD, ONLY: MALLINFOS
@@ -3883,6 +3882,7 @@
            PDLIB_I_DIAG, PDLIB_JA, PDLIB_TRIA03, PDLIB_SI
       USE W3ODATMD, ONLY : IAPROC
       USE W3PARALL, ONLY : ZERO
+      USE W3DISPMD, ONLY : WAVNU_LOCAL
 !/MEMCHECK      USE MallocInfo_m
 !/DB1      USE W3SDB1MD
 !/BT1      USE W3SBT1MD
@@ -3912,7 +3912,7 @@
       REAL    :: KM(3), CXY(2,NPA)
       REAL    :: K1, eSI, eVS, eVD
       REAL    :: eVal1, eVal2, eVal3
-      REAL    :: DELTAL(3,NE)
+      REAL    :: DELTAL(3,NE), CG1, WN1
       REAL    :: TRIA03, SIDT, CCOS, CSIN
       REAL    :: SPEC(NSPEC), DEPTH, CCOSA(NTH), CSINA(NTH) 
       INTEGER :: IOBPTH1(NTH), IOBPTH2(NTH) 
@@ -3944,8 +3944,13 @@
 
         DO IP = 1, NPA
           IP_GLOB = IPLG(IP) 
-          CXY(1,IP) = CCOS * CG(IK,IP_GLOB)/CLATS(IP_GLOB)
-          CXY(2,IP) = CSIN * CG(IK,IP_GLOB)
+#ifdef CGTABLE
+          CG1    = CG(IK,IP_GLOB)
+#else
+          CALL WAVNU_LOCAL(SIG(IK),DW(IP_GLOB),WN1,CG1)
+#endif
+          CXY(1,IP) = CCOS * CG1/CLATS(IP_GLOB)
+          CXY(2,IP) = CSIN * CG1
           IF (FLCUR) THEN
             CXY(1,IP) = CXY(1,IP) + FACX * CX(IP_GLOB)/CLATS(IP_GLOB)
             CXY(2,IP) = CXY(2,IP) + FACY * CY(IP_GLOB)
@@ -5953,7 +5958,6 @@
       use yowDatapool, ONLY: rtype
       use YOWNODEPOOL, ONLY: npa, iplg
       use yowExchangeModule, ONLY : PDLIB_exchange2Dreal_zero, PDLIB_exchange2Dreal
-      USE W3ADATMD, ONLY: WN
       USE MPI, ONLY : MPI_SUM, MPI_INT
       USE W3ADATMD, ONLY: MPI_COMM_WCMP
 !/MEMCHECK USE W3ADATMD, ONLY: MALLINFOS
@@ -5966,7 +5970,7 @@
       USE W3GDATMD, ONLY: NSEAL, CLATS, FACHFA
       USE W3IDATMD, ONLY: FLCUR, FLLEV
       USE W3WDATMD, ONLY: VA, VAOLD, VSTOT, VDTOT
-      USE W3ADATMD, ONLY: CG, CX, CY
+      USE W3ADATMD, ONLY: CG, CX, CY, WN, DW
       USE W3ODATMD, ONLY: TBPIN, FLBPI, IAPROC
       USE W3PARALL, ONLY : IMEM 
       USE W3PARALL, ONLY : INIT_GET_JSEA_ISPROC, ZERO, THR8, LSLOC
@@ -5975,6 +5979,7 @@
       USE W3GDATMD, ONLY: B_JGS_NLEVEL, B_JGS_SOURCE_NONLINEAR
       USE yowfunction, ONLY : pdlib_abort
       USE yowNodepool, only: np_global
+      USE W3DISPMD, ONLY : WAVNU_LOCAL
 !/MEMCHECK      USE MallocInfo_m
       implicit none
       REAL, INTENT(IN) :: FACX, FACY, DTG, VGX, VGY
@@ -6001,7 +6006,7 @@
       REAL  :: aspar_diag_local(nspec), aspar_off_diag_local(nspec), b_jac_local(nspec)
       REAL  :: eDiffSing, eSumPart
       REAL  :: eVal1, eVal2!, extmp(nspec,nseal)
-      REAL  :: eVA
+      REAL  :: eVA, WN1, CG1, CG2
       LOGICAL :: LCONVERGED(NSEAL), lexist
 #ifdef WEIGHTS 
       INTEGER :: ipiter(nseal), ipitergl(np_global), ipiterout(np_global) 
@@ -6074,7 +6079,12 @@
         DO ISP=1,NSPEC
           ITH    = 1 + MOD(ISP-1,NTH)
           IK     = 1 + (ISP-1)/NTH
-          VA(ISP,JSEA) = VA(ISP,JSEA) / CG(IK,ISEA) * CLATS(ISEA)
+#ifdef CGTABLE
+          CG1    = CG(IK,ISEA)
+#else
+          CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1,CG1)
+#endif
+          VA(ISP,JSEA) = VA(ISP,JSEA) / CG1 * CLATS(ISEA)
         END DO
       END DO
       VAOLD = VA(1:NSPEC,1:NSEAL)
@@ -6610,7 +6620,13 @@
 !
           DO ISP=1,NSPEC
             IK     = 1 + (ISP-1)/NTH
-            eVA = MAX ( ZERO ,CG(IK,ISEA)/CLATS(ISEA)*REAL(VA(ISP,IP)) )
+#ifdef CGTABLE
+            CG1    = CG(IK,ISEA)
+            WN1    = WN(IK,ISEA)
+#else
+            CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1,CG1)
+#endif
+            eVA = MAX ( ZERO ,CG1/CLATS(ISEA)*REAL(VA(ISP,IP)) )
 !/DEBUGSRC          SumACout=SumACout + REAL(VA(ISP,IP))
 !/DEBUGSRC          VS_w3srce = VSTOT(ISP,JSEA) * DTG / MAX(1., (1. - DTG*VDTOT(ISP,JSEA)))
 !/DEBUGSRC          eVA_w3srce = MAX(0., VA(ISP,JSEA) + VS_w3srce)

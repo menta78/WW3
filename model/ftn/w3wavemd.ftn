@@ -384,6 +384,7 @@
 !/PDLIB      USE PDLIB_W3PROFSMD, only : ALL_VA_INTEGRAL_PRINT, ALL_VAOLD_INTEGRAL_PRINT, ALL_FIELD_INTEGRAL_PRINT
 !/PDLIB      USE W3PARALL, only : PDLIB_NSEAL, PDLIB_NSEALM
 !/PDLIB      USE yowNodepool, only: npa, iplg, np
+      USE W3DISPMD, ONLY : WAVNU_LOCAL
 !/
       USE W3SERVMD
       USE W3TIMEMD
@@ -473,6 +474,7 @@
       CHARACTER(LEN=23)       :: IDTIME
       INTEGER eIOBP
       INTEGER ITH_F
+      REAL :: CG1(0:NK+1), WN1(0:NK+1), CG2(0:NK+1)
 !/PDLIB     REAL ::             VS_SPEC(NSPEC)
 !/PDLIB     REAL ::             VD_SPEC(NSPEC)
 
@@ -768,9 +770,16 @@
 !/IC3          IF ( IAPROC .EQ. NAPERR ) WRITE(SCREEN,920)
 
 !/IC3          DO JSEA=1,NSEAL
-!/DIST           ISEA   = IAPROC + (JSEA-1)*NAPROC
-!/SHRD           ISEA   = JSEA
-!/IC3            ALLOCATE(WN_I(SIZE(WN(:,ISEA))))
+                 CALL INIT_GET_ISEA(ISEA, JSEA)
+#ifdef CGTABLE
+                 CG1    = CG(:,ISEA)
+                 WN1    = WN(:,ISEA)
+#else
+                 DO IK = 0, NK + 1
+                   CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1(IK),CG1(IK))
+                 ENDDO
+#endif
+!/IC3            ALLOCATE(WN_I(SIZE(WN1)))
 !/IC3            WN_I(:) = 0.
 !/IC3            DEPTH  = MAX( DMIN , DW(ISEA) )
 !/IC3            IX     = MAPSF(ISEA,1)
@@ -791,8 +800,8 @@
 !/IC3                  CALL EXTCDE(2)
 !/IC3               ENDIF
 !/IC3               IF (HICE > 0.0) THEN ! non-zero ice
-!/IC3                  CALL W3IC3WNCG_CHENG(WN(:,ISEA),WN_I(:),        &
-!/IC3                    CG(:,ISEA),HICE,FIXEDVISC,                    &
+!/IC3                  CALL W3IC3WNCG_CHENG(WN1,WN_I(:),        &
+!/IC3                    CG1,HICE,FIXEDVISC,                    &
 !/IC3                    FIXEDDENS, FIXEDELAS, DEPTH)
 !/IC3               END IF ! non-zero ice
 
@@ -802,8 +811,8 @@
 
 !/IC3               IF (FLIC1.AND.FLIC2.AND.FLIC3.AND.FLIC4) THEN
 !/IC3                  IF (ICEP1(IX,IY)>0.0) THEN ! non-zero ice
-!/IC3                     CALL W3IC3WNCG_V1(WN(:,ISEA),WN_I(:),        &
-!/IC3                       CG(:,ISEA),ICEP1(IX,IY),ICEP2(IX,IY),      &
+!/IC3                     CALL W3IC3WNCG_V1(WN1,WN_I(:),        &
+!/IC3                       CG1,ICEP1(IX,IY),ICEP2(IX,IY),      &
 !/IC3                       ICEP3(IX,IY),ICEP4(IX,IY),DEPTH)
 !/IC3                  END IF ! non-zero ice
 !/IC3               ELSE
@@ -1367,12 +1376,21 @@
 !/PDLIB            DELX = 1. 
 !/PDLIB            DELY = 1. 
 
-!/DEBUGRUN        DO IS = 1, NSPEC
-!/DEBUGRUN          IF (VA(IS, JSEA) .LT. 0.) THEN
-!/DEBUGRUN            WRITE(740+IAPROC,*) 'TEST W3WAVE 7', VA(IS,JSEA)
-!/DEBUGRUN            CALL FLUSH(740+IAPROC)
-!/DEBUGRUN          ENDIF
-!/DEBUGRUN        ENDDO
+#ifdef CGTABLE
+                 CG1    = CG(:,ISEA)
+                 WN1    = WN(:,ISEA)
+#else
+                 DO IK = 0, NK + 1
+                   CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1(IK),CG1(IK))
+                 ENDDO
+#endif
+
+!/DEBUGRUN         DO IS = 1, NSPEC
+!/DEBUGRUN           IF (VA(IS, JSEA) .LT. 0.) THEN
+!/DEBUGRUN             WRITE(740+IAPROC,*) 'TEST W3WAVE 7', VA(IS,JSEA)
+!/DEBUGRUN             CALL FLUSH(740+IAPROC)
+!/DEBUGRUN           ENDIF
+!/DEBUGRUN         ENDDO
 
 !
 !!/PDLIB    IF ((IOBP_LOC(JSEA) .eq. 1 .or. IOBP_LOC(JSEA) .eq. 3) &
@@ -1390,8 +1408,8 @@
 !/PDLIB                CALL W3SRCE(srce_imp_pre, IT, ISEA, JSEA, IX, IY, IMOD, &
 !/PDLIB                   VAOLD(:,JSEA), VA(:,JSEA),                        &
 !/PDLIB                   VSioDummy, VDioDummy, SHAVETOT(JSEA),  &
-!/PDLIB                   ALPHA(1:NK,JSEA), WN(1:NK,ISEA),               &
-!/PDLIB                   CG(1:NK,ISEA), CLATS(ISEA), DW(ISEA), U10(ISEA),            &
+!/PDLIB                   ALPHA(1:NK,JSEA), WN1,               &
+!/PDLIB                   CG1, CLATS(ISEA), DW(ISEA), U10(ISEA),            &
 !/PDLIB                   U10D(ISEA), AS(ISEA), UST(ISEA),               &
 !/PDLIB                   USTDIR(ISEA), CX(ISEA), CY(ISEA),              &
 !/PDLIB                   ICE(ISEA), ICEH(ISEA), ICEF(ISEA),             &
@@ -1584,6 +1602,15 @@
                     IF (IOBP(ISEA) .NE. 1) CYCLE
                   ENDIF
 
+#ifdef CGTABLE
+                 CG1    = CG(:,ISEA)
+                 WN1    = WN(:,ISEA)
+#else 
+                 DO IK = 0, NK + 1
+                   CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1(IK),CG1(IK))
+                 ENDDO
+#endif
+
                   IF ( MAPSTA(IY,IX) .EQ. 1 ) THEN
                            DEPTH  = MAX ( DMIN , DW(ISEA) )
                            IF (LPDLIB) THEN
@@ -1592,19 +1619,19 @@
                              IXrel = IX
                            END IF
 !/PR1                      CALL W3KTP1 ( ISEA, FACTH, FACK, CTHG0S(ISEA), &
-!/PR1                           CG(:,ISEA), WN(:,ISEA), DEPTH,            &
+!/PR1                           CG1, WN1, DEPTH,            &
 !/PR1                           DDDX(IY,IXrel), DDDY(IY,IXrel), CX(ISEA),       &
 !/PR1                           CY(ISEA), DCXDX(IY,IXrel), DCXDY(IY,IXrel),     &
 !/PR1                           DCYDX(IY,IXrel), DCYDY(IY,IXrel),               &
 !/PR1                           DCDX(:,IY,IXrel), DCDY(:,IY,IXrel), VA(:,JSEA))
 !/PR2                      CALL W3KTP2 ( ISEA, FACTH, FACK, CTHG0S(ISEA), &
-!/PR2                           CG(:,ISEA), WN(:,ISEA), DEPTH,            &
+!/PR2                           CG1, WN1, DEPTH,            &
 !/PR2                           DDDX(IY,IXrel), DDDY(IY,IXrel), CX(ISEA),       &
 !/PR2                           CY(ISEA), DCXDX(IY,IXrel), DCXDY(IY,IXrel),     &
 !/PR2                           DCYDX(IY,IXrel), DCYDY(IY,IXrel),               &
 !/PR2                           DCDX(:,IY,IXrel), DCDY(:,IY,IXrel), VA(:,JSEA))
 !/PR3                      CALL W3KTP3 ( ISEA, FACTH, FACK, CTHG0S(ISEA), &
-!/PR3                           CG(:,ISEA), WN(:,ISEA), DEPTH,            &
+!/PR3                           CG1, WN1, DEPTH,            &
 !/PR3                           DDDX(IY,IXrel), DDDY(IY,IXrel), CX(ISEA),       &
 !/PR3                           CY(ISEA), DCXDX(IY,IXrel), DCXDY(IY,IXrel),     &
 !/PR3                           DCYDX(IY,IXrel), DCYDY(IY,IXrel),               &
@@ -1614,7 +1641,7 @@
 !
 !/SMC  !!Li    Refraction and GCT in theta direction is done by rotation.
 !/SMC                      CALL W3KRTN ( ISEA, FACTH, FACK, CTHG0S(ISEA), &
-!/SMC                           CG(:,ISEA), WN(:,ISEA), DEPTH,            &
+!/SMC                           CG1, WN1, DEPTH,            &
 !/SMC                           DHDX(ISEA), DHDY(ISEA), DHLMT(:,ISEA),    &
 !/SMC                           CX(ISEA), CY(ISEA), DCXDX(IY,IX),         &
 !/SMC                           DCXDY(IY,IX), DCYDX(IY,IX), DCYDY(IY,IX), & 
@@ -1877,6 +1904,14 @@
                     IF (IOBP(ISEA) .NE. 1) CYCLE
                   ENDIF
 
+#ifdef CGTABLE
+                  CG1    = CG(:,ISEA)
+                  WN1    = WN(:,ISEA)
+#else
+                  DO IK = 0, NK + 1
+                    CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1(IK),CG1(IK))
+                  ENDDO
+#endif
                   IF ( MAPSTA(IY,IX) .EQ. 1 ) THEN
                            IF (LPDLIB) THEN
                              IXrel = JSEA
@@ -1884,19 +1919,19 @@
                              IXrel = IX
                            END IF
 !/PR1                      CALL W3KTP1 ( ISEA, FACTH, FACK, CTHG0S(ISEA),       &
-!/PR1                           CG(:,ISEA), WN(:,ISEA), DEPTH,                  &
+!/PR1                           CG1, WN1, DEPTH,                  &
 !/PR1                           DDDX(IY,IXrel), DDDY(IY,IXrel), CX(ISEA),       &
 !/PR1                           CY(ISEA), DCXDX(IY,IXrel), DCXDY(IY,IXrel),     &
 !/PR1                           DCYDX(IY,IXrel), DCYDY(IY,IXrel),               &
 !/PR1                           DCDX(:,IY,IXrel), DCDY(:,IY,IXrel), VA(:,JSEA))
 !/PR2                      CALL W3KTP2 ( ISEA, FACTH, FACK, CTHG0S(ISEA),       &
-!/PR2                           CG(:,ISEA), WN(:,ISEA), DEPTH,                  &
+!/PR2                           CG1, WN1, DEPTH,                  &
 !/PR2                           DDDX(IY,IXrel), DDDY(IY,IXrel), CX(ISEA),       &
 !/PR2                           CY(ISEA), DCXDX(IY,IXrel), DCXDY(IY,IXrel),     &
 !/PR2                           DCYDX(IY,IXrel), DCYDY(IY,IXrel),               &
 !/PR2                           DCDX(:,IY,IXrel), DCDY(:,IY,IXrel), VA(:,JSEA))
 !/PR3                      CALL W3KTP3 ( ISEA, FACTH, FACK, CTHG0S(ISEA),       &
-!/PR3                           CG(:,ISEA), WN(:,ISEA), DEPTH,                  &
+!/PR3                           CG1, WN1, DEPTH,                  &
 !/PR3                           DDDX(IY,IXrel), DDDY(IY,IXrel), CX(ISEA),       &
 !/PR3                           CY(ISEA), DCXDX(IY,IXrel), DCXDY(IY,IXrel),     &
 !/PR3                           DCYDX(IY,IXrel), DCYDY(IY,IXrel),               &
@@ -1906,7 +1941,7 @@
 !
 !/SMC  !!Li    Refraction and GCT in theta direction is done by rotation.
 !/SMC                      CALL W3KRTN ( ISEA, FACTH, FACK, CTHG0S(ISEA), &
-!/SMC                           CG(:,ISEA), WN(:,ISEA), DEPTH,            &
+!/SMC                           CG1, WN1, DEPTH,            &
 !/SMC                           DHDX(ISEA), DHDY(ISEA), DHLMT(:,ISEA),    &
 !/SMC                           CX(ISEA), CY(ISEA), DCXDX(IY,IX),         &
 !/SMC                           DCXDY(IY,IX), DCYDX(IY,IX), DCYDY(IY,IX), & 
@@ -1984,6 +2019,15 @@
 !/BT4           D50=SED_D50(ISEA)
 !/BT4           PSIC=SED_PSIC(ISEA)
 
+#ifdef CGTABLE
+                 CG1    = CG(:,ISEA)
+                 WN1    = WN(:,ISEA)
+#else
+                 DO IK = 0, NK + 1
+                   CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1(IK),CG1(IK))
+                 ENDDO
+#endif
+
 !/DEBUGRUN          IF (JSEA == DEBUG_NODE) WRITE(*,*) 'W3WAVE TEST', ISEA, JSEA, SUM(VA(:,JSEA))
                 IF ( MAPSTA(IY,IX) .EQ. 1 .AND. FLAGST(ISEA)) THEN
                      TMP1   = WHITECAP(JSEA,1:4)
@@ -1994,8 +2038,8 @@
 !/PDLIB                 CALL W3SRCE(srce_imp_post,IT,ISEA,JSEA,IX,IY,IMOD,  &
 !/PDLIB                      VAOLD(:,JSEA), VA(:,JSEA),                  &
 !/PDLIB                      VSioDummy,VDioDummy,SHAVETOT(JSEA), &
-!/PDLIB                      ALPHA(1:NK,JSEA), WN(1:NK,ISEA),            &
-!/PDLIB                      CG(1:NK,ISEA), CLATS(ISEA), DW(ISEA), U10(ISEA),         &
+!/PDLIB                      ALPHA(1:NK,JSEA), WN1,            &
+!/PDLIB                      CG1, CLATS(ISEA), DW(ISEA), U10(ISEA),         &
 !/PDLIB                      U10D(ISEA), AS(ISEA), UST(ISEA),            &
 !/PDLIB                      USTDIR(ISEA), CX(ISEA), CY(ISEA),           &
 !/PDLIB                      ICE(ISEA), ICEH(ISEA), ICEF(ISEA),          &
@@ -2014,8 +2058,8 @@
                        CALL W3SRCE(srce_direct, IT, ISEA, JSEA, IX, IY, IMOD, &
                             VAoldDummy, VA(:,JSEA),                     &
                             VSioDummy, VDioDummy, SHAVETOTioDummy,      &
-                            ALPHA(1:NK,JSEA), WN(1:NK,ISEA),            &
-                            CG(1:NK,ISEA), CLATS(ISEA), DW(ISEA), U10(ISEA),         &
+                            ALPHA(1:NK,JSEA), WN1,            &
+                            CG1, CLATS(ISEA), DW(ISEA), U10(ISEA),         &
                             U10D(ISEA), AS(ISEA), UST(ISEA),            &
                             USTDIR(ISEA), CX(ISEA), CY(ISEA),           &
                             ICE(ISEA), ICEH(ISEA), ICEF(ISEA),          &
