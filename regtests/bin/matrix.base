@@ -1959,6 +1959,15 @@
    echo "$rtst -s MPI -s PDLIB -w work_mc -m grdset_c -f -p $mpi -n $np $ww3 ww3_tp2.17" >> matrix.body
  fi
 
+ # unstructured grid with PDLIB for domain decomposition and implicit solver, Neumann Bnd, depth breaking & triad interaction ST
+ if [ "$pdlib" = 'y' ] && [ "$dist" = 'y' ] && [ "$db1tr1" = 'y' ]
+ then
+   echo ' ' >> matrix.body
+   echo "$rtst -s PDLIB -w work_1A -f -p $mpi -n $np -o netcdf $ww3 ww3_tp2.19/Case1A" >> matrix.body
+   echo "$rtst -s PDLIB -w work_1B -f -p $mpi -n $np -o netcdf $ww3 ww3_tp2.19/Case1B" >> matrix.body
+   echo "$rtst -s PDLIB -w work_1C -f -p $mpi -n $np -o netcdf $ww3 ww3_tp2.19/Case1C" >> matrix.body
+ fi
+
  #Unresolved Obstacles Source Term (UOST) 
  if [ "$uost" = 'y' ] 
  then
