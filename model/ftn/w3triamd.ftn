@@ -735,6 +735,8 @@ CONTAINS
          DOUBLE PRECISION  :: DX13, DX21
          INTEGER           :: I1, I2, I3
          INTEGER           :: K
+         REAL*8            :: R1(2), R2(2), R3(2)
+         LOGICAL           :: CROSSES_DATELINE
 !/S        INTEGER                      ::  IENT = 0          
 !/ ------------------------------------------------------------------- /   
 !/S      CALL STRACE (IENT, 'SPATIAL_GRID')   
@@ -749,8 +751,14 @@ CONTAINS
 !                                   
                    DX13 = XYB(I1,1)-XYB(I3,1)
                    DX21 = XYB(I2,1)-XYB(I1,1)
-                   CALL CORRECT_DX_GT180(DX13)
-                   CALL CORRECT_DX_GT180(DX21)
+                   R1 = XYB(I3,:)-XYB(I2,:)
+                   R2 = XYB(I1,:)-XYB(I3,:)
+                   R3 = XYB(I2,:)-XYB(I1,:)
+                   CALL ELEMENT_CROSSES_DATELINE(R1, R2, R3, CROSSES_DATELINE)
+                   IF (CROSSES_DATELINE) THEN
+                     CALL CORRECT_DX_GT180(DX13)
+                     CALL CORRECT_DX_GT180(DX21)
+                   ENDIF
                    TRIA(K) = REAL( (XYB(I2,2)-XYB(I1,2))      &     !  (Y2-Y1)
                                   *DX13                       &     ! *(X1-X3)
                                   +(XYB(I3,2)-XYB(I1,2))      &     !  (Y3-Y1)*(X2-X1)
@@ -825,7 +833,7 @@ CONTAINS
 !	 
          INTEGER :: IP, IE
          INTEGER :: I1, I2, I3, I11, I22, I33
-         INTEGER :: R1GT180, R2GT180, R3GT180
+         LOGICAL :: CROSSES_DATELINE
          REAL*8    :: P1(2), P2(2), P3(2)
          REAL*8    :: R1(2), R2(2), R3(2)
          REAL*8    :: N1(2), N2(2), N3(2)
@@ -856,10 +864,8 @@ CONTAINS
             R1 = P3-P2
             R2 = P1-P3
             R3 = P2-P1
-            R1GT180 = MERGE(1, 0, ABS(R1(1)).GT.180)
-            R2GT180 = MERGE(1, 0, ABS(R2(1)).GT.180)
-            R3GT180 = MERGE(1, 0, ABS(R3(1)).GT.180)
-            IF (R1GT180+R2GT180+R3GT180 .EQ. 2) THEN
+            CALL ELEMENT_CROSSES_DATELINE(R1, R2, R3, CROSSES_DATELINE)
+            IF (CROSSES_DATELINE) THEN
 !             this element crosses the dateline. Adjusting the distances
               CALL CORRECT_DX_GT180(R1(1))
               CALL CORRECT_DX_GT180(R2(1))
@@ -2738,6 +2744,21 @@ END SUBROUTINE
 !
       RETURN    
       END SUBROUTINE SETUGIOBP
+
+
+      SUBROUTINE ELEMENT_CROSSES_DATELINE(R1, R2, R3, CROSSES_DATELINE)
+      IMPLICIT NONE
+      REAL*8,  INTENT(IN)  :: R1(2), R2(2), R3(2)
+      LOGICAL, INTENT(OUT) :: CROSSES_DATELINE
+      INTEGER :: R1GT180, R2GT180, R3GT180
+      R1GT180 = MERGE(1, 0, ABS(R1(1)).GT.180)
+      R2GT180 = MERGE(1, 0, ABS(R2(1)).GT.180)
+      R3GT180 = MERGE(1, 0, ABS(R3(1)).GT.180)
+! if R1GT180+R2GT180+R3GT180 .eq. 0 the element does not cross the dateline
+! if R1GT180+R2GT180+R3GT180 .eq. 1 the element contains the pole
+! if R1GT180+R2GT180+R3GT180 .eq. 0 the element crosses the dateline
+      CROSSES_DATELINE = R1GT180+R2GT180+R3GT180 .EQ. 2
+      END SUBROUTINE
 
 
       SUBROUTINE CORRECT_DX_GT180(DXP)
