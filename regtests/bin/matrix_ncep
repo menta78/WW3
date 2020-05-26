@@ -126,6 +126,7 @@ fi
   export    shwtr='y' # shallow water tests
   export    unstr='y' # unstructured grid tests
   export    pdlib='y' # unstr with pdlib for domain decomposition and implicit solver
+  export   db1tr1='y' # unstr w/ pdlib Neumann Bnd, depth breaking & triad interaction ST
   export    smcgr='y' # SMC/Rotated grid test
   export   mudice='y' # Mud/Ice and wave interaction tests 
   export   infgrv='y' # Second harmonic generation tests
