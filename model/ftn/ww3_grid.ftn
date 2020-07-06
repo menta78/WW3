@@ -4143,6 +4143,9 @@
 !/O1                END IF
 !/O1            IF ( TMPSTA(IY,IX).EQ.2 ) THEN
 !/O1                  IF ( FLAGLL ) THEN
+                      WRITE (*, 988) IBI, IX, IY, X, Y
+                      WRITE (*, *) IBI, IX, IY, X, Y
+
 !/O1                      WRITE (NDSO, 988) IBI, IX, IY, X, Y
 !/O1                    ELSE
 !/O1                      WRITE (NDSO,1988) IBI, IX, IY, X, Y
@@ -5872,8 +5875,8 @@
                '       -----|-------|-------|---------|---------')
  1987 FORMAT ( '         Nr.|   IX  |   IY  |     X     |     Y     '/    &
                '       -----|-------|-------|-----------|-----------')
-  988 FORMAT ( '       ',I4,2(' |',I6),2(' |',F8.2))
- 1988 FORMAT ( '       ',I4,2(' |',I6),2(' |',F8.1,'E3'))
+  988 FORMAT ( '       ',I8,2(' |',I10),2(' |',F8.2))
+ 1988 FORMAT ( '       ',I8,2(' |',I10),2(' |',F8.1,'E3'))
   989 FORMAT ( ' ')
 !
   990 FORMAT (/'  Output boundary points : '/                         &
