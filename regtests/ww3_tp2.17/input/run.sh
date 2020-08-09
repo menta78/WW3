@@ -6,5 +6,3 @@ cp ww3_prnc_wind.nml ww3_prnc.nml
 ww3_prnc
 cp ww3_prnc_current.nml ww3_prnc.nml
 ww3_prnc
-cp namelists_inla.nml namelists_inl.nml
-cp namelists_a.nml namelists.nml

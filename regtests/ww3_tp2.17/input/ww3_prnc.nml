@@ -37,7 +37,7 @@
 !     FORCING%TIDAL                = 'unset'     ! Set the tidal constituents [FAST | VFAST | 'M2 S2 N2']
 ! -------------------------------------------------------------------- !
 &FORCING_NML
-  FORCING%FIELD%WINDS          = T
+  FORCING%FIELD%CURRENTS       = T
   FORCING%GRID%ASIS            = T
 /
 
@@ -65,11 +65,11 @@
 !     FILE%TIMESHIFT     = '00000000 000000' ! shift the time value to 'YYYYMMDD HHMMSS'
 ! -------------------------------------------------------------------- !
 &FILE_NML
-  FILE%FILENAME      = '../input/wind.nc'
+  FILE%FILENAME      = '../input/current.nc'
   FILE%LONGITUDE     = 'time'
   FILE%LATITUDE      = ''
-  FILE%VAR(1)        = 'uwnd'
-  FILE%VAR(2)        = 'vwnd'
+  FILE%VAR(1)        = 'ucur'
+  FILE%VAR(2)        = 'vcur'
 /
 
 ! -------------------------------------------------------------------- !

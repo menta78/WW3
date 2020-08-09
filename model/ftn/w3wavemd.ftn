@@ -1598,7 +1598,11 @@
 
 !/DEBUGRUN                  IF (JSEA == DEBUG_NODE) WRITE(*,*) 'W3WAVE TEST', SUM(VA(:,JSEA))
                   IF ( GTYPE .EQ. UNGTYPE ) THEN
+#ifdef PDLIB
+                    IF (IOBP_LOC(JSEA) .NE. 1) CYCLE
+#else
                     IF (IOBP(ISEA) .NE. 1) CYCLE
+#endif
                   ENDIF
 
 #ifdef CGTABLE
@@ -1899,8 +1903,12 @@
 !/DEBUGRUN                  IF (JSEA == DEBUG_NODE) WRITE(*,*) 'W3WAVE TEST', SUM(VA(:,JSEA))
                   DEPTH  = MAX ( DMIN , DW(ISEA) )
 
-                  IF ( GTYPE .EQ. UNGTYPE ) THEN 
+                  IF ( GTYPE .EQ. UNGTYPE ) THEN
+#ifdef PDLIB
+                    IF (IOBP_LOC(JSEA) .NE. 1) CYCLE
+#else
                     IF (IOBP(ISEA) .NE. 1) CYCLE
+#endif
                   ENDIF
 
 #ifdef CGTABLE
