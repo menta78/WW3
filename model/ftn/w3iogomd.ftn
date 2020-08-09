@@ -1445,11 +1445,12 @@
                               A(ITH,IK,JSEA)*A(ITH+NTH/2,IK,JSEA)
             END IF
             CALL INIT_GET_ISEA(ISEA, JSEA)
-#ifdef CGTABLE
+
+#ifdef NOCGTABLE
+            CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1,CG1)
+#else
             CG1    = CG(IK,ISEA)
             WN1    = WN(IK,ISEA)
-#else
-            CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1,CG1)
 #endif
 
             FACTOR     = MAX ( 0.5 , CG1/SIG(IK)*WN1 )
@@ -1472,12 +1473,14 @@
         DO JSEA = 1, NSEAL
 
           CALL INIT_GET_ISEA(ISEA, JSEA)
-#ifdef CGTABLE
+
+#ifdef NOCGTABLE
+          CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1,CG1)
+#else
           CG1    = CG(IK,ISEA)
           WN1    = WN(IK,ISEA)
-#else
-          CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1,CG1)
 #endif
+
           WN12         = WN1**2
           FACTOR       = DDEN(IK) / CG1
           EBD(IK,JSEA) = AB(JSEA) * FACTOR
@@ -1674,11 +1677,12 @@
 !
         DO JSEA=1, NSEAL
           CALL INIT_GET_ISEA(ISEA, JSEA)
-#ifdef CGTABLE
+
+#ifdef NOCGTABLE
+          CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1,CG1)
+#else
           CG1    = CG(IK,ISEA)
           WN1    = WN(IK,ISEA)
-#else
-          CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1,CG1)
 #endif
 
           FACTOR       = DDEN(IK) / CG(IK,ISEA)
@@ -1858,11 +1862,12 @@
 !
       DO JSEA=1, NSEAL
         CALL INIT_GET_ISEA(ISEA, JSEA)
-#ifdef CGTABLE
-        CG1    = CG(IK,ISEA)
-        WN1    = WN(IK,ISEA)
+
+#ifdef NOCGTABLE
+          CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1,CG1)
 #else
-        CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1,CG1)
+          CG1    = CG(IK,ISEA)
+          WN1    = WN(IK,ISEA)
 #endif
 
 !

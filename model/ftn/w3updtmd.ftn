@@ -1747,11 +1747,11 @@
 !
 ! 2.a Check if deep water
 !
-#ifdef CGTABLE
-        KDCHCK = WN(1,ISEA) * MIN( DWO(ISEA) , DW(ISEA) )
-#else
+#ifdef NOCGTABLE
         CALL WAVNU_LOCAL(SIG(1),DWO(ISEA),WNTMP,CGTMP)
         KDCHCK = WNTMP * MIN( DWO(ISEA) , DW(ISEA) )
+#else
+        KDCHCK = WN(1,ISEA) * MIN( DWO(ISEA) , DW(ISEA) )
 #endif
 
         IF ( KDCHCK .LT. KDMAX ) THEN
@@ -1762,18 +1762,18 @@
             DO IK=0, NK+1
 !
 ! 2.b Update grid and save old grid
-#ifdef CGTABLE 
+#ifdef NOCGTABLE 
+              CALL WAVNU_LOCAL(SIG(IK),DWO(ISEA),WNO(IK),CGO(IK))
+#else
               WNO(IK) = WN(IK,ISEA)
               CGO(IK) = CG(IK,ISEA)
-#else
-              CALL WAVNU_LOCAL(SIG(IK),DWO(ISEA),WNO(IK),CGO(IK))
 #endif
 
 ! 2.c Calculate wavenumbers and group velocities.
-#ifdef CGTABLE 
-              CALL WAVNU_LOCAL(SIG(IK),DEPTH,WN(IK,ISEA),CG(IK,ISEA))
-#else
+#ifdef NOCGTABLE 
               CALL WAVNU_LOCAL(SIG(IK),DEPTH,WN1(IK),CG1(IK))
+#else
+              CALL WAVNU_LOCAL(SIG(IK),DEPTH,WN(IK,ISEA),CG(IK,ISEA))
 #endif
             END DO
 !
@@ -1827,10 +1827,10 @@
 !
 ! 2.e Check if ice on grid point, or if grid changes negligible
 !
-#ifdef CGTABLE 
-            RDK    = ABS(WNO(1)-WN(1,ISEA)) / DWN(1)
+#ifdef NOCGTABLE 
+           RDK  = ABS(WNO(1)-WNTMP) / DWN(1)
 #else
-            RDK  = ABS(WN1(1)-WNTMP) / DWN(1)
+           RDK  = ABS(WNO(1)-WN(1,ISEA)) / DWN(1)
 #endif
  
 

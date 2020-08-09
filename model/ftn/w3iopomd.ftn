@@ -803,25 +803,25 @@
 ! Interpolate spectrum
 !
         DO IK=1, NK
-#ifdef CGTABLE
+#ifndef NOCGTABLE
           CG1    = CG(IK,IS(1))
 #else
           CALL WAVNU_LOCAL(SIG(IK),DW(IS(1)),WN1,CG1)
 #endif
           FAC1(IK) = TPI * SIG(IK) / CG1
-#ifdef CGTABLE
+#ifndef NOCGTABLE
           CG1    = CG(IK,IS(2))
 #else
           CALL WAVNU_LOCAL(SIG(IK),DW(IS(2)),WN1,CG1)
 #endif
           FAC2(IK) = TPI * SIG(IK) / CG1
-#ifdef CGTABLE
+#ifndef NOCGTABLE
           CG1    = CG(IK,IS(3))
 #else
           CALL WAVNU_LOCAL(SIG(IK),DW(IS(3)),WN1,CG1)
 #endif
           FAC3(IK) = TPI * SIG(IK) / CG1
-#ifdef CGTABLE
+#ifndef NOCGTABLE
           CG1    = CG(IK,IS(4))
 #else
           CALL WAVNU_LOCAL(SIG(IK),DW(IS(4)),WN1,CG1)

@@ -72,10 +72,10 @@
 !     TIMESTEPS%DTMIN      = 0.         ! minimum source term time step (s)
 ! -------------------------------------------------------------------- !
 &TIMESTEPS_NML
-  TIMESTEPS%DTMAX        =  150.
-  TIMESTEPS%DTXY         =  100.
-  TIMESTEPS%DTKTH        =  50.
-  TIMESTEPS%DTMIN        =  10.
+  TIMESTEPS%DTMAX        =  60.
+  TIMESTEPS%DTXY         =  60.
+  TIMESTEPS%DTKTH        =  60.
+  TIMESTEPS%DTMIN        =  60.
 /
 
 ! -------------------------------------------------------------------- !

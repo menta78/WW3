@@ -651,10 +651,11 @@
       USE YOWNODEPOOL, ONLY: iplg, npa
       USE W3WDATMD, ONLY: TIME, VA
       USE W3ODATMD, ONLY: TBPI0, TBPIN, FLBPI
-      USE W3ADATMD, ONLY: CG, CX, CY, ITIME
+      USE W3ADATMD, ONLY: CG, CX, CY, ITIME, DW
       USE W3IDATMD, ONLY: FLCUR, FLLEV
       USE W3GDATMD, ONLY: NSEAL
       USE W3ODATMD, ONLY: IAPROC
+      USE W3DISPMD, ONLY : WAVNU_LOCAL
       IMPLICIT NONE
 !/ ------------------------------------------------------------------- /
 !/ Parameter list
@@ -670,7 +671,7 @@
       INTEGER                 :: ITH, IK, ISEA
       INTEGER                 :: I, J, IE, IBND_MAP
       INTEGER                 :: IP_glob
-      REAL                    :: CCOS, CSIN, CCURX, CCURY
+      REAL                    :: CCOS, CSIN, CCURX, CCURY, WN1, CG1
       REAL                    :: C(npa,2)
       REAL                    :: RD1, RD2
 !/
@@ -710,9 +711,16 @@
         IP_glob = iplg(IP)
         ISEA    = MAPFS(1,IP_glob)
         !write(*,*) 'IP TEST', JSEA, ISEA, IP, IP_glob
+#ifdef NOCGTABLE
+        CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1,CG1)
+        AC(IP)  = VA(ISP,JSEA) / CG1 * CLATS(ISEA)
+        VLCFLX(IP) = CCOS * CG1 / CLATS(ISEA)
+        VLCFLY(IP) = CSIN * CG(IK,ISEA)
+#else
         AC(IP)  = VA(ISP,JSEA) / CG(IK,ISEA) * CLATS(ISEA)
         VLCFLX(IP) = CCOS * CG(IK,ISEA) / CLATS(ISEA)
         VLCFLY(IP) = CSIN * CG(IK,ISEA)
+#endif
 !/MGP        VLCFLX(IP) = VLCFLX(IP) - CCURX*VGX/CLATS(ISEA)
 !/MGP        VLCFLY(IP) = VLCFLY(IP) - CCURY*VGY
       END DO
@@ -3947,10 +3955,10 @@
 
         DO IP = 1, NPA
           IP_GLOB = IPLG(IP) 
-#ifdef CGTABLE
-          CG1    = CG(IK,IP_GLOB)
-#else
+#ifdef NOCGTABLE
           CALL WAVNU_LOCAL(SIG(IK),DW(IP_GLOB),WN1,CG1)
+#else
+          CG1    = CG(IK,IP_GLOB)
 #endif
           CXY(1,IP) = CCOS * CG1/CLATS(IP_GLOB)
           CXY(2,IP) = CSIN * CG1
@@ -6009,7 +6017,9 @@
       REAL  :: aspar_diag_local(nspec), aspar_off_diag_local(nspec), b_jac_local(nspec)
       REAL  :: eDiffSing, eSumPart
       REAL  :: eVal1, eVal2!, extmp(nspec,nseal)
-      REAL  :: eVA, WN1, CG1, CG2
+      REAL  :: eVA, CG2
+      REAL  :: CG1(0:NK+1), WN1(0:NK+1)
+
       LOGICAL :: LCONVERGED(NSEAL), lexist
 #ifdef WEIGHTS 
       INTEGER :: ipiter(nseal), ipitergl(np_global), ipiterout(np_global) 
@@ -6082,12 +6092,12 @@
         DO ISP=1,NSPEC
           ITH    = 1 + MOD(ISP-1,NTH)
           IK     = 1 + (ISP-1)/NTH
-#ifdef CGTABLE
-          CG1    = CG(IK,ISEA)
+#ifdef NOCGTABLE
+          CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1(IK),CG1(IK))
 #else
-          CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1,CG1)
+          CG1(IK)    = CG(IK,ISEA)
 #endif
-          VA(ISP,JSEA) = VA(ISP,JSEA) / CG1 * CLATS(ISEA)
+          VA(ISP,JSEA) = VA(ISP,JSEA) / CG1(IK) * CLATS(ISEA)
         END DO
       END DO
       VAOLD = VA(1:NSPEC,1:NSEAL)
@@ -6223,6 +6233,13 @@
             CYCLE
           ENDIF
 
+#ifdef NOCGTABLE
+          CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1(IK),CG1(IK))
+#else
+          CG1(IK)  = CG(IK,ISEA)
+          WN1(IK)  = WN(IK,ISEA)
+#endif
+
           JSEA  = JX_TO_JSEA(IP)
           ISEA  = MAPFS(1,IP_glob)
           eSI   = PDLIB_SI(IP)
@@ -6314,14 +6331,14 @@
                   DO IK=2,NK
                     ISP       = ITH + (IK   -1)*NTH
                     ISPm1     = ITH + (IK-1 -1)*NTH
-                    eFactM1   = CG(IK-1,ISEA) / CG(IK,ISEA)
+                    eFactM1   = CG1(IK-1) / CG1(IK)
                     eA_SIG    = - eSI * CP_SIG(ISPm1)/DMM(IK-1) * eFactM1
                     eSum(ISP) = eSum(ISP) - eA_SIG*VA(ISPm1,IP)
                   END DO
                   DO IK=1,NK-1
                     ISP       = ITH + (IK   -1)*NTH
                     ISPp1     = ITH + (IK+1 -1)*NTH
-                    eFactP1   = CG(IK+1,ISEA) / CG(IK,ISEA)
+                    eFactP1   = CG1(IK+1) / CG1(IK)
                     eC_SIG    = eSI * CM_SIG(ISPp1)/DMM(IK) * eFactP1
                     eSum(ISP) = eSum(ISP) - eC_SIG*VA(ISPp1,IP)
                   END DO
@@ -6329,21 +6346,21 @@
               ELSE IF (FreqShiftMethod .eq. 2) THEN
                 CWNB_M2=CWNB_SIG_M2(:,IP)
                 DO IK=1, NK
-                  DWNI_M2(IK) = DBLE( CG(IK,ISEA) / DSIP(IK) )
+                  DWNI_M2(IK) = DBLE( CG1(IK) / DSIP(IK) )
                 END DO
 !/DEBUGFREQSHIFT        WRITE(740+IAPROC,*) 'Before FreqShift oper eSum=', sum(abs(eSum))
                 DO ITH=1,NTH
                   DO IK=2,NK
                     ISP       = ITH + (IK   -1)*NTH
                     ISPm1     = ITH + (IK-1 -1)*NTH
-                    eFactM1   = DBLE( CG(IK-1,ISEA) / CG(IK,ISEA) )
+                    eFactM1   = DBLE( CG1(IK-1) / CG1(IK) )
                     eA_SIG    = - eSI * DWNI_M2(IK) * MAX(CWNB_M2(ISPm1),ZERO) *eFactM1
                     eSum(ISP) = eSum(ISP) - eA_SIG*VA(ISPm1,IP)
                   END DO
                   DO IK=1,NK-1
                     ISP       = ITH + (IK   -1)*NTH
                     ISPp1     = ITH + (IK+1 -1)*NTH
-                    eFactP1   = DBLE( CG(IK+1,ISEA) / CG(IK,ISEA) )
+                    eFactP1   = DBLE( CG1(IK+1) / CG1(IK) )
                     eC_SIG    = eSI * DWNI_M2(IK) * MIN(CWNB_M2(ISP),ZERO) * eFactP1
                     eSum(ISP) = eSum(ISP) - eC_SIG*VA(ISPp1,IP)
                   END DO
@@ -6554,19 +6571,27 @@
                 CAS=CAS_SIG(:,IP)
                 CP_SIG = MAX(ZERO,CAS)
                 CM_SIG = MIN(ZERO,CAS)
+                DO IK = 0, NK + 1
+#ifdef NOCGTABLE
+                  CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1(IK),CG1(IK))
+#else
+                  CG1(IK)  = CG(IK,ISEA)
+                  WN1(IK)  = WN(IK,ISEA)
+#endif
+                ENDDO
                 DO ITH=1,NTH
                   IF (IOBPD_LOC(ITH,IP) .NE. 0) THEN
                     DO IK=2,NK
                       ISP  =ITH + (IK  -1)*NTH
                       ISPm1=ITH + (IK-1-1)*NTH
-                      eFactM1=CG(IK-1,ISEA) / CG(IK,ISEA)
+                      eFactM1=CG(IK-1,ISEA) / CG1(IK)
                       eA_SIG= - eSI*CP_SIG(ISPm1)/DMM(IK-1) * eFactM1
                       eSum(ISP) = eSum(ISP) - eA_SIG*VA(ISPm1,IP)
                     END DO
                     DO IK=1,NK-1
                       ISP  =ITH + (IK  -1)*NTH
                       ISPp1=ITH + (IK+1-1)*NTH
-                      eFactP1=CG(IK+1,ISEA) / CG(IK,ISEA)
+                      eFactP1=CG(IK+1,ISEA) / CG1(IK)
                       eC_SIG= eSI*CM_SIG(ISPp1)/DMM(IK) * eFactP1
                       eSum(ISP) = eSum(ISP) - eC_SIG*VA(ISPp1,IP)
                     END DO
@@ -6590,7 +6615,9 @@
 !/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
 
         nbiter = nbiter + 1 
+
       END DO ! Open Do Loop ... End of Time Interval 
+
 !/DEBUGSOLVER     WRITE(740+IAPROC,*) 'nbIter=', nbIter, ' B_JGS_MAXITER=', B_JGS_MAXITER
 !/DEBUGSOLVER     FLUSH(740+IAPROC)
 ! Tihs is below also goes into the matrix ... like the wave boundary ...
@@ -6609,9 +6636,10 @@
 !/DEBUGSOLVER     FLUSH(740+IAPROC)
 
        DO JSEA=1, NSEAL
-        IP      = JSEA
-        IP_glob = iplg(IP)
-        ISEA = MAPFS(1,IP_glob)
+
+         IP      = JSEA
+         IP_glob = iplg(IP)
+         ISEA    = MAPFS(1,IP_glob)
 !
 !/DEBUGSRC        IntDiff=0
 !/DEBUGSRC        SumVS=0
@@ -6622,14 +6650,15 @@
 !/DEBUGSRC        SumACout=0
 !
           DO ISP=1,NSPEC
+
             IK     = 1 + (ISP-1)/NTH
-#ifdef CGTABLE
-            CG1    = CG(IK,ISEA)
-            WN1    = WN(IK,ISEA)
+#ifdef NOCGTABLE
+            CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1(IK),CG1(IK))
 #else
-            CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1,CG1)
+            CG1(IK)    = CG(IK,ISEA)
+            WN1(IK)    = WN(IK,ISEA)
 #endif
-            eVA = MAX ( ZERO ,CG1/CLATS(ISEA)*REAL(VA(ISP,IP)) )
+            eVA = MAX ( ZERO ,CG1(IK)/CLATS(ISEA)*REAL(VA(ISP,IP)) )
 !/DEBUGSRC          SumACout=SumACout + REAL(VA(ISP,IP))
 !/DEBUGSRC          VS_w3srce = VSTOT(ISP,JSEA) * DTG / MAX(1., (1. - DTG*VDTOT(ISP,JSEA)))
 !/DEBUGSRC          eVA_w3srce = MAX(0., VA(ISP,JSEA) + VS_w3srce)

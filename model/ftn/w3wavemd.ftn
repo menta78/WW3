@@ -384,6 +384,7 @@
 !/PDLIB      USE PDLIB_W3PROFSMD, only : ALL_VA_INTEGRAL_PRINT, ALL_VAOLD_INTEGRAL_PRINT, ALL_FIELD_INTEGRAL_PRINT
 !/PDLIB      USE W3PARALL, only : PDLIB_NSEAL, PDLIB_NSEALM
 !/PDLIB      USE yowNodepool, only: npa, iplg, np
+!/PDLIB      USE W3GDATMD, ONLY: IOBP_LOC, IOBPD_LOC, IOBPA_LOC, IOBDP_LOC
       USE W3DISPMD, ONLY : WAVNU_LOCAL
 !/
       USE W3SERVMD
@@ -771,14 +772,15 @@
 
 !/IC3          DO JSEA=1,NSEAL
                  CALL INIT_GET_ISEA(ISEA, JSEA)
-#ifdef CGTABLE
-                 CG1    = CG(:,ISEA)
-                 WN1    = WN(:,ISEA)
-#else
+#ifdef NOCGTABLE
                  DO IK = 0, NK + 1
                    CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1(IK),CG1(IK))
                  ENDDO
+#else
+                 CG1    = CG(:,ISEA)
+                 WN1    = WN(:,ISEA)
 #endif
+
 !/IC3            ALLOCATE(WN_I(SIZE(WN1)))
 !/IC3            WN_I(:) = 0.
 !/IC3            DEPTH  = MAX( DMIN , DW(ISEA) )
@@ -1375,13 +1377,13 @@
 !/PDLIB            DELX = 1. 
 !/PDLIB            DELY = 1. 
 
-#ifdef CGTABLE
-                 CG1    = CG(:,ISEA)
-                 WN1    = WN(:,ISEA)
-#else
+#ifdef NOCGTABLE
                  DO IK = 0, NK + 1
                    CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1(IK),CG1(IK))
                  ENDDO
+#else
+                 CG1    = CG(:,ISEA)
+                 WN1    = WN(:,ISEA)
 #endif
 
 !/DEBUGRUN         DO IS = 1, NSPEC
@@ -1598,20 +1600,20 @@
 
 !/DEBUGRUN                  IF (JSEA == DEBUG_NODE) WRITE(*,*) 'W3WAVE TEST', SUM(VA(:,JSEA))
                   IF ( GTYPE .EQ. UNGTYPE ) THEN
-#ifdef PDLIB
-                    IF (IOBP_LOC(JSEA) .NE. 1) CYCLE
-#else
+!/PDLIB#ifdef PDLIB        
+!/PDLIB                    IF (IOBP_LOC(JSEA) .NE. 1) CYCLE
+!/PDLIB#else
                     IF (IOBP(ISEA) .NE. 1) CYCLE
-#endif
+!/PDLIB#endif
                   ENDIF
 
-#ifdef CGTABLE
-                 CG1    = CG(:,ISEA)
-                 WN1    = WN(:,ISEA)
-#else 
+#ifdef NOCGTABLE
                  DO IK = 0, NK + 1
                    CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1(IK),CG1(IK))
                  ENDDO
+#else 
+                 CG1    = CG(:,ISEA)
+                 WN1    = WN(:,ISEA)
 #endif
 
                   IF ( MAPSTA(IY,IX) .EQ. 1 ) THEN
@@ -1904,20 +1906,20 @@
                   DEPTH  = MAX ( DMIN , DW(ISEA) )
 
                   IF ( GTYPE .EQ. UNGTYPE ) THEN
-#ifdef PDLIB
-                    IF (IOBP_LOC(JSEA) .NE. 1) CYCLE
-#else
+!/PDLIB#ifdef PDLIB
+!/PDLIB                    IF (IOBP_LOC(JSEA) .NE. 1) CYCLE
+!/PDLIB#else
                     IF (IOBP(ISEA) .NE. 1) CYCLE
-#endif
+!/PDLIB#endif
                   ENDIF
 
-#ifdef CGTABLE
-                  CG1    = CG(:,ISEA)
-                  WN1    = WN(:,ISEA)
-#else
+#ifdef NOCGTABLE
                   DO IK = 0, NK + 1
                     CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1(IK),CG1(IK))
                   ENDDO
+#else
+                  CG1    = CG(:,ISEA)
+                  WN1    = WN(:,ISEA)
 #endif
                   IF ( MAPSTA(IY,IX) .EQ. 1 ) THEN
                            IF (LPDLIB) THEN
@@ -2026,13 +2028,13 @@
 !/BT4           D50=SED_D50(ISEA)
 !/BT4           PSIC=SED_PSIC(ISEA)
 
-#ifdef CGTABLE
-                 CG1    = CG(:,ISEA)
-                 WN1    = WN(:,ISEA)
-#else
+#ifdef NOCGTABLE
                  DO IK = 0, NK + 1
                    CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1(IK),CG1(IK))
                  ENDDO
+#else
+                 CG1    = CG(:,ISEA)
+                 WN1    = WN(:,ISEA)
 #endif
 
 !/DEBUGRUN          IF (JSEA == DEBUG_NODE) WRITE(*,*) 'W3WAVE TEST', ISEA, JSEA, SUM(VA(:,JSEA))
