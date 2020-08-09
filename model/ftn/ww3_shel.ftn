@@ -725,6 +725,12 @@
 
 
         IOSTYP = NML_DOMAIN%IOSTYP
+
+!/PDLIB     IF (IOSTYP .gt. 1) THEN
+!/PDLIB       WRITE(*,*) 'IOSTYP not supported in domain decomposition mode'
+!/PDLIB       CALL EXTCDE ( 6666 )
+!/PDLIB     ENDIF
+
         CALL W3IOGR ( 'GRID', NDSF(5) )
         IF ( FLAGLL ) THEN
           FACTOR = 1.
@@ -1146,6 +1152,10 @@
         CALL NEXTLN ( COMSTR , NDSI , NDSEN )
 !/DEBUGINIT      write(740+IAPROC,*), 'Before read 2002, case 6'
         READ (NDSI,*) IOSTYP
+!/PDLIB     IF (IOSTYP .gt. 1) THEN
+!/PDLIB       WRITE(*,*) 'IOSTYP not supported in domain decomposition mode'
+!/PDLIB       CALL EXTCDE ( 6666 )
+!/PDLIB     ENDIF
 !/DEBUGINIT      write(740+IAPROC,*), ' After read 2002, case 6'
 
 
@@ -1521,6 +1531,11 @@
 ! 2.3 Domain setup
 
       IOSTYP = MAX ( 0 , MIN ( 3 , IOSTYP ) )
+!/PDLIB     IF (IOSTYP .gt. 1) THEN
+!/PDLIB       WRITE(*,*) 'IOSTYP not supported in domain decomposition mode'
+!/PDLIB       CALL EXTCDE ( 6666 )
+!/PDLIB     ENDIF
+
       IF ( IAPROC .EQ. NAPOUT ) THEN
         IF ( IOSTYP .EQ. 0 ) THEN
           WRITE (NDSO,940) 'No dedicated output process, ' //   &
