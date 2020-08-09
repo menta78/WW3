@@ -736,6 +736,7 @@
 
 !/DEBUGINIT     WRITE(740+IAPROC,*) 'Before PDLIB related allocations'
 !/DEBUGINIT     FLUSH(740+IAPROC)
+                write(*,*) 'test test test', IAPROC, NAPROC, GTYPE, UNGTYPE, FSNIMP, FSTOTALIMP
 !/PDLIB         IF ((IAPROC .LE. NAPROC).and.(GTYPE .eq. UNGTYPE)) THEN
 !/DEBUGINIT       WRITE(740+IAPROC,*) 'After test 1'
 !/DEBUGINIT       FLUSH(740+IAPROC)
@@ -744,6 +745,7 @@
 !/DEBUGINIT         FLUSH(740+IAPROC)
 !/PDLIB             CALL BLOCK_SOLVER_INIT(IMOD)
 !/PDLIB             CALL PDLIB_IOBP_INIT(IMOD)
+                       STOP 'TEST TEST' 
 !/PDLIB             CALL SET_IOBPA_PDLIB
 !/DEBUGINIT         WRITE(740+IAPROC,*) 'After BLOCK_SOLVER_INIT'
 !/DEBUGINIT         FLUSH(740+IAPROC)

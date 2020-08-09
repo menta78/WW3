@@ -560,6 +560,8 @@
         IOBP_loc(IP)    = IOBP(IP_glob)
         IOBPD_loc(:,IP) = IOBPD(:,IP_glob)
       END DO
+
+      IOBDP_loc = 0
       !DEALLOCATE(IOBP,IOBPD)
       IOBP => NULL()
       IOBPD => NULL()
@@ -569,6 +571,7 @@
 !    Can be corrected by adding the new version of PDLIB 
      !CALL SET_UG_IOBP_PDLIB_INIT
      CALL SET_IOBPA_PDLIB
+
 !/
 !/ End of W3SPR4 ----------------------------------------------------- /
 !/
