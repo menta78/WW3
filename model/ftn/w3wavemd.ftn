@@ -995,7 +995,6 @@
 !/DEBUGDCXDX       WRITE(740+IAPROC,*) 'Before call to UG_GRADIENT for assigning DCXDX/DCXDY array'
               CALL UG_GRADIENTS(CX, DCXDX, DCXDY)
               CALL UG_GRADIENTS(CY, DCYDX, DCYDY)
-              CALL GET_INTERFACE 
               UGDTUPDATE=.TRUE.
               CFLXYMAX = 0.
             END IF
