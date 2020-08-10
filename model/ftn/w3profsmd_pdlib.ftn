@@ -3691,7 +3691,7 @@
       USE W3PARALL, ONLY : ONESIXTH, ZERO, THR
       use yowElementpool, ONLY: ne, INE
       USE YOWNODEPOOL,    ONLY: PDLIB_IEN, PDLIB_TRIA,                  &
-           PDLIB_IE_CELL, PDLIB_POS_CELL, PDLIB_CCON, NP, NPA,          &
+           PDLIB_CCON, PDLIB_POS_CELL2, PDLIB_IE_CELL2, NP, NPA,          &
            PDLIB_IA_P, PDLIB_POSI, PDLIB_IA, PDLIB_NNZ, iplg,           &
            PDLIB_I_DIAG, PDLIB_JA
       USE W3ODATMD, ONLY : IAPROC
@@ -3790,8 +3790,8 @@
         IP_glob=iplg(IP)
         DO I = 1, PDLIB_CCON(IP)
           J = J + 1
-          IE    =  PDLIB_IE_CELL(J)
-          POS   =  PDLIB_POS_CELL(J)
+          IE    =  PDLIB_IE_CELL2(I,IP)
+          POS   =  PDLIB_POS_CELL2(I,IP)
           I1    =  PDLIB_POSI(1,J)
           I2    =  PDLIB_POSI(2,J)
           I3    =  PDLIB_POSI(3,J)
@@ -4099,7 +4099,7 @@
       USE W3PARALL, ONLY : ONESIXTH, ZERO, THR, IMEM
       use yowElementpool, ONLY: ne, INE
       USE YOWNODEPOOL,    ONLY: PDLIB_IEN, PDLIB_TRIA,                  &
-           PDLIB_IE_CELL, PDLIB_POS_CELL, PDLIB_CCON, NP, NPA,          &
+           PDLIB_CCON, PDLIB_POS_CELL2, PDLIB_IE_CELL2, NP, NPA,          &
            PDLIB_IA_P, PDLIB_POSI, PDLIB_IA, PDLIB_NNZ, iplg,           &
            PDLIB_I_DIAG, PDLIB_JA
       USE W3ODATMD, ONLY : IAPROC
@@ -4148,9 +4148,9 @@
         ISEA=MAPFS(1,IP_glob)
         DO I = 1, PDLIB_CCON(IP)
           J = J + 1
-          IE    =  PDLIB_IE_CELL(J)
+          IE    =  PDLIB_IE_CELL2(I,IP)
           IEN_LOCAL = PDLIB_IEN(:,IE)
-          POS   =  PDLIB_POS_CELL(J)
+          POS   =  PDLIB_POS_CELL2(I,IP)
           I1    =  PDLIB_POSI(1,J)
           I2    =  PDLIB_POSI(2,J)
           I3    =  PDLIB_POSI(3,J)
@@ -4279,7 +4279,7 @@
       USE W3PARALL, ONLY : ONESIXTH, ZERO, THR, ONETHIRD
       use yowElementpool, ONLY: ne, INE
       USE YOWNODEPOOL,    ONLY: PDLIB_IEN, PDLIB_TRIA,                  &
-           PDLIB_IE_CELL, PDLIB_POS_CELL, PDLIB_CCON, NP, NPA,          &
+           PDLIB_CCON, NP, NPA, PDLIB_POS_CELL2, PDLIB_IE_CELL2,        &
            PDLIB_IA_P, PDLIB_POSI, PDLIB_IA, PDLIB_NNZ, iplg,           &
            PDLIB_I_DIAG, PDLIB_JA
       USE W3GDATMD, ONLY: IOBP
@@ -4329,9 +4329,9 @@
       IP_glob=iplg(IP)
       DO I = 1, PDLIB_CCON(IP)
         J         = J + 1
-        IE        = PDLIB_IE_CELL(J)
+        IE    =  PDLIB_IE_CELL2(I,IP)
         IEN_LOCAL = PDLIB_IEN(:,IE)
-        POS   =  PDLIB_POS_CELL(J)
+        POS   =  PDLIB_POS_CELL2(I,IP)
         I1    =  PDLIB_POSI(1,J)
         I2    =  PDLIB_POSI(2,J)
         I3    =  PDLIB_POSI(3,J)
@@ -4675,7 +4675,7 @@
       USE W3PARALL, ONLY : ONESIXTH, ZERO, THR, ONETHIRD
       use yowElementpool, ONLY: ne, INE
       USE YOWNODEPOOL,    ONLY: PDLIB_IEN, PDLIB_TRIA,                  &
-           PDLIB_IE_CELL, PDLIB_POS_CELL, PDLIB_CCON, NP, NPA,          &
+           PDLIB_CCON, NP, NPA,          &
            PDLIB_IA_P, PDLIB_POSI, PDLIB_IA, PDLIB_NNZ, iplg,           &
            PDLIB_I_DIAG, PDLIB_JA
       USE W3ODATMD, ONLY : IAPROC

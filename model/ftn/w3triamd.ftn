@@ -1257,7 +1257,6 @@ END SUBROUTINE
            SI(I3) = SI(I3) + TRIA03
          ENDDO
 
-
          CELLVERTEX(:,:,:) = 0 ! Stores for each node the Elementnumbers of the connected Elements
                                ! and the Position of the Node in the Element Index
 
@@ -1285,8 +1284,8 @@ END SUBROUTINE
          DO IP = 1, NX
            DO I = 1, CCON(IP)
              J = J + 1
-             !IE_CELL(J)  = CELLVERTEX(IP,I,1)
-             !POS_CELL(J) = CELLVERTEX(IP,I,2) 
+             IE_CELL(J)  = CELLVERTEX(IP,I,1)
+             POS_CELL(J) = CELLVERTEX(IP,I,2) 
            END DO
            INDEX_CELL(IP+1)=J+1
          END DO
@@ -1302,115 +1301,114 @@ END SUBROUTINE
 
          COUNT_MAX = J
 
-           ALLOCATE(PTABLE(COUNT_MAX,7))
+         ALLOCATE(PTABLE(COUNT_MAX,7))
 
-           J = 0
-           PTABLE(:,:) = 0.
-           DO IP = 1, NX 
-             DO I = 1, CCON(IP)
-               J = J + 1
-               IE    = IE_CELL(J)
-               POS   = POS_CELL(J)
-               I1 = TRIGP(1,IE)
-               I2 = TRIGP(2,IE)
-               I3 = TRIGP(3,IE)
-               IF (POS == 1) THEN
-                 POS_J = 2
-                 POS_K = 3
-               ELSE IF (POS == 2) THEN
-                 POS_J = 3
-                 POS_K = 1
-               ELSE
-                 POS_J = 1
-                 POS_K = 2
-               END IF
-               IP_I = IP
-               IP_J = TRIGP(POS_J,IE)
-               IP_K = TRIGP(POS_K,IE)
-               PTABLE(J,1) = IP_I
-               PTABLE(J,2) = IP_J
-               PTABLE(J,3) = IP_K
-               PTABLE(J,4) = POS
-               PTABLE(J,5) = POS_J
-               PTABLE(J,6) = POS_K
-               PTABLE(J,7) = IE
-             END DO
+         J = 0
+         PTABLE(:,:) = 0.
+         DO IP = 1, NX 
+           DO I = 1, CCON(IP)
+             J = J + 1
+             IE    = IE_CELL(J)
+             POS   = POS_CELL(J)
+             I1 = TRIGP(1,IE)
+             I2 = TRIGP(2,IE)
+             I3 = TRIGP(3,IE)
+             IF (POS == 1) THEN
+               POS_J = 2
+               POS_K = 3
+             ELSE IF (POS == 2) THEN
+               POS_J = 3
+               POS_K = 1
+             ELSE
+               POS_J = 1
+               POS_K = 2
+             END IF
+             IP_I = IP
+             IP_J = TRIGP(POS_J,IE)
+             IP_K = TRIGP(POS_K,IE)
+             PTABLE(J,1) = IP_I
+             PTABLE(J,2) = IP_J
+             PTABLE(J,3) = IP_K
+             PTABLE(J,4) = POS
+             PTABLE(J,5) = POS_J
+             PTABLE(J,6) = POS_K
+             PTABLE(J,7) = IE
            END DO
+         END DO
 
-!          WRITE(*,'("+TRACE......",A)') 'SET UP SPARSE MATRIX POINTER ... COUNT NONZERO ENTRY'
+!        WRITE(*,'("+TRACE......",A)') 'SET UP SPARSE MATRIX POINTER ... COUNT NONZERO ENTRY'
 
-           J = 0
-           K = 0
-           DO IP = 1, NX 
-             TMP(:) = 0
-             DO I = 1, CCON(IP)
-               J = J + 1
-               IP_J  = PTABLE(J,2)
-               IP_K  = PTABLE(J,3)
-               POS   = PTABLE(J,4)
-               TMP(IP)   = 1
-               TMP(IP_J) = 1
-               TMP(IP_K) = 1
-            END DO
-            K = K + SUM(TMP)
-          END DO
+         J = 0
+         K = 0
+         DO IP = 1, NX 
+           TMP(:) = 0
+           DO I = 1, CCON(IP)
+             J = J + 1
+             IP_J  = PTABLE(J,2)
+             IP_K  = PTABLE(J,3)
+             POS   = PTABLE(J,4)
+             TMP(IP)   = 1
+             TMP(IP_J) = 1
+             TMP(IP_K) = 1
+           END DO
+           K = K + SUM(TMP)
+         END DO
 
-          NNZ => GRIDS(IMOD)%NNZ
-
-          NNZ = K
+         NNZ => GRIDS(IMOD)%NNZ
+         NNZ = K
 
 !          WRITE(*,'("+TRACE......",A)') 'SET UP SPARSE MATRIX POINTER ... SETUP POINTER'
 
-          ALLOCATE (GRIDS(IMOD)%JAA(NNZ))
-          ALLOCATE (GRIDS(IMOD)%IAA(NX+1))
-          ALLOCATE (GRIDS(IMOD)%POSI(3,COUNT_MAX))
-          JAA   => GRIDS(IMOD)%JAA
-          IAA   => GRIDS(IMOD)%IAA
-          POSI  => GRIDS(IMOD)%POSI
+         ALLOCATE (GRIDS(IMOD)%JAA(NNZ))
+         ALLOCATE (GRIDS(IMOD)%IAA(NX+1))
+         ALLOCATE (GRIDS(IMOD)%POSI(3,COUNT_MAX))
+         JAA   => GRIDS(IMOD)%JAA
+         IAA   => GRIDS(IMOD)%IAA
+         POSI  => GRIDS(IMOD)%POSI
 
-           J = 0
-           K = 0
-           IAA(1) = 1
-           JAA    = 0
-           DO IP = 1, NX ! Run through all rows 
-             TMP = 0
-             DO I = 1, CCON(IP)         ! Check how many entries there are ...
-               J = J + 1                ! this is the same J index as in IE_CELL
-               IP_J  = PTABLE(J,2)
-               IP_K  = PTABLE(J,3)
-               TMP(IP)   = 1
-               TMP(IP_J) = 1
-               TMP(IP_K) = 1
-             END DO
-             DO I = 1, NX               ! Run through all columns 
-               IF (TMP(I) .GT. 0) THEN  ! this is true only for the connected points
-                 K = K + 1              
-                 JAA(K) = I
+         J = 0
+         K = 0
+         IAA(1) = 1
+         JAA    = 0
+         DO IP = 1, NX ! Run through all rows 
+           TMP = 0
+           DO I = 1, CCON(IP)         ! Check how many entries there are ...
+             J = J + 1                ! this is the same J index as in IE_CELL
+             IP_J  = PTABLE(J,2)
+             IP_K  = PTABLE(J,3)
+             TMP(IP)   = 1
+             TMP(IP_J) = 1
+             TMP(IP_K) = 1
+           END DO
+           DO I = 1, NX               ! Run through all columns 
+             IF (TMP(I) .GT. 0) THEN  ! this is true only for the connected points
+               K = K + 1              
+               JAA(K) = I
+             END IF
+           END DO
+           IAA(IP + 1) = K + 1    
+         END DO
+
+         POSI = 0
+         J = 0
+         DO IP = 1, NX  
+           DO I = 1, CCON(IP)
+             J = J + 1
+             IP_J  = PTABLE(J,2)
+             IP_K  = PTABLE(J,3)
+             DO K = IAA(IP), IAA(IP+1) - 1
+               IF (IP   == JAA(K)) POSI(1,J)  = K
+               IF (IP_J == JAA(K)) POSI(2,J)  = K
+               IF (IP_K == JAA(K)) POSI(3,J)  = K
+               IF (K == 0) THEN
+                WRITE(*,*) 'ERROR IN AREA_SI K .EQ. 0'
+                STOP
                END IF
              END DO
-             IAA(IP + 1) = K + 1    
            END DO
+         END DO
 
-           POSI = 0
-           J = 0
-           DO IP = 1, NX  
-             DO I = 1, CCON(IP)
-               J = J + 1
-               IP_J  = PTABLE(J,2)
-               IP_K  = PTABLE(J,3)
-               DO K = IAA(IP), IAA(IP+1) - 1
-                 IF (IP   == JAA(K)) POSI(1,J)  = K
-                 IF (IP_J == JAA(K)) POSI(2,J)  = K
-                 IF (IP_K == JAA(K)) POSI(3,J)  = K
-                 IF (K == 0) THEN
-                  WRITE(*,*) 'ERROR IN AREA_SI K .EQ. 0'
-                  STOP
-                 END IF
-               END DO
-            END DO
-          END DO
-
-          DEALLOCATE(PTABLE)
+         DEALLOCATE(PTABLE)
 
        END SUBROUTINE
        
