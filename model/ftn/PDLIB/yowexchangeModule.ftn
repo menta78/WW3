@@ -291,7 +291,6 @@ module yowExchangeModule
     if(ierr/=MPI_SUCCESS) CALL PARALLEL_ABORT("waitall", ierr)
   end subroutine
 
-
   !> \overload PDLIB_exchange1Dreal
   !> 
   !> \note MPI recv tag: 30000 + MPI rank
@@ -498,6 +497,8 @@ module yowExchangeModule
         CALL PARALLEL_ABORT("MPI_IRecv", ierr)
       endif
     enddo
+!/DEBUGEXCH     WRITE(740+IAPROC,*) 'PDLIB_exchange2Dreal, step 5'
+!/DEBUGEXCH     FLUSH(740+IAPROC)
 
     ! post sends
     do i=1, nConnDomains
@@ -515,13 +516,13 @@ module yowExchangeModule
         endif
     end do
     
-
     ! Wait for completion
     call mpi_waitall(nConnDomains, recvRqst, recvStat,ierr)
     if(ierr/=MPI_SUCCESS) CALL PARALLEL_ABORT("waitall", ierr)
+!/DEBUGEXCH     WRITE(740+IAPROC,*) 'PDLIB_exchange2Dreal, step 11'
+!/DEBUGEXCH     FLUSH(740+IAPROC)
     call mpi_waitall(nConnDomains, sendRqst, sendStat,ierr)
     if(ierr/=MPI_SUCCESS) CALL PARALLEL_ABORT("waitall", ierr)
   end subroutine 
-
 
 end module yowExchangeModule
