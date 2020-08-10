@@ -1254,6 +1254,7 @@
 !/DEBUGINIT     WRITE(740+IAPROC,*) 'W3INIT, aft BLOCK_SOLVER_INIT, step 9.5'
 !/DEBUGINIT     FLUSH(740+IAPROC)
 !/NEC/!CDIR LOOPCNT=100000
+
 #ifndef NOCGTABLE
       DO IS=0, NSEA
 !/DEBUGINIT     WRITE(740+IAPROC,*) 'IS=', IS
@@ -1279,12 +1280,6 @@
 #endif
 !/DEBUGINIT     WRITE(740+IAPROC,*) 'W3INIT, aft BLOCK_SOLVER_INIT, step 9.6'
 !/DEBUGINIT     FLUSH(740+IAPROC)
-!
-! Commented by FA with version 4.12 
-!      DO IK=1, NK
-!        CG(IK,0) = CG(IK,1)
-!        WN(IK,0) = WN(IK,1)
-!        END DO
 !
 ! 6.  Initialize arrays ---------------------------------------------- /
 !     Some initialized in W3IORS

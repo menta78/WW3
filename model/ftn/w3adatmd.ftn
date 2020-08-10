@@ -343,7 +343,9 @@
 !
 ! The grid
 ! 
+#ifndef NOCGTABLE 
         REAL, POINTER         :: CG(:,:), WN(:,:)
+#endif
 !/IC3   REAL, POINTER         :: IC3WN_R(:,:), IC3WN_I(:,:), IC3CG(:,:)
 !
 ! Arrays for processing model input
@@ -1234,8 +1236,8 @@
 !
 #ifndef NOCGTABLE
           ALLOCATE ( WADATS(IMOD)%CG(0:NK+1,0:NSEA), STAT=ISTAT )
-#endif
           CHECK_ALLOC_STATUS ( ISTAT )
+#endif
 
 !/IC3     ALLOCATE (WADATS(IMOD)%IC3CG(0:NK+1,0:300), STAT=ISTAT )
 !/IC3     CHECK_ALLOC_STATUS ( ISTAT )
@@ -2729,13 +2731,17 @@
 !
           USERO  => WADATS(IMOD)%USERO
 !
+#ifndef NOCGTABLE
           WN     => WADATS(IMOD)%WN
+#endif
 !/IC3     IC3WN_R=> WADATS(IMOD)%IC3WN_R
 !/IC3     IC3WN_I=> WADATS(IMOD)%IC3WN_I
 !
           IF ( FL_ALL ) THEN
 !
+#ifndef NOCGTABLE
               CG     => WADATS(IMOD)%CG
+#endif
 !/IC3         IC3CG  => WADATS(IMOD)%IC3CG
 !
               ATRNX  => WADATS(IMOD)%ATRNX

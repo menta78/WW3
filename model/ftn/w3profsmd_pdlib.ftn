@@ -3954,6 +3954,7 @@
         CSIN   = CSINA(ITH)
 
         DO IP = 1, NPA
+
           IP_GLOB = IPLG(IP) 
 #ifdef NOCGTABLE
           CALL WAVNU_LOCAL(SIG(IK),DW(IP_GLOB),WN1,CG1)
@@ -6087,7 +6088,7 @@
       DO JSEA=1,NSEAL
         IP      = JSEA
         IP_glob = iplg(IP)
-        ISEA=MAPFS(1,IP_glob)
+        ISEA    = MAPFS(1,IP_glob)
 !!/DEBUGSRC        WRITE(740+IAPROC,*) 'IP      =', IP, 'IP_glob =', IP_glob, 'ISEA    =', ISEA
         DO ISP=1,NSPEC
           ITH    = 1 + MOD(ISP-1,NTH)
@@ -6224,6 +6225,7 @@
         DO IP = 1, np
 
           IP_glob = iplg(IP)
+          ISEA    = MAPFS(1,IP_glob)
 
           !WRITE(*,*) 'TEST VA 1', IP, SUM(VA(:,IP)), lconverged(ip)
 
@@ -6233,12 +6235,14 @@
             CYCLE
           ENDIF
 
+          DO IK = 0, NK + 1          
 #ifdef NOCGTABLE
-          CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1(IK),CG1(IK))
+            CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1(IK),CG1(IK))
 #else
-          CG1(IK)  = CG(IK,ISEA)
-          WN1(IK)  = WN(IK,ISEA)
+            CG1(IK)  = CG(IK,ISEA)
+            WN1(IK)  = WN(IK,ISEA)
 #endif
+          ENDDO
 
           JSEA  = JX_TO_JSEA(IP)
           ISEA  = MAPFS(1,IP_glob)
@@ -6323,7 +6327,7 @@
                 CP_SIG = MAX(ZERO,CAS)
                 CM_SIG = MIN(ZERO,CAS)
                 DO IK=0, NK
-                  DMM(IK+1) = DBLE(WN(IK+1,ISEA) - WN(IK,ISEA))
+                  DMM(IK+1) = DBLE(WN1(IK+1) - WN1(IK))
                 END DO
                 DMM(NK+2) = ZERO
                 DMM(0)=DMM(1)
@@ -6551,6 +6555,7 @@
               eSI=PDLIB_SI(IP)
               eSum=B_JAC(:,IP)
               ACLOC=VA(:,IP)
+              ISEA= MAPFS(1,IP_glob)
               eSum(:) = eSum(:) - ASPAR_DIAG(:)*ACLOC
               DO I = PDLIB_IA_P(IP)+1, PDLIB_IA_P(IP+1)
                 JP=PDLIB_JA(I)
@@ -6656,7 +6661,6 @@
             CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1(IK),CG1(IK))
 #else
             CG1(IK)    = CG(IK,ISEA)
-            WN1(IK)    = WN(IK,ISEA)
 #endif
             eVA = MAX ( ZERO ,CG1(IK)/CLATS(ISEA)*REAL(VA(ISP,IP)) )
 !/DEBUGSRC          SumACout=SumACout + REAL(VA(ISP,IP))

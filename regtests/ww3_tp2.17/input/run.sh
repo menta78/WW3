@@ -6,3 +6,5 @@ cp ww3_prnc_wind.nml ww3_prnc.nml
 ww3_prnc
 cp ww3_prnc_current.nml ww3_prnc.nml
 ww3_prnc
+mpiexec -n 4 ww3_shel
+

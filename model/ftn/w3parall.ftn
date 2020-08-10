@@ -755,9 +755,9 @@
         eDDDY=DDDY(IY,IX)
       ENDIF
 
-      eCX = CX(ISEA)
-      eCY = CY(ISEA)
-      FACK = DTG
+      eCX    = CX(ISEA)
+      eCY    = CY(ISEA)
+      FACK   = DTG
       DCXX   =  - FACK *   eDCXDX
       DCXYYX =  - FACK * ( eDCXDY + eDCYDX )
       DCYY   =  - FACK *   eDCYDY

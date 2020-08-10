@@ -1599,12 +1599,13 @@
                   IY     = MAPSF(ISEA,2)
 
 !/DEBUGRUN                  IF (JSEA == DEBUG_NODE) WRITE(*,*) 'W3WAVE TEST', SUM(VA(:,JSEA))
+
                   IF ( GTYPE .EQ. UNGTYPE ) THEN
-!/PDLIB#ifdef PDLIB        
-!/PDLIB                    IF (IOBP_LOC(JSEA) .NE. 1) CYCLE
-!/PDLIB#else
-                    IF (IOBP(ISEA) .NE. 1) CYCLE
-!/PDLIB#endif
+                    IF (LPDLIB) THEN
+                      IF (IOBP_LOC(JSEA) .NE. 1) CYCLE
+                    ELSE
+                      IF (IOBP(ISEA) .NE. 1) CYCLE
+                    ENDIF
                   ENDIF
 
 #ifdef NOCGTABLE
@@ -1906,13 +1907,12 @@
                   DEPTH  = MAX ( DMIN , DW(ISEA) )
 
                   IF ( GTYPE .EQ. UNGTYPE ) THEN
-!/PDLIB#ifdef PDLIB
-!/PDLIB                    IF (IOBP_LOC(JSEA) .NE. 1) CYCLE
-!/PDLIB#else
-                    IF (IOBP(ISEA) .NE. 1) CYCLE
-!/PDLIB#endif
+                    IF (LPDLIB) THEN
+                      IF (IOBP_LOC(JSEA) .NE. 1) CYCLE
+                    ELSE
+                      IF (IOBP(ISEA) .NE. 1) CYCLE
+                    ENDIF
                   ENDIF
-
 #ifdef NOCGTABLE
                   DO IK = 0, NK + 1
                     CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1(IK),CG1(IK))

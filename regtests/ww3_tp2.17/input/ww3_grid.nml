@@ -35,9 +35,9 @@
 &RUN_NML
   RUN%FLCX         =  T
   RUN%FLCY         =  T
-  RUN%FLCTH        =  T
-  RUN%FLCK         =  T
-  RUN%FLSOU        =  T
+  RUN%FLCTH        =  T 
+  RUN%FLCK         =  T 
+  RUN%FLSOU        =  T 
 /
 
 ! -------------------------------------------------------------------- !
