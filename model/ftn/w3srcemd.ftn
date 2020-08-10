@@ -456,7 +456,7 @@
 !/ Local parameters
 !/
       INTEGER                 :: IK, ITH, IS, IS0, NSTEPS,  NKH, NKH1,&
-                                 IKS1, IS1, NSPECH, IDT, IERR, NKI, NKD, ISP
+                                 IKS1, IS1, NSPECH, IDT, IERR, NKD, ISP
 !/S      INTEGER, SAVE           :: IENT = 0
 !/NNT      INTEGER, SAVE           :: NDSD = 89, NDSD2 = 88, J
       REAL                    :: DTTOT, FHIGH, DT, AFILT, DAMAX, AFAC,&
@@ -925,9 +925,6 @@
           VDDS(1:NSPECH) = ICESCALEDS * VDDS(1:NSPECH)
           END IF
 !
-!/ST4        NKI    = MAX ( 2 , MIN ( NKH1 ,                           &
-!/ST4                 INT ( FACTI2 + FACTI1*LOG(MAX(1.E-7,FFXFI* FMEAN1)) ) ) )
-
         IF (LNEWLIMITER) THEN
           DO IK=1, NK
             DAM2(1+(IK-1)*NTH) = 5.0E-07*DTMIN*GRAV/(SIG(IK)*TPIINV)**4*USTAR*MAX(FMEANWS,FMEAN)/TPI/SIG(IK)*CG1(IK)
