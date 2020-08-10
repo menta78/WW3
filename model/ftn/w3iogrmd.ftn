@@ -615,17 +615,17 @@
               !Init COUNTCON to zero, it needs to be set somewhere or
               !removed
               COUNTCON=0
-#ifndef PDLIB 
-                WRITE (NDSM)                                            &
-                X0, Y0, SX, SY, DXYMAX, TRIGP, TRIA,             &
-                LEN, IEN, ANGLE0, ANGLE, SI, MAXX, MAXY,   &
-                INDEX_CELL, CCON, COUNTCON, IE_CELL,  &
-                POS_CELL, IOBP, IOBPA, IOBPD, IAA, JAA, POSI
-#else 
+!#ifndef PDLIB 
+!                WRITE (NDSM)                                            &
+!                X0, Y0, SX, SY, DXYMAX, TRIGP, TRIA,             &
+!                LEN, IEN, ANGLE0, ANGLE, SI, MAXX, MAXY,   &
+!                INDEX_CELL, CCON, COUNTCON, IE_CELL,  &
+!                POS_CELL, IOBP, IOBPA, IOBPD, IAA, JAA, POSI
+!#else 
                 WRITE (NDSM)                                            &
                 X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, TRIGP,    &
                 MAXX, MAXY, IOBPD, IOBP 
-#endif
+!!#endif
             END SELECT !GTYPE
 !
           WRITE (NDSM)                                                &
@@ -728,13 +728,13 @@
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.6'
 !/DEBUGIOGR     FLUSH(740+IAPROC)
 
-#ifndef PDLIB 
-                READ (NDSM,END=801 ,IOSTAT=IERR)                 &
-                X0, Y0, SX, SY, DXYMAX, TRIGP, TRIA,             &
-                LEN, IEN, ANGLE0, ANGLE, SI, MAXX, MAXY,   &
-                INDEX_CELL, CCON, COUNTCON, IE_CELL,  &
-                POS_CELL, IOBP, IOBPA, IOBDP, IOBPD, IAA, JAA, POSI
-#else 
+!#ifndef PDLIB 
+!                READ (NDSM,END=801 ,IOSTAT=IERR)                 &
+!                X0, Y0, SX, SY, DXYMAX, TRIGP, TRIA,             &
+!                LEN, IEN, ANGLE0, ANGLE, SI, MAXX, MAXY,   &
+!                INDEX_CELL, CCON, COUNTCON, IE_CELL,  &
+!                POS_CELL, IOBP, IOBPA, IOBDP, IOBPD, IAA, JAA, POSI
+!#else 
                 READ (NDSM,END=801 ,IOSTAT=IERR)                 &
                 X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, TRIGP,&
                 MAXX, MAXY, IOBPD, IOBP 
@@ -747,7 +747,7 @@
                 WRITE(20000+IAPROC,*) 'SUM', (SIZEOF(X0)+SIZEOF(Y0)+SIZEOF(SX)+SIZEOF(SY)+ &
                 &  SIZEOF(XGRD)+SIZEOF(YGRD)+SIZEOF(ZB)+SIZEOF(TRIGP)+SIZEOF(TRIA)+&
                 &  SIZEOF(MAXX)+SIZEOF(MAXY)+SIZEOF(IOBPD)+SIZEOF(IOBP))/1024./1024.
-#endif
+!#endif
 
 
 !/DEBUGIOGR     WRITE(740+IAPROC,*) 'W3IOGR, step 7.6.4'
