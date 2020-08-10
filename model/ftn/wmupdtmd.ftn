@@ -1171,13 +1171,15 @@
                                  MAP3(NX,NY), FLAGUP
 !
       INTEGER, POINTER        :: NXI, NYI, MAP(:,:), MAPI(:,:)
-      REAL, POINTER           :: X0I, Y0I, SXI, SYI !RP , HPFACI, HQFACI
+      REAL, POINTER           :: X0I, Y0I !RP , HPFACI, HQFACI
+      REAL, POINTER           :: SXI, SYI !RP , HPFACI, HQFACI
 
-      REAL, POINTER           :: XGRDI(:,:), YGRDI(:,:), XGRDC(:,:),  &
-                                 YGRDC(:,:), HPFACI(:,:), HQFACI(:,:) !RP
+      REAL*8, POINTER           :: XGRDI(:,:), YGRDI(:,:), XGRDC(:,:),  &
+                                 YGRDC(:,:)
+      REAL, POINTER           :: HPFACI(:,:), HQFACI(:,:)
 
       INTEGER, POINTER        :: ICLOSE
-      REAL, ALLOCATABLE       :: XGRTMP(:),YGRTMP(:)
+      REAL*8, ALLOCATABLE       :: XGRTMP(:),YGRTMP(:)
 !/T1      CHARACTER(LEN=17)       :: FORMAT1
 !/
 !/ ------------------------------------------------------------------- /
@@ -1797,8 +1799,9 @@
 !
       INTEGER, POINTER        :: NXI, NYI, MAP(:,:), MAPI(:,:)
 
-      REAL, POINTER           :: XGRDI(:,:), YGRDI(:,:), XGRDC(:,:),  &
-                                 YGRDC(:,:), HPFACI(:,:), HQFACI(:,:)  !RP
+      REAL*8, POINTER           :: XGRDI(:,:), YGRDI(:,:), XGRDC(:,:),  &
+                                 YGRDC(:,:)
+      REAL, POINTER           :: HPFACI(:,:), HQFACI(:,:)
 
       REAL, POINTER           :: X0I, Y0I, SXI, SYI !RPXXX , HPFACI, HQFACI
       INTEGER, POINTER        :: ICLOSE
@@ -2322,7 +2325,7 @@
 !  7. Source code :
 
       INTEGER, INTENT(IN) :: LENGTH
-      REAL, DIMENSION(LENGTH), INTENT(IN) :: ARRAY
+      REAL*8, DIMENSION(LENGTH), INTENT(IN) :: ARRAY
       REAL, INTENT(IN) :: VALUE
       REAL, INTENT(IN), OPTIONAL :: DELTA
 
@@ -2437,12 +2440,12 @@
       ! AND THE GRID Y VALUES SPECIFIED BY YARRAY WITH DIMENSION Y_LEN
 !
       INTEGER, INTENT(IN) :: X_LEN, Y_LEN
-      REAL, DIMENSION(X_LEN), INTENT(IN) :: XARRAY
-      REAL, DIMENSION(Y_LEN), INTENT(IN) :: YARRAY
+      REAL*8, DIMENSION(X_LEN), INTENT(IN) :: XARRAY
+      REAL*8, DIMENSION(Y_LEN), INTENT(IN) :: YARRAY
       REAL, DIMENSION(X_LEN, Y_LEN), INTENT(IN) :: FUNC
       REAL, INTENT(IN) :: X,Y
       REAL, INTENT(IN), OPTIONAL :: DELTA
-      REAL :: DENOM, X1, X2, Y1, Y2
+      REAL*8 :: DENOM, X1, X2, Y1, Y2
       INTEGER :: INX,JNX
 
       INX = XYCURVISEARCH(X_LEN, XARRAY, X, DELTA)
@@ -2553,8 +2556,8 @@
 ! 10. Source code :
 !
       INTEGER, INTENT(IN) :: X_LEN, Y_LEN
-      REAL, DIMENSION(X_LEN), INTENT(IN) :: XARRAY
-      REAL, DIMENSION(Y_LEN), INTENT(IN) :: YARRAY
+      REAL*8, DIMENSION(X_LEN), INTENT(IN) :: XARRAY
+      REAL*8, DIMENSION(Y_LEN), INTENT(IN) :: YARRAY
       REAL, DIMENSION(X_LEN, Y_LEN), INTENT(IN) :: FUNC1, FUNC2
       REAL, INTENT(IN) :: X,Y
       REAL, INTENT(IN), OPTIONAL :: DELTA
@@ -2617,8 +2620,8 @@
 
       !IMPLICIT NONE
       INTEGER  X_LEN, Y_LEN, INXEND, INYEND, NPX,NPY
-      REAL, DIMENSION(X_LEN) :: XARRAY
-      REAL, DIMENSION(Y_LEN)  :: YARRAY
+      REAL*8, DIMENSION(X_LEN) :: XARRAY
+      REAL*8, DIMENSION(Y_LEN) :: YARRAY
       REAL, DIMENSION(X_LEN, Y_LEN) :: FUNC
       REAL :: X,Y
   
