@@ -1605,7 +1605,7 @@
 
                   IF ( GTYPE .EQ. UNGTYPE ) THEN
                     IF (LPDLIB) THEN
-                      IF (IOBP_LOC(JSEA) .NE. 1) CYCLE
+!/PDLIB               IF (IOBP_LOC(JSEA) .NE. 1) CYCLE
                     ELSE
                       IF (IOBP(ISEA) .NE. 1) CYCLE
                     ENDIF
@@ -1914,7 +1914,7 @@
 
                   IF ( GTYPE .EQ. UNGTYPE ) THEN
                     IF (LPDLIB) THEN
-                      IF (IOBP_LOC(JSEA) .NE. 1) CYCLE
+!/PDLIB               IF (IOBP_LOC(JSEA) .NE. 1) CYCLE
                     ELSE
                       IF (IOBP(ISEA) .NE. 1) CYCLE
                     ENDIF

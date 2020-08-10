@@ -728,8 +728,8 @@
                   RPOS  = 1_8 + LRECL*(NREC-1_8)
                   WRITEBUFF(:) = 0.
                   WRITE (NDSR,POS=RPOS,ERR=803,IOSTAT=IERR) WRITEBUFF
-                  WRITE (NDSR,POS=RPOS,ERR=803,IOSTAT=IERR)           & 
-                          TLEV, TICE                                  
+                  WRITE (NDSR,POS=RPOS,ERR=803,IOSTAT=IERR) TLEV, TICE
+
                   DO IPART=1,NPART
                     NREC  = NREC + 1
                     RPOS  = 1_8 + LRECL*(NREC-1_8)
@@ -824,8 +824,7 @@
         ELSE
           IF (TYPE.EQ.'FULL') THEN
               RPOS = 1_8 + LRECL*(NREC-1_8)
-              READ (NDSR,POS=RPOS,ERR=802,IOSTAT=IERR)                &
-                      TLEV, TICE
+              READ (NDSR,POS=RPOS,ERR=802,IOSTAT=IERR) TLEV, TICE
 !/DEBUGINIT         WRITE(740+IAPROC,*) 'Before reading WLV'
               DO IPART=1,NPART
                 NREC  = NREC + 1
