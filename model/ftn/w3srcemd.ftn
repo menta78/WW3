@@ -506,7 +506,7 @@
 !/IS2                                 VSIR(NSPEC), VDIR(NSPEC),VDIR2(NSPEC), &
 !/XXX                                 VSXX(NSPEC), VDXX(NSPEC),            &
 !/UOST                                 VSUO(NSPEC), VDUO(NSPEC),            &
-                                 VS  (NSPEC), VD  (NSPEC), EB(NK)
+                                 VS(NSPEC), VD(NSPEC), EB(NK)
 !/ST3      LOGICAL                 :: LLWS(NSPEC) 
 !/ST4      LOGICAL                 :: LLWS(NSPEC)
 !/ST4      REAL                    :: BRLAMBDA(NSPEC)
@@ -547,7 +547,8 @@
       IS1=(IKS1-1)*NTH+1
 !
 !/LN0      VSLN = 0.
-!/SEED      VSLN = 0.
+!/LN1      VSLN = 0.
+!/SEED     VSLN = 0.
 !/ST0      VSIN = 0.
 !/ST0      VDIN = 0.
 !/ST3      VSIN = 0.
@@ -1033,6 +1034,7 @@
 !/PDLIB            JAC = CLATSL/CG1(IK) 
 !/PDLIB            DO ITH = 1, NTH
 !/PDLIB              ISP = ITH + (IK-1)*NTH
+                     !if (vs(isp) .gt. thr) write(*,*) isp, vs(isp), vd(isp)
 !/PDLIB              VD(ISP) = MIN(0., VD(ISP))
 !/PDLIB              IF (LNEWLIMITER) THEN
 !/PDLIB                MAXDAC = MAX(DAM(ISP),DAM2(ISP))
@@ -1071,8 +1073,8 @@
 !/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
                      !IF (IX == 1232) write(740+IAPROC,*) IX, ISP, B_JAC(ISP,JSEA), ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)), &
                      !                         & VSLN(ISP), VSIN(ISP), VDIN(ISP), VSDS(ISP), VDDS(ISP), &
-                     !                         & VSTR(ISP), VDTR(ISP), VSDB(ISP), VDDB(ISP), VSNL(ISP), VDNL(ISP), &
-                     !                         & SPEC(ISP)
+                     !                         !& VSTR(ISP), VDTR(ISP), VSDB(ISP), VDDB(ISP), VSNL(ISP), VDNL(ISP), &
+                     !                         & SPEC(ISP), U10ABS, U10DIR, USTAR 
                      
 !!/VEG1              eVS = eVS + DBLE(VSVG(ISP)) * JAC 
 !!/VEG1              eVD = evD + MIN(0.,DBLE(VDVG(ISP)))

@@ -12,10 +12,10 @@ RUN %  FLCTH      = T
 RUN %  FLCK       = T
 RUN %  FLSOU      = T
 
-TIMESTEPS %  DTMAX      =    60.00
-TIMESTEPS %  DTXY       =    60.00
-TIMESTEPS %  DTKTH      =    60.00
-TIMESTEPS %  DTMIN      =    60.00
+TIMESTEPS %  DTMAX      =   600.00
+TIMESTEPS %  DTXY       =   600.00
+TIMESTEPS %  DTKTH      =   600.00
+TIMESTEPS %  DTMIN      =   600.00
 
 GRID %  NAME       = Inlet
 GRID %  NML        = ../input/namelists_a.nml
