@@ -4192,9 +4192,8 @@
 !/O1                END IF
 !/O1            IF ( TMPSTA(IY,IX).EQ.2 ) THEN
 !/O1                  IF ( FLAGLL ) THEN
-                      WRITE (*, 988) IBI, IX, IY, X, Y
-                      WRITE (*, *) IBI, IX, IY, X, Y
-
+!/O1                      WRITE (*, 988) IBI, IX, IY, X, Y
+!/O1                      WRITE (*, *) IBI, IX, IY, X, Y
 !/O1                      WRITE (NDSO, 988) IBI, IX, IY, X, Y
 !/O1                    ELSE
 !/O1                      WRITE (NDSO,1988) IBI, IX, IY, X, Y
