@@ -354,20 +354,19 @@
 !
         DO IY=1, NY
           DO IX=1, NX
-
 !notes : MAPSTA refers to GRIDS(I)%MAPSTA ...this is set in W3SETG
             IF ( ABS(MAPSTA(IY,IX)) .EQ. 2 ) THEN
-                XA     = XGRD(IY,IX) !old code: X0 + REAL(IX-1)*SX
-                YA     = YGRD(IY,IX) !old code: Y0 + REAL(IY-1)*SY
+              XA     = XGRD(IY,IX) !old code: X0 + REAL(IX-1)*SX
+              YA     = YGRD(IY,IX) !old code: Y0 + REAL(IY-1)*SY
 !
 ! ... Loop over previous (lower ranked) grids, going in order from highest 
 !          of lower ranked grids (I-1) to lowest of lower ranked grids (1)
 !
-                JS     = 0
+              JS     = 0
 !
-                DO J=I-1, 1, -1
+              DO J = I-1, 1, -1
 !
-                  IF ( GRANK(J) .GE. GRANK(I) ) CYCLE
+                IF ( GRANK(J) .GE. GRANK(I) ) CYCLE
 !
 ! ... Check if in grid
 
@@ -382,40 +381,40 @@
 !        Check if point within grid and compute interpolation weights using GSU
 !        in not in grid, cycle (search next grid)
 !
-        IF (GRIDS(J)%GTYPE .EQ. UNGTYPE) THEN
-          CALL IS_IN_UNGRID(J, XA, YA, ITOUT, IVER, JVER, RW)
-          IF (ITOUT.EQ.0) THEN
-            INGRID=.FALSE.
-          ELSE
-            INGRID=.TRUE.
-            FLAGOK =( ABS(GRIDS(J)%MAPSTA(JVER(1),IVER(1))).GE.1 .OR.  &
-                      RW(1).LT.0.05 ) .AND.      &
+                IF (GRIDS(J)%GTYPE .EQ. UNGTYPE) THEN
+                  CALL IS_IN_UNGRID(J, XA, YA, ITOUT, IVER, JVER, RW)
+                  IF (ITOUT.EQ.0) THEN
+                    INGRID=.FALSE.
+                  ELSE
+                    INGRID=.TRUE.
+                    FLAGOK =( ABS(GRIDS(J)%MAPSTA(JVER(1),IVER(1))).GE.1 .OR.  &
+                        RW(1).LT.0.05 ) .AND.      &
                     ( ABS(GRIDS(J)%MAPSTA(JVER(2),IVER(2))).GE.1 .OR.  &
                       RW(2).LT.0.05 ) .AND.      &
                     ( ABS(GRIDS(J)%MAPSTA(JVER(3),IVER(3))).GE.1 .OR.  &
                       RW(3).LT.0.05 )
-          END IF
-          NbRelevant=3
-        ELSE
-          INGRID = W3GRMP( GRIDS(J)%GSU,  XA,  YA, IVER , JVER, RW )
-!          Print *, 'J=', J, 'IX=', IX, 'IY=', IY
-!          Print *, 'IN=', INGRID, 'XA=', XA, 'YA=', YA
-!          Print *, '    1: IVER=', IVER(1), 'JVER=', JVER(1), 'RW=', RW(1)
-!          Print *, '    2: IVER=', IVER(2), 'JVER=', JVER(2), 'RW=', RW(2)
-!          Print *, '    3: IVER=', IVER(3), 'JVER=', JVER(3), 'RW=', RW(3)
-!          Print *, '    4: IVER=', IVER(4), 'JVER=', JVER(4), 'RW=', RW(4)
-          IF (INGRID) THEN
-            FLAGOK =( ABS(GRIDS(J)%MAPSTA(JVER(1),IVER(1))).GE.1 .OR.  &
-                      RW(1).LT.0.05 ) .AND.      &
-                    ( ABS(GRIDS(J)%MAPSTA(JVER(2),IVER(2))).GE.1 .OR.  &
-                      RW(2).LT.0.05 ) .AND.      &
-                    ( ABS(GRIDS(J)%MAPSTA(JVER(4),IVER(4))).GE.1 .OR.  &
-                      RW(4)   .LT.0.05 ) .AND.      &
-                    ( ABS(GRIDS(J)%MAPSTA(JVER(3),IVER(3))).GE.1 .OR.  &
-                      RW(3)   .LT.0.05 )
-          END IF
-          NbRelevant=4
-        END IF
+                  END IF
+                  NbRelevant=3
+                ELSE
+                  INGRID = W3GRMP( GRIDS(J)%GSU,  XA,  YA, IVER , JVER, RW )
+                  !Print *, 'J=', J, 'IX=', IX, 'IY=', IY
+                  !Print *, 'IN=', INGRID, 'XA=', XA, 'YA=', YA
+                  !Print *, '    1: IVER=', IVER(1), 'JVER=', JVER(1), 'RW=', RW(1)
+                  !Print *, '    2: IVER=', IVER(2), 'JVER=', JVER(2), 'RW=', RW(2)
+                  !Print *, '    3: IVER=', IVER(3), 'JVER=', JVER(3), 'RW=', RW(3)
+                  !Print *, '    4: IVER=', IVER(4), 'JVER=', JVER(4), 'RW=', RW(4)
+                  IF (INGRID) THEN
+                    FLAGOK =( ABS(GRIDS(J)%MAPSTA(JVER(1),IVER(1))).GE.1 .OR.  &
+                              RW(1).LT.0.05 ) .AND.      &
+                            ( ABS(GRIDS(J)%MAPSTA(JVER(2),IVER(2))).GE.1 .OR.  &
+                              RW(2).LT.0.05 ) .AND.      &
+                            ( ABS(GRIDS(J)%MAPSTA(JVER(4),IVER(4))).GE.1 .OR.  &
+                              RW(4)   .LT.0.05 ) .AND.      &
+                            ( ABS(GRIDS(J)%MAPSTA(JVER(3),IVER(3))).GE.1 .OR.  &
+                              RW(3)   .LT.0.05 )
+                  END IF
+                  NbRelevant=4
+                END IF
 !  internal name=                 GSU XTIN YTIN    IS     JS  RW   (notes)
 !  role=out                       in    in   in   out    out out
 !  size=                          ---    1    1     4      4   4
@@ -430,21 +429,20 @@
 !              (counter-clockwise starting from lower i, lower j)
 !
 !  ... if not in grid, warning message and cycle (search next grid)
-        IF ( .NOT.INGRID ) THEN
-!/T        IF ( IAPROC .EQ. NAPERR ) THEN
-!/T           IF ( FLAGLL ) THEN
-!/T              WRITE (NDSE,2000) XA, YA
-!/T           ELSE
-!/T              WRITE (NDSE,2001) XA, YA
-!/T           END IF
-!/T        END IF
-           CYCLE
-        END IF
+                IF ( .NOT.INGRID ) THEN
+!/T                IF ( IAPROC .EQ. NAPERR ) THEN
+!/T                   IF ( FLAGLL ) THEN
+!/T                      WRITE (NDSE,2000) XA, YA
+!/T                   ELSE
+!/T                      WRITE (NDSE,2001) XA, YA
+!/T                   END IF
+!/T                END IF
+                   CYCLE
+                END IF
 
 !
 ! ... Check against MAPSTA
 !
-
 ! Notes:
 ! Old code        | becomes | New code
 !-----------------| --------| -------
@@ -462,31 +460,31 @@
 ! JVER(1)=JVER(2), JVER(3)=JVER(4)
 
 ! point 1:
-                  FLAGOK = ( ABS(GRIDS(J)%MAPSTA(JVER(1),IVER(1))).GE.1 .OR.  &
-                                 RW(1).LT.0.05 ) .AND.      &
+                FLAGOK = ( ABS(GRIDS(J)%MAPSTA(JVER(1),IVER(1))).GE.1 .OR.  &
+                               RW(1).LT.0.05 ) .AND.      &
 ! point 2:
-                           ( ABS(GRIDS(J)%MAPSTA(JVER(2),IVER(2))).GE.1 .OR.  &
-                                    RW(2).LT.0.05 ) .AND.      &
+                         ( ABS(GRIDS(J)%MAPSTA(JVER(2),IVER(2))).GE.1 .OR.  &
+                                  RW(2).LT.0.05 ) .AND.      &
 ! point 4:
-                           ( ABS(GRIDS(J)%MAPSTA(JVER(4),IVER(4))).GE.1 .OR.  &
-                                 RW(4)   .LT.0.05 ) .AND.      &
+                         ( ABS(GRIDS(J)%MAPSTA(JVER(4),IVER(4))).GE.1 .OR.  &
+                               RW(4)   .LT.0.05 ) .AND.      &
 ! point 3:
-                           ( ABS(GRIDS(J)%MAPSTA(JVER(3),IVER(3))).GE.1 .OR.  &
-                                    RW(3)   .LT.0.05 ) 
+                         ( ABS(GRIDS(J)%MAPSTA(JVER(3),IVER(3))).GE.1 .OR.  &
+                                  RW(3)   .LT.0.05 ) 
 !
-                  IF ( .NOT.FLAGOK ) CYCLE
+                IF ( .NOT.FLAGOK ) CYCLE
 !
 ! ... We found interpolation data !
 !
-                  JS     = J
-                  IBI    = IBI + 1
-                  GRIDD(I,JS) = .TRUE.
+                JS          = J
+                IBI         = IBI + 1
+                GRIDD(I,JS) = .TRUE.
 !
-                  XBPI(IBI)  = XA
-                  YBPI(IBI)  = YA
-                  ISBPI(IBI) = MAPFS(IY,IX)
+                XBPI(IBI)   = XA
+                YBPI(IBI)   = YA
+                ISBPI(IBI)  = MAPFS(IY,IX)
 !
-                  TSTORE(IBI, 0) = JS
+                TSTORE(IBI, 0) = JS
 !
 ! notes:
 !   To maintain perfect consistency with old code, we would make code such that:
@@ -500,39 +498,41 @@
 !   I have gone through test case mww3_test_02 for gridsets a,b,c,d and found
 !      no change in result vs v4.00.
                   
-                  DO KVER=1,4
-                    IF (KVER .LE. NbRelevant) THEN
-                      IF ( ABS(GRIDS(J)%MAPSTA(JVER(KVER),IVER(KVER))).GE.1 &
-                          .AND. RW(KVER)   .GT.0.05 ) THEN
-                        RDBPI (IBI,KVER) = RW(KVER)
-                        TSTORE(IBI,KVER) = GRIDS(J)%MAPFS(JVER(KVER),IVER(KVER))
-                      ELSE
-                        RDBPI (IBI,KVER) = 0.
-                        TSTORE(IBI,KVER) = 0
-                      END IF
+                DO KVER=1,4
+                  IF (KVER .LE. NbRelevant) THEN
+                    IF ( ABS(GRIDS(J)%MAPSTA(JVER(KVER),IVER(KVER))).GE.1 &
+                        .AND. RW(KVER)   .GT.0.05 ) THEN
+                      RDBPI (IBI,KVER) = RW(KVER)
+                      TSTORE(IBI,KVER) = GRIDS(J)%MAPFS(JVER(KVER),IVER(KVER))
                     ELSE
                       RDBPI (IBI,KVER) = 0.
                       TSTORE(IBI,KVER) = 0
                     END IF
-
-                  END DO
-
+                  ELSE
+                    RDBPI (IBI,KVER) = 0.
+                    TSTORE(IBI,KVER) = 0
+                  END IF
+                END DO
 !
 ! .....normalize weights to give sum(R)=1
-                  RDBPI(IBI,:) = RDBPI(IBI,:) / SUM(RDBPI(IBI,:))
+!
+                RDBPI(IBI,:) = RDBPI(IBI,:) / SUM(RDBPI(IBI,:))
 !
 ! Search was successful, so no need to search through other grids, so exit loop
-                  EXIT
-                END DO ! "DO J=..."
 !
-                IF ( JS.EQ.0 .AND. IMPROC.EQ.NMPERR )                 &
-                                 WRITE (MDSE,1020) I, IX, IY, XA, YA
+                EXIT
+
+              END DO ! "DO J=..."
+
+              IF ( JS.EQ.0 .AND. IMPROC.EQ.NMPERR ) THEN
+                WRITE(*,*)  I, IX, IY, XA, YA, JS, IMPROC, NMPERR, 'TEST TEST WMGRID'
+                !WRITE(*,*)  I, IX, IY, XA, YA
+              ENDIF
+
+            END IF ! If a boundary point...
+          END DO ! "DO IX=..."
+        END DO ! "DO IY=..."
 !
-              END IF ! If a boundary point...
-
-            END DO ! "DO IX=..."
-          END DO ! "DO IY=..."
-
 !
 ! 2.d Error checks
 !
@@ -545,6 +545,7 @@
             CHECK_DEALLOC_STATUS ( ISTAT )
             CYCLE
           ELSE IF ( IBI .NE. OUTPTS(I)%OUT5%NBI ) THEN
+             WRITE(*,*)  IBI, OUTPTS(I)%OUT5%NBI, 'IBI'
              CALL EXTCDE ( 1020 )
           ENDIF
 !

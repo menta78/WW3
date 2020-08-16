@@ -79,7 +79,7 @@
 # 2.b.1 Build options and determine compiler name
 
 # opt="-c $list -g -ggdb -fno-omit-frame-pointer -ffree-line-length-none -fbacktrace -Wall -Wextra -Wconversion  -Wno-unused  -Wno-unused-dummy-argument -fcheck=all -fsanitize=address -fsanitize=undefined -ffpe-trap=invalid,zero,overflow -DPDLIB -J$path_m"
- opt="-c $list -traceback -O0 -g -check all -warn interfaces,nouncalled -gen-interface -assume byterecl -no-wrap-margin -DCGTABLE -DPDLIB -module $path_m"
+ opt="-c $list -traceback -O0 -g -check noarg_temp_created -check all -warn interfaces,nouncalled -gen-interface -assume byterecl -no-wrap-margin -module $path_m"
 # opt="-c $list -O1 -axSSE4.2 -prec-div -assume byterecl -DCGTABLE -DPDLIB -no-wrap-margin -g -traceback -module $path_m"
 # opt="-c $list -O3 -ipo -axSSE4.2 -prec-div -assume byterecl -DCGTABLE -DPDLIB -no-wrap-margin -g -traceback -module $path_m"
 
