@@ -1377,12 +1377,12 @@
 !/PDLIB            DELY = 1. 
 
 #ifdef NOCGTABLE
-                 DO IK = 0, NK + 1
-                   CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1(IK),CG1(IK))
-                 ENDDO
+!/PDLIB                 DO IK = 0, NK + 1
+!/PDLIB                   CALL WAVNU_LOCAL(SIG(IK),DW(ISEA),WN1(IK),CG1(IK))
+!/PDLIB                 ENDDO
 #else
-                 CG1    = CG(:,ISEA)
-                 WN1    = WN(:,ISEA)
+!/PDLIB                 CG1    = CG(:,ISEA)
+!/PDLIB                 WN1    = WN(:,ISEA)
 #endif
 
 !/DEBUGRUN         DO IS = 1, NSPEC
