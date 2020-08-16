@@ -963,7 +963,7 @@
 !      PRT1DS    Subr. W3ARRYMD Print plot of 1-D spectrum.
 !      PRT1DM    Subr.   Id.    Print plot of several 1-D spectra.
 !      PRT2DS    Subr.   Id.    Print plot of 2-D spectrum.
-!      WAVNU1    Subr. W3DISPMD Solve dispersion relation.
+!      WAVNU3    Subr. W3DISPMD Solve dispersion relation.
 !     ----------------------------------------------------------------
 !
 !  5. Called by :
@@ -1091,7 +1091,7 @@
 !/IS2      USE W3GDATMD, ONLY: IICEDISP
 !/XXX      USE W3SXXXMD
       USE W3PARTMD, ONLY: W3PART
-      USE W3DISPMD, ONLY: WAVNU1, LIU_FORWARD_DISPERSION
+      USE W3DISPMD, ONLY: WAVNU3, LIU_FORWARD_DISPERSION
 !/
       USE W3ARRYMD, ONLY: PRT1DS, PRT2DS, PRT1DM
       USE W3DISPMD, ONLY: NAR1D, DFAC, N1MAX, ECG1, EWN1, DSIE
@@ -1268,7 +1268,7 @@
 !
 !/T            WRITE (NDST,9002) PTNME(J)
 !
-! 2. Calculate grid parameters using and inlined version of WAVNU1.
+! 2. Calculate grid parameters using and inlined version of WAVNU3.
 !
             DEPTH    = MAX ( DMIN, DPO(J) )
             SQRTH    = SQRT ( DEPTH )
@@ -1852,10 +1852,10 @@
                       ELSE IF ( OTYPE.EQ.5 ) THEN
                         HMAT   = MIN ( 100. , 3.33*GRAV*HSIG/UABS**2 )
                         IF ( HSIG .GE. HSMIN ) THEN
-                            CALL WAVNU1 ( FP, DPO(J), WNA, XYZ )
+                            CALL WAVNU3 ( FP, DPO(J), WNA, XYZ )
                             AGE1   = MIN ( 100. , FP / WNA / UABS )
                             AFR    = TPI / TMEAN
-                            CALL WAVNU1 ( AFR, DPO(J), WNA, XYZ )
+                            CALL WAVNU3 ( AFR, DPO(J), WNA, XYZ )
                             AGE2   = MIN ( 100. , AFR / WNA / UABS )
                           ELSE
                             AGE1   = -9.99
@@ -1907,10 +1907,10 @@
                                ESTAR, FPSTAR, CD*1000., APM(NK)*100.
                       ELSE IF ( OTYPE .EQ. 5 ) THEN
                         HMAT   = MIN ( 100. , 3.33*GRAV*HSIG/UABS**2 )
-                        CALL WAVNU1 ( FP, DPO(J), WNA, XYZ )
+                        CALL WAVNU3 ( FP, DPO(J), WNA, XYZ )
                         AGE1   = MIN ( 100. , FP / WNA / UABS )
                         AFR    = TPI / TMEAN
-                        CALL WAVNU1 ( AFR, DPO(J), WNA, XYZ )
+                        CALL WAVNU3 ( AFR, DPO(J), WNA, XYZ )
                         AGE2   = MIN ( 100. , AFR / WNA / UABS )
                         IF ( FLAGLL ) THEN
                             WRITE (NDSTAB,1935) M2KM*PTLOC(1,J),      &

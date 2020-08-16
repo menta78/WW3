@@ -2686,7 +2686,7 @@
 !/SMC                      AVERG, LvSMC, NBISMC, ISHFT, JEQT, SEAWND 
 !/PR3          WRITE (NDSO,2953) CFLTM, WDTHCG, WDTHTH
 !
-        WRITE (NDSO,2956) UGBCCFL, UGOBCAUTO, UGOBCDEPTH,TRIM(UGOBCFILE), &
+        WRITE (NDSO,*) UGBCCFL, UGOBCAUTO, UGOBCDEPTH,UGOBCFILE, &
                           EXPFSN, EXPFSPSI, EXPFSFCT, IMPFSN, EXPTOTAL,&
                           IMPTOTAL, IMPREFRACTION, IMPFREQSHIFT,      &
                           IMPSOURCE, SETUP_APPLY_WLV,                 &
@@ -5665,7 +5665,7 @@
 !/PR3                      ', WDTHCG = ',F4.2,', WDTHTH = ',F4.2,' /')
 !
  2956 FORMAT ( '  &UNST UGBCCFL =',L3,', UGOBCAUTO =',L3,             &
-               ', UGOBCDEPTH =', F8.3,', UGOBCFILE=',A,','/           &
+               ', UGOBCDEPTH =', F8.3,', UGOBCFILE=',A256,','/           &
                ',  EXPFSN =',L3,',EXPFSPSI =',L3,                     &
                ',  EXPFSFCT =', L3,',IMPFSN =',L3,',EXPTOTAL=',L3,    &
                ',  IMPTOTAL=',L3,',IMPREFRACTION=', L3,               &
