@@ -355,9 +355,11 @@
         DO IY=1, NY
           DO IX=1, NX
 !notes : MAPSTA refers to GRIDS(I)%MAPSTA ...this is set in W3SETG
+            WRITE(*,*) IY, IX, XGRD(IY,IX), YGRD(IY,IX), MAPSTA(IY,IX)
             IF ( ABS(MAPSTA(IY,IX)) .EQ. 2 ) THEN
               XA     = XGRD(IY,IX) !old code: X0 + REAL(IX-1)*SX
               YA     = YGRD(IY,IX) !old code: Y0 + REAL(IY-1)*SY
+
 !
 ! ... Loop over previous (lower ranked) grids, going in order from highest 
 !          of lower ranked grids (I-1) to lowest of lower ranked grids (1)
@@ -382,7 +384,7 @@
 !        in not in grid, cycle (search next grid)
 !
                 IF (GRIDS(J)%GTYPE .EQ. UNGTYPE) THEN
-                  CALL IS_IN_UNGRID(J, XA, YA, ITOUT, IVER, JVER, RW)
+                  CALL IS_IN_UNGRID(J, REAL(XA), REAL(YA), ITOUT, IVER, JVER, RW)
                   IF (ITOUT.EQ.0) THEN
                     INGRID=.FALSE.
                   ELSE
@@ -396,7 +398,7 @@
                   END IF
                   NbRelevant=3
                 ELSE
-                  INGRID = W3GRMP( GRIDS(J)%GSU,  XA,  YA, IVER , JVER, RW )
+                  INGRID = W3GRMP( GRIDS(J)%GSU,  REAL(XA),  REAL(YA), IVER , JVER, RW )
                   !Print *, 'J=', J, 'IX=', IX, 'IY=', IY
                   !Print *, 'IN=', INGRID, 'XA=', XA, 'YA=', YA
                   !Print *, '    1: IVER=', IVER(1), 'JVER=', JVER(1), 'RW=', RW(1)
