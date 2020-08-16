@@ -1455,7 +1455,6 @@
 ! 2.  Allocate arrays
 !
 ! NB: Some array start at 0 because MAPFS(IY,IX)=0 for missing points 
-      WRITE(*,*) 'GTYPE, UNGTYPE', GTYPE, UNGTYPE 
 !
       IF (GTYPE .NE. UNGTYPE) THEN
         ALLOCATE ( GRIDS(IMOD)%ZB(MSEA),  &
