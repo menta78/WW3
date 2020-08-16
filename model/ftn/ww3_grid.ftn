@@ -3769,6 +3769,8 @@
 !/DEBUGSTP          DO IX=1,NX
 !/DEBUGSTP            WRITE(740,*) 'IX/ZBIN=', IX, ZBIN(IX,1)
 !/DEBUGSTP          END DO
+
+       WRITE(*,*) 'TEST XGRD 1st', XGRD(1,1)
 !
 ! 8.b Determine where to get the data
 !
@@ -4034,6 +4036,8 @@
 ! ... Branch back input / excluded points ( ILOOP in 8.b )
 !
         END DO
+
+      WRITE(*,*) 'TEST XGRD MIDDLE', XGRD(1,1)
 !/DEBUGGRID      WRITE(740+IAPROC,*) 'nbCase1=', nbCase1
 !/DEBUGGRID      WRITE(740+IAPROC,*) 'nbCase2=', nbCase2
 !/DEBUGGRID      WRITE(740+IAPROC,*) 'nbCase3=', nbCase3
@@ -4204,12 +4208,14 @@
 !/O1            END DO
         END IF
 !
+
       WRITE (NDSO,1980)
       IF ( NBT .EQ. 0 ) THEN
           WRITE (NDSO,1985)
         ELSE
           WRITE (NDSO,1986) NBT
         END IF
+      WRITE(*,*) 'TEST XGRD BEFORE DIMX', XGRD(1,1)
 !
 ! 8.f Set up all maps
 !
@@ -4219,6 +4225,7 @@
 !/ARC                , NARC, NBAC, NSPEC          &
                   )
 !/SMC       WRITE (NDSO,4021)   NCel
+      WRITE(*,*) 'TEST XGRD AFTER DIMX', XGRD(1,1)
 !
 ! 8.g Activation of reflections and scattering 
       FFACBERG=FACBERG
@@ -4236,6 +4243,7 @@
 !/REF1        REFLC(3,:)=REFPARS(7)
 !/REF1        END IF
 
+      WRITE(*,*) 'TEST XGRD 5/8', XGRD(1,1)
 
       IF (GTYPE.NE.UNGTYPE) THEN
         DO IY=1, NY
@@ -4563,6 +4571,8 @@
 !/T                   1, NX, IX3, 1, NY, IY3, 'Sea points', 'm')
 !/T      DEALLOCATE ( MAPOUT )
 !
+      WRITE(*,*) 'TEST XGRD 3/4', XGRD(1,1)
+
       DO ISP=1, NSPEC+NTH
         MAPWN(ISP) = 1 + (ISP-1)/NTH
         MAPTH(ISP) = 1 + MOD(ISP-1,NTH)
@@ -5191,6 +5201,7 @@
 !10.  Write model definition file.
 !
       WRITE (NDSO,999)
+      WRITE(*,*) 'TEST XGRD FINAL', XGRD(1,1)
       CALL W3IOGR ( 'WRITE', NDSM )
 !
       CLOSE (NDSM)
