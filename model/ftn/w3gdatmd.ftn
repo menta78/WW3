@@ -1455,21 +1455,26 @@
 ! 2.  Allocate arrays
 !
 ! NB: Some array start at 0 because MAPFS(IY,IX)=0 for missing points 
+      WRITE(*,*) 'GTYPE, UNGTYPE', GTYPE, UNGTYPE 
 !
+      IF (GTYPE .NE. UNGTYPE) THEN
+        ALLOCATE ( GRIDS(IMOD)%ZB(MSEA),  &
+                 GRIDS(IMOD)%XGRD(MY,MX),    &
+                 GRIDS(IMOD)%YGRD(MY,MX),    &
+                 STAT=ISTAT                  )
+        CHECK_ALLOC_STATUS ( ISTAT )
+      ENDIF
       ALLOCATE ( GRIDS(IMOD)%MAPSTA(MY,MX),  &
                  GRIDS(IMOD)%MAPST2(MY,MX),  &
                  GRIDS(IMOD)%MAPFS(MY,MX),   &
                  GRIDS(IMOD)%MAPSF(MSEA,3),  &
                  GRIDS(IMOD)%FLAGST(MSEA),   &
 !/RTD                 GRIDS(IMOD)%AnglD(MSEA),    &
-                 GRIDS(IMOD)%ZB(MSEA),       &
                  GRIDS(IMOD)%CLATS(0:MSEA),  &
                  GRIDS(IMOD)%CLATIS(0:MSEA), &
                  GRIDS(IMOD)%CTHG0S(0:MSEA), &
                  GRIDS(IMOD)%TRNX(MY,MX),    &
                  GRIDS(IMOD)%TRNY(MY,MX),    &
-                 GRIDS(IMOD)%XGRD(MY,MX),    &
-                 GRIDS(IMOD)%YGRD(MY,MX),    &
                  GRIDS(IMOD)%DXDP(MY,MX),    &
                  GRIDS(IMOD)%DXDQ(MY,MX),    &
                  GRIDS(IMOD)%DYDP(MY,MX),    &
