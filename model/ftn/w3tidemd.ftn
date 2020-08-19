@@ -519,8 +519,7 @@
      SUBROUTINE SETVUF_FAST(h,pp,s,p,enp,dh,dpp,ds,dp,dnp,tau,XLAT,F,U,V)
 !      setvuf calculates the V,u,f values at time hr for all constituents
       IMPLICIT NONE 
-      REAL,         INTENT(IN)  :: XLAT
-      REAL(KIND=8), INTENT(IN)  :: h,pp,s,p,enp,dh,dpp,ds,dp,dnp,tau
+      REAL(KIND=8), INTENT(IN)  :: h,pp,s,p,enp,dh,dpp,ds,dp,dnp,tau,xlat
       INTEGER, PARAMETER        :: NTIL=44
       REAL        , INTENT(OUT) :: F(NTIL),U(NTIL),V(NTIL)
       REAL                      :: FA(170),UA(170),VA(170)
