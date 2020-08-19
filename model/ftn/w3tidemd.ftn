@@ -1989,6 +1989,11 @@
 !/ ------------------------------------------------------------------- /
       subroutine flex_tidana_webpage(IX,IY,XLON,XLAT,KD1,KD2,ndef, itrend, RES, SSQ, RMSR0, SDEV0, &
                                       RMSR, RESMAX, IMAX, ITEST)
+
+              !CALL flex_tidana_webpage(IX,IY,XGRD(IY,IX),TIDE_LAT,TIDE_DAYS(1),TIDE_DAYS(TIDE_NTI), &
+              !                         TIDE_NDEF, TIDE_ITREND, RES, SSQ, RMSR0,          &
+              !                         SDEV0, RMSR, RESMAX, IMAX, 0)
+
 !
 !***********************************************************************
 !*
