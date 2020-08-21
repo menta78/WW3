@@ -519,7 +519,8 @@
      SUBROUTINE SETVUF_FAST(h,pp,s,p,enp,dh,dpp,ds,dp,dnp,tau,XLAT,F,U,V)
 !      setvuf calculates the V,u,f values at time hr for all constituents
       IMPLICIT NONE 
-      REAL(KIND=8), INTENT(IN)  :: h,pp,s,p,enp,dh,dpp,ds,dp,dnp,tau,xlat
+      REAL(KIND=8), INTENT(IN)  :: XLAT
+      REAL(KIND=8), INTENT(IN)  :: h,pp,s,p,enp,dh,dpp,ds,dp,dnp,tau
       INTEGER, PARAMETER        :: NTIL=44
       REAL        , INTENT(OUT) :: F(NTIL),U(NTIL),V(NTIL)
       REAL                      :: FA(170),UA(170),VA(170)
@@ -1853,8 +1854,7 @@
 
       IMPLICIT NONE
 
-      REAL(KIND=8), INTENT(IN)  :: hr
-      REAL,         INTENT(IN)  :: XLAT
+      REAL(KIND=8), INTENT(IN)  :: hr, XLAT
       INTEGER,      INTENT(IN)  :: ITIME
 
 !
@@ -1990,9 +1990,9 @@
       subroutine flex_tidana_webpage(IX,IY,XLON,XLAT,KD1,KD2,ndef, itrend, RES, SSQ, RMSR0, SDEV0, &
                                       RMSR, RESMAX, IMAX, ITEST)
 
-              !CALL flex_tidana_webpage(IX,IY,XGRD(IY,IX),TIDE_LAT,TIDE_DAYS(1),TIDE_DAYS(TIDE_NTI), &
-              !                         TIDE_NDEF, TIDE_ITREND, RES, SSQ, RMSR0,          &
-              !                         SDEV0, RMSR, RESMAX, IMAX, 0)
+!              CALL flex_tidana_webpage(IX,IY,XGRD(IY,IX),YGRD(IY,IX),TIDE_LAT,TIDE_DAYS(1),TIDE_DAYS(TIDE_NTI), &
+!                                       TIDE_NDEF, TIDE_ITREND, RES, SSQ, RMSR0,          &
+!                                       SDEV0, RMSR, RESMAX, IMAX, 0)
 
 !
 !***********************************************************************
@@ -2473,8 +2473,8 @@
       IMPLICIT NONE
 !
       INTEGER,       INTENT(IN)      :: itrend, NDEF, N
-      REAL(KIND=8)  , INTENT(IN)     :: HOURS(N)
-      REAL,          INTENT(IN)      :: XLAT, DATAIN(N,NDEF)
+      REAL(KIND=8)  , INTENT(IN)     :: XLAT, HOURS(N)
+      REAL,          INTENT(IN)      :: DATAIN(N,NDEF)
       REAL(KIND=8),  INTENT(OUT)     :: SDEV(NDEF),RMSR(NDEF)
       REAL,          INTENT(OUT)     :: PREDICTED(N,NDEF), RESID(N,NDEF)
  !
@@ -2531,8 +2531,7 @@
       IMPLICIT NONE
 !
       INTEGER,       INTENT(IN)      :: itrend, NDEF, N
-      REAL(KIND=8)  , INTENT(IN)     :: TIDE_HOURS(N)
-      REAL,          INTENT(IN)      :: XLAT
+      REAL(KIND=8)  , INTENT(IN)     :: XLAT, TIDE_HOURS(N)
       REAL,          INTENT(OUT)     :: PREDICTED(N,NDEF)
  !
       INTEGER                        :: IDEF, I, K, K2

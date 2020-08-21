@@ -288,9 +288,9 @@
 !/T      INTEGER(KIND=8)         :: RPOS
 !/T      INTEGER                 ::   LRECL, NREC
 !
-      INTEGER, ALLOCATABLE          :: IMAX(:)
+      INTEGER, ALLOCATABLE    :: IMAX(:)
 !
-      REAL                          :: TIDE_LAT
+      REAL(KIND=8)            :: TIDE_LAT
 !
       REAL, ALLOCATABLE       :: TIDE_DATA_ALL(:,:,:),                &
                                  SSQ(:), RES(:)
@@ -1465,14 +1465,14 @@
 ! Compute amplitude and phase
 !
             IF (TIDE_NTI.GT.(TIDE_MF*3)) THEN 
-              TIDE_LAT= YGRD(IY,IX)
+              TIDE_LAT = YGRD(IY,IX)
               IF (ABS(TIDE_LAT).LT.5.) TIDE_LAT=SIGN(5.,TIDE_LAT)
               DO I=1,TIDE_NTI
                 CALL SETVUF(TIDE_HOURS(I),TIDE_LAT,I)
               END DO
               TIDE_ITREND=0
 !AR: Todo: Solve interface error below ...
-              CALL flex_tidana_webpage(IX,IY,XGRD(IY,IX),YGRD(IY,IX),TIDE_LAT,TIDE_DAYS(1),TIDE_DAYS(TIDE_NTI), &
+              CALL flex_tidana_webpage(IX,IY,XGRD(IY,IX),TIDE_LAT,TIDE_DAYS(1),TIDE_DAYS(TIDE_NTI), &
                                        TIDE_NDEF, TIDE_ITREND, RES, SSQ, RMSR0,          &
                                        SDEV0, RMSR, RESMAX, IMAX, 0)
 
