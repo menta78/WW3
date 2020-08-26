@@ -219,7 +219,7 @@
 !
 ! 3. initialize fluctuation splitting arrays ( to fit with WWM notations)    
 !
-      AC(1:NX) = DBLE(VQ(1:NX))  
+      AC(1:NX)   = DBLE(VQ(1:NX))  
       C(1:NX,1)  = VLCFLX(1:NX)
       C(1:NX,2)  = VLCFLY(1:NX)
 !
@@ -575,6 +575,7 @@
 !2.a     Calculate K-Values and contour based quantities ...
 !
          DO IE = 1, NTRI ! I precacalculate this arrays below as I assume that current velocity  changes continusly ... 
+
            I1 = TRIGP(1,IE) ! Index of the Element Nodes (TRIGP)
            I2 = TRIGP(2,IE)
            I3 = TRIGP(3,IE)
@@ -613,7 +614,7 @@
              END DO ! IE
              DTMAXEXP = 1E10 ! initialize to large number 
              DO IP = 1, NX
-               IF (IOBP(IP) .EQ. 1.OR.FSBCCFL) THEN
+               IF (IOBP(IP) .EQ. 1 .OR. FSBCCFL) THEN
                  DTMAXEXP = SI(IP)/MAX(DBLE(10.E-10),KKSUM(IP)*IOBDP(IP))
                  DTMAXGL  = MIN( DTMAXGL, DTMAXEXP)
                  END IF

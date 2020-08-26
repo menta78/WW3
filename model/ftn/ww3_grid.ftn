@@ -768,13 +768,13 @@
 !/SMC      LOGICAL                 :: UNO3, AVERG, SEAWND 
 !
 !/PR3      REAL                    :: WDTHCG, WDTHTH
-           LOGICAL :: JGS_TERMINATE_MAXITER = .TRUE.
-           LOGICAL :: JGS_TERMINATE_DIFFERENCE = .TRUE.
-           LOGICAL :: JGS_TERMINATE_NORM = .FALSE.
-           LOGICAL :: JGS_LIMITER = .FALSE.
-           LOGICAL :: JGS_BLOCK_GAUSS_SEIDEL = .TRUE.
-           LOGICAL :: JGS_USE_JACOBI = .TRUE.
-           LOGICAL :: JGS_SOURCE_NONLINEAR = .FALSE.
+           LOGICAL :: JGS_TERMINATE_MAXITER    =  .TRUE.
+           LOGICAL :: JGS_TERMINATE_DIFFERENCE =  .TRUE.
+           LOGICAL :: JGS_TERMINATE_NORM       = .FALSE.
+           LOGICAL :: JGS_LIMITER              = .FALSE.
+           LOGICAL :: JGS_BLOCK_GAUSS_SEIDEL   = .TRUE.
+           LOGICAL :: JGS_USE_JACOBI           = .TRUE.
+           LOGICAL :: JGS_SOURCE_NONLINEAR     = .FALSE.
            LOGICAL :: UGOBCAUTO = .FALSE.
            LOGICAL :: UGBCCFL   = .FALSE.
            LOGICAL :: EXPFSN    = .TRUE.

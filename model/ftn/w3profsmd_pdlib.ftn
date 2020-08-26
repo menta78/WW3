@@ -531,10 +531,10 @@
 !/
 !/ ------------------------------------------------------------------- /
 !/
-      INTEGER :: IBND_MAP, ISEA, JSEA, IX, IP, IP_glob
+      INTEGER             :: IBND_MAP, ISEA, JSEA, IX, IP, IP_glob
       INTEGER, INTENT(in) :: IMOD
-      INTEGER :: Status(NX), istat
-      REAL :: rtmp(nseal)
+      INTEGER             :: Status(NX), istat
+      REAL                :: rtmp(nseal)
 !/S      CALL STRACE (IENT, 'PDLIB_MAPSTA_INIT')
 !/DEBUGINIT      WRITE(*,*) 'Passing by PDLIB_MAPSTA_INIT IAPROC=', IAPROC
       IF (IAPROC .gt. NAPROC) THEN
@@ -859,8 +859,8 @@
 !/ ------------------------------------------------------------------- /
 !/S      USE W3SERVMD, ONLY: STRACE
 !
-      USE W3GDATMD, ONLY: NK, NTH, NX,  IEN, CLATS, MAPSF
-      USE W3GDATMD, ONLY: IOBPD_LOC, IOBP_LOC, IOBDP_LOC, IOBPA_LOC
+      USE W3GDATMD, ONLY: NK, NTH, NX,  IEN, CLATS, MAPSF, 
+      USE W3GDATMD, ONLY: IOBPD_LOC, IOBP_LOC, IOBDP_LOC, IOBPA_LOC, FSBCCFL
       USE W3WDATMD, ONLY: TIME
       USE W3ADATMD, ONLY: CG, ITER, DW , CFLXYMAX, NSEALM
       USE W3ODATMD, ONLY: NDSE, NDST, FLBPI, NBI, TBPIN, ISBPI, BBPI0, BBPIN
@@ -991,10 +991,13 @@
           NI = INE(:,IE)
           KKSUM(NI) = KKSUM(NI) + KELEM(:,IE)
         END DO
-        DO IP = 1, npa
-          IP_glob=iplg(IP)
-          DTMAXEXP = PDLIB_SI(IP)/MAX(DBLE(10.E-10),KKSUM(IP)*IOBDP_LOC(IP))
-          DTMAX  = MIN( DTMAX, DTMAXEXP)
+        DTMAXEXP = 1.E10
+        DO IP = 1, np
+          IP_glob      = iplg(IP)
+          IF (IOBP(IP) .EQ. 1 .OR. FSBCCFL) THEN
+            DTMAXEXP     = PDLIB_SI(IP)/MAX(DBLE(10.E-10),KKSUM(IP)*IOBDP_LOC(IP))
+            DTMAX        = MIN( DTMAX, DTMAXEXP)
+          ENDIF
           CFLXYMAX(IP) = MAX(CFLXYMAX(IP),DBLE(DT)/DTMAXEXP)
         END DO
         FIN(1)=DTMAX
