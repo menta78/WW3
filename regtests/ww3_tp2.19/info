@@ -60,11 +60,11 @@
 #  Homogeneous vegetation field                                             #                      
 #                                                                           #
 # ./bin/run_test -b slurm -c Intel -S -T -s PDLIB -w work_1A  -f -p srun    #
-#                            -n  24 ../model -o netcdf ww3_tp2.19/Case1A    #
+#                   -n  24 -i input_Case1A ../model -o netcdf ww3_tp2.19    #
 # ./bin/run_test -b slurm -c Intel -S -T -s PDLIB -w work_1B  -f -p srun    #
-#                            -n  24 ../model -o netcdf ww3_tp2.19/Case1B    #
+#                   -n  24 -i input_Case1B ../model -o netcdf ww3_tp2.19    #
 # ./bin/run_test -b slurm -c Intel -S -T -s PDLIB -w work_1C  -f -p srun    #
-#                            -n  24 ../model -o netcdf ww3_tp2.19/Case1C    #
+#                   -n  24 -i input_Case1C ../model -o netcdf ww3_tp2.19    #
 #                                                                           #
 #                       Ali Abdolali, Tyler Hesser,Aron Roland March 2020   #
 #                                                                           #

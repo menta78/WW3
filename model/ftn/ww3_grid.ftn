@@ -2686,7 +2686,7 @@
 !/SMC                      AVERG, LvSMC, NBISMC, ISHFT, JEQT, SEAWND 
 !/PR3          WRITE (NDSO,2953) CFLTM, WDTHCG, WDTHTH
 !
-        WRITE (NDSO,2956) UGBCCFL, UGOBCAUTO, UGOBCDEPTH,TRIM(UGOBCFILE), &
+        WRITE (NDSO,*) UGBCCFL, UGOBCAUTO, UGOBCDEPTH,UGOBCFILE, &
                           EXPFSN, EXPFSPSI, EXPFSFCT, IMPFSN, EXPTOTAL,&
                           IMPTOTAL, IMPREFRACTION, IMPFREQSHIFT,      &
                           IMPSOURCE, SETUP_APPLY_WLV,                 &
@@ -4034,6 +4034,7 @@
 ! ... Branch back input / excluded points ( ILOOP in 8.b )
 !
         END DO
+
 !/DEBUGGRID      WRITE(740+IAPROC,*) 'nbCase1=', nbCase1
 !/DEBUGGRID      WRITE(740+IAPROC,*) 'nbCase2=', nbCase2
 !/DEBUGGRID      WRITE(740+IAPROC,*) 'nbCase3=', nbCase3
@@ -4204,6 +4205,7 @@
 !/O1            END DO
         END IF
 !
+
       WRITE (NDSO,1980)
       IF ( NBT .EQ. 0 ) THEN
           WRITE (NDSO,1985)
@@ -4563,6 +4565,7 @@
 !/T                   1, NX, IX3, 1, NY, IY3, 'Sea points', 'm')
 !/T      DEALLOCATE ( MAPOUT )
 !
+
       DO ISP=1, NSPEC+NTH
         MAPWN(ISP) = 1 + (ISP-1)/NTH
         MAPTH(ISP) = 1 + MOD(ISP-1,NTH)
@@ -5665,7 +5668,7 @@
 !/PR3                      ', WDTHCG = ',F4.2,', WDTHTH = ',F4.2,' /')
 !
  2956 FORMAT ( '  &UNST UGBCCFL =',L3,', UGOBCAUTO =',L3,             &
-               ', UGOBCDEPTH =', F8.3,', UGOBCFILE=',A,','/           &
+               ', UGOBCDEPTH =', F8.3,', UGOBCFILE=',A256,','/           &
                ',  EXPFSN =',L3,',EXPFSPSI =',L3,                     &
                ',  EXPFSFCT =', L3,',IMPFSN =',L3,',EXPTOTAL=',L3,    &
                ',  IMPTOTAL=',L3,',IMPREFRACTION=', L3,               &

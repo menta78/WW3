@@ -308,7 +308,7 @@
         ELSE 
           CALL IS_IN_UNGRID(IMOD, XPT(IPT), YPT(IPT), itout, IX, IY, RD)
           INGRID = (ITOUT.GT.0) 
-          END IF
+        END IF
 !
         IF ( .NOT.INGRID ) THEN
           IF ( IAPROC .EQ. NAPERR ) THEN
@@ -316,10 +316,10 @@
               WRITE (NDSE,1000) XPT(IPT), YPT(IPT), PNAMES(IPT)
             ELSE
               WRITE (NDSE,1001) XPT(IPT), YPT(IPT), PNAMES(IPT)
-              END IF
             END IF
-          CYCLE
           END IF
+          CYCLE
+        END IF
 !
 !/T     DO K = 1,4
 !/T       WRITE (NDST,9012) IX(K), IY(K), RD(K)

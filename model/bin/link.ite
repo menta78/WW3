@@ -86,9 +86,8 @@
 
   # linking options
   libs=""
-  opt="-01 -traceback -g -assume byterecl -no-wrap-margin -DPDLIB -o $prog"
 #  opt=" -g -ggdb -fno-omit-frame-pointer -ffree-line-length-none -fbacktrace -Wall -Wextra -Wconversion  -Wno-unused  -Wno-unused-dummy-argument -fcheck=all -fsanitize=address -fsanitize=undefined -ffpe-trap=invalid,zero,overflow -DPDLIB -o $prog"
-# opt="-traceback -g -O0 -check all -warn interfaces,nouncalled -gen-interface -assume byterecl -no-wrap-margin -DPDLIB -o $prog"
+ opt="-traceback -g -O0 -check all -check noarg_temp_created -warn interfaces,nouncalled -gen-interface -assume byterecl -no-wrap-margin -o $prog"
 # opt="-traceback -g -O1 -check all -warn interfaces,nouncalled -gen-interface -assume byterecl -init=snan,arrays -no-wrap-margin -DPDLIB -ip -o $prog"
 # opt="-O1 -axSSE4.2 -prec-div -assume byterecl -DCGTABLE -DPDLIB -no-wrap-margin -g -traceback -o $prog"
 # opt="-O3 -prec-div -prec-sqrt -xHost -align array128byte -ip -o $prog"
