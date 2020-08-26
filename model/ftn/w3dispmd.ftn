@@ -349,7 +349,7 @@
 !
 !  2. Method :
 !
-!     Linear interpolation from one-dimensional array.
+!     Direct computation by approximation
 !
 !  3. Parameters used :
 !
@@ -823,7 +823,7 @@
              FWANTED=SIGMA(IK)/TPI
         ! First guess for k :
               
-              CALL WAVNU3(SIGMA(IK),H_WDEPTH,K_OPEN,CG_OPEN)
+              CALL WAVNU1(SIGMA(IK),H_WDEPTH,K_OPEN,CG_OPEN)
         !     KWN(1)  = 0.2 ! (old method)
               KWN(1)  =K_OPEN ! new method, Mar 10 2014
         !
