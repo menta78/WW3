@@ -512,12 +512,14 @@
                IF ( IAPROC .EQ. NAPERR )                              &
                   WRITE (NDSE,905) 3, FILEXT(:I), FNAME3, TNAME3,     &
                                    MESSAGE
+                  WRITE(*,*) 'TEST TEST TEST', I, FILEXT(:I), FNAMEI, TNAMEI, MESSAGE
                CALL EXTCDE ( 17 )
             END IF
           IF ( FNAMEI .NE. TNAMEI ) THEN
                IF ( IAPROC .EQ. NAPERR )                              &
                   WRITE (NDSE,905) 3, FILEXT(:I), FNAMEI, TNAMEI,     &
                                    MESSAGE
+                  WRITE(*,*) 'TEST TEST TEST', I, FILEXT(:I), FNAMEI, TNAMEI, MESSAGE
                CALL EXTCDE ( 17 )
             END IF
           IF ( FNAME4 .NE. TNAME4 ) THEN
