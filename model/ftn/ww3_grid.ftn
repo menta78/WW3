@@ -1973,7 +1973,7 @@
 ! 6.l Read unstructured data 
 ! initialisation of logical related to unstructured grid
        UGOBCAUTO  = .TRUE.
-       UGBCCFL    = .TRUE.
+       UGBCCFL    = .FALSE.
        UGOBCDEPTH = -10.
        UGOBCOK    = .FALSE.
        UGOBCFILE  = 'unset'

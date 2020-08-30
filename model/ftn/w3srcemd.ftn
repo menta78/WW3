@@ -457,6 +457,7 @@
 !/
       INTEGER                 :: IK, ITH, IS, IS0, NSTEPS,  NKH, NKH1,&
                                  IKS1, IS1, NSPECH, IDT, IERR, NKD, ISP
+      INTEGER                 :: IOBPIP, IOBPDIP, IOBDPIP
 !/S      INTEGER, SAVE           :: IENT = 0
 !/NNT      INTEGER, SAVE           :: NDSD = 89, NDSD2 = 88, J
       REAL                    :: DTTOT, FHIGH, DT, AFILT, DAMAX, AFAC,&
@@ -1617,17 +1618,37 @@
 !/REF1                        BERG, DTG, IX, IY,  VREF )
 !/REF1          IF (GTYPE.EQ.UNGTYPE.AND.REFPARS(3).LT.0.5) THEN 
 !AR: this can be further simplified let's do some simple tests 1st ...
-!/REF1            IF (IOBP(IX).EQ.0) THEN 
-!/REF1              DO IK=1, NK 
-!/REF1                DO ITH=1, NTH
-!/REF1                  IF (IOBPD(ITH,IX).EQ.0) SPEC(ITH+(IK-1)*NTH) = DTG*VREF(ITH+(IK-1)*NTH)
-!/REF1                END DO
-!/REF1              END DO 
-!/REF1            ELSE 
-!/REF1              IF (IOBDP(IX) .EQ. -1) THEN
-!/REF1                SPEC(:) = SPEC(:) + DTG * VREF(:)
+!/REF1           IF (LPDLIB) THEN
+!/PDLIB             IOBPIP = IOBP_LOC(IX)
+!/REF1              IF (IOBPIP.EQ.0) THEN 
+!/REF1                DO IK=1, NK 
+!/REF1                  DO ITH=1, NTH
+!/PDLIB                   IOBPDIP = IOBPD_LOC(ITH,IX)
+!/REF1                    IF (IOBPDIP.EQ.0) THEN
+!/REF1                     SPEC(ITH+(IK-1)*NTH) = DTG*VREF(ITH+(IK-1)*NTH)!
+!/REF1                    ENDIF 
+!/REF1                  END DO
+!/REF1                END DO 
+!/REF1              ELSE 
+!AR: Todo this cannot work since IOBDP is never -1 
+!/PDLIB               IOBDPIP = IOBDP_LOC(IX)
+!/REF1                IF (IOBDPIP .EQ. -1) THEN
+!/REF1                  SPEC(:) = SPEC(:) + DTG * VREF(:)
+!/REF1                ENDIF
 !/REF1              ENDIF
-!/REF1            ENDIF
+!/REF1            ELSE
+!/REF1              IF (IOBP(IX).EQ.0) THEN 
+!/REF1                DO IK=1, NK 
+!/REF1                  DO ITH=1, NTH
+!/REF1                    IF (IOBPD(ITH,IX).EQ.0) SPEC(ITH+(IK-1)*NTH) = DTG*VREF(ITH+(IK-1)*NTH)
+!/REF1                  END DO
+!/REF1                END DO 
+!/REF1              ELSE 
+!/REF1                IF (IOBDP(IX) .EQ. -1) THEN
+!/REF1                  SPEC(:) = SPEC(:) + DTG * VREF(:)
+!/REF1                ENDIF
+!/REF1              ENDIF
+!/REF1          ENDIF
 !/REF1          ELSE
 !/REF1            SPEC(:) = SPEC(:) + DTG * VREF(:) 
 !/REF1            END IF
