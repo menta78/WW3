@@ -860,7 +860,7 @@
 !/ ------------------------------------------------------------------- /
 !/S      USE W3SERVMD, ONLY: STRACE
 !
-      USE W3GDATMD, ONLY: NK, NTH, NX,  IEN, CLATS, MAPSF, 
+      USE W3GDATMD, ONLY: NK, NTH, NX,  IEN, CLATS, MAPSF
       USE W3GDATMD, ONLY: IOBPD_LOC, IOBP_LOC, IOBDP_LOC, IOBPA_LOC, FSBCCFL
       USE W3WDATMD, ONLY: TIME
       USE W3ADATMD, ONLY: CG, ITER, DW , CFLXYMAX, NSEALM
