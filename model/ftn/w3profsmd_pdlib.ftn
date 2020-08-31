@@ -995,7 +995,7 @@
         DTMAXEXP = 1.E10
         DO IP = 1, np
           IP_glob      = iplg(IP)
-          IF (IOBP(IP) .EQ. 1 .OR. FSBCCFL) THEN
+          IF (IOBP_LOC(IP) .EQ. 1 .OR. FSBCCFL) THEN
             DTMAXEXP     = PDLIB_SI(IP)/MAX(DBLE(10.E-10),KKSUM(IP)*IOBDP_LOC(IP))
             DTMAX        = MIN( DTMAX, DTMAXEXP)
           ENDIF
