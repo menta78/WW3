@@ -534,6 +534,8 @@
 !
 !/T      FLTEST = .TRUE.
 !
+      VDIO   = 0.
+      VSIO   = 0.
       DEPTH  = MAX ( DMIN , D_INP )
 
       IKS1 = 1
