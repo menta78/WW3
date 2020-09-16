@@ -854,6 +854,8 @@
 !/DB0        REAL                  :: DUMMY
 !/DB1        REAL                  :: SDBC1, SDBC2
 !/DB1        LOGICAL               :: FDONLY
+!/DB1        REAL                  :: SDBSC
+!/DB2        REAL                  :: SDBC1, SDBC2
 !/DBX        REAL                  :: DUMMY
       END TYPE SDBP
 
@@ -1153,6 +1155,8 @@
 !/
 !/DB1      REAL, POINTER           :: SDBC1, SDBC2
 !/DB1      LOGICAL, POINTER        :: FDONLY
+!/DB1      REAL, POINTER           :: SDBSC
+!/DB2      REAL, POINTER           :: SDBC1, SDBC2
 !/
 !/UOST!/ Data aliases for structure UOSTP(S)
 !/UOST      CHARACTER(LEN=:), POINTER   :: UOSTFILELOCAL, UOSTFILESHADOW
@@ -2376,6 +2380,9 @@
 !/DB1      SDBC1  => MPARS(IMOD)%SDBPS%SDBC1
 !/DB1      SDBC2  => MPARS(IMOD)%SDBPS%SDBC2
 !/DB1      FDONLY => MPARS(IMOD)%SDBPS%FDONLY
+!/DB1      SDBSC  => MPARS(IMOD)%SDBPS%SDBSC
+!/DB2      SDBC1  => MPARS(IMOD)%SDBPS%SDBC1
+!/DB2      SDBC2  => MPARS(IMOD)%SDBPS%SDBC2
 !
 !
 !/UOST      UOSTFILELOCAL => MPARS(IMOD)%UOSTPS%UOSTFILELOCAL
