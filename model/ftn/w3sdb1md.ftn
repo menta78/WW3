@@ -50,7 +50,7 @@
 !/
       CONTAINS
 !/ ------------------------------------------------------------------- /
-      SUBROUTINE W3SDB1BJ (IX, A, DEPTH, EMEAN, FMEAN, WNMEAN, CG, LBREAK, S, D )
+      SUBROUTINE W3SDB1 (IX, A, DEPTH, EMEAN, FMEAN, WNMEAN, CG, LBREAK, S, D )
 !/
 !/                  +-----------------------------------+
 !/                  | WAVEWATCH III           NOAA/NCEP |
@@ -322,7 +322,7 @@
 
 !/DEBUGRUN      IF (IX == DEBUG_NODE) THEN
 !/DEBUGRUN        WRITE(*,'(A200)') 'IX, DEPTH, CBJ, BB, QB, SDBC1, SDBC2, FMEAN, FMEAN2, HS'
-!/DEBUGRUN        WRITE(*,'(I10,20F20.10)') IX, DEPTH, CBJ, BB, QB, SDBC1, SDBC2, FMEAN, FMEAN2, 4*SQRT(ETOT)
+!/DEBUGRUN        WRITEd(*,'(I10,20F20.10)') IX, DEPTH, CBJ, BB, QB, SDBC1, SDBC2, FMEAN, FMEAN2, 4*SQRT(ETOT)
 !/DEBUGRUN      ENDIF
 
 !/DEBUGDB1      WRITE(740+IAPROC,*) 'CBJ=', CBJ
@@ -350,10 +350,10 @@
 !/
 !/ End of W3SDB1 ----------------------------------------------------- /
 !/
-      END SUBROUTINE W3SDB1BJ
+      END SUBROUTINE W3SDB1
 !/
 !/
-      SUBROUTINE W3SDB1TG (IX, A, DEPTH, EMEAN, FMEAN, CG, LBREAK, S, D )
+      SUBROUTINE W3SDB2 (IX, A, DEPTH, EMEAN, FMEAN, CG, LBREAK, S, D )
 !/
 !/                  +-----------------------------------+
 !/                  | WAVEWATCH III           NOAA/NCEP |
@@ -548,7 +548,7 @@
 !/
 !/ End of W3SDB1TG ----------------------------------------------------- /
 !/
-      END SUBROUTINE W3SDB1TG
+      END SUBROUTINE W3SDB2
 !/
 !/
 !/ End of module W3SDB1MD -------------------------------------------- /
