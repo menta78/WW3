@@ -2,7 +2,7 @@
 \subsubsection{~$S_{db}$: Battjes and  Janssen 1978} \label{sec:DB1}
 \vsssub
 
-\opthead{DB1 / MLIM}{Pre-WAM}{J. H. G. M. Alves}
+\opthead{DB1 / MLIM}{Pre-WAM}{J. H. G. M. Alves, A. Roland, T. Hesser\& A. Abdolali}
 
 \noindent
 The implementation in \ws\ of depth-induced breaking algorithms is intended to
@@ -99,8 +99,22 @@ dissipation source function is obtained
  , \label{eq:BJ78}
 \end{equation}
 
+Two other options are available in addition to Battjes and  Janssen 1978 depth breaking formula. The second option is based on \cite{thornton1983transformation} formulation
+
+\begin{equation}
+\cS_{db} (k,\theta) = - 1.5 \sqrt{\pi} \: \beta^3 \: f_m  \: E \: \frac{H_{rms}}{dH_{max}^2}  \: (1- \frac{1}{(1+(\frac{H_{rms}}{H_{max}})^2)^{5/2}}) \: F(k,\theta)
+ , \label{eq:BJ783b}
+\end{equation}
+
+The third option is based on STWAVE formulation:
+\begin{equation}
+\cS_{db} (k,\theta) =-({E} -\frac{H_{max}^2}{16})F(k,\theta)
+ , \label{eq:BJ78v}
+\end{equation}
+
+
 \noindent
-where $E$ is the total spectral energy, and $\alpha = 1.0$ is a tunable
-parameter. The user can select between Eqs.~(\ref{eq:BJ78_Miche}) and
-(\ref{eq:BJ78_McC}), and adjust $\gamma$ and $\alpha$. Defaults are
-Eq.~(\ref{eq:BJ78_McC}), $\gamma = 0.73$ and $\alpha = 1.0$.
+where $E$ is the total spectral energy, and $\alpha$, $\beta$ and $\gamma$ are tunable
+parameters. The user can select between Eqs.~(\ref{eq:BJ78_Miche}) and
+(\ref{eq:BJ78_McC}), and adjust $\alpha$, $\beta$ and $\gamma$. Defaults are
+Eq.~(\ref{eq:BJ78_McC}), $\alpha = 1.0$, $\beta=1$ and $\gamma = 0.64$.

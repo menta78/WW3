@@ -3639,7 +3639,8 @@
          do i = 1,NX
             do j = 1,2
                pos=2*(i-1)+j
-               nodeCoords(pos)=(j,i)
+               if(j == 1) nodeCoords(pos)= xgrd(1,i)
+               if(j == 2) nodeCoords(pos)= ygrd(1,i)
             enddo
          enddo
 !/PDLIB      else
@@ -4019,11 +4020,8 @@
          do i = 1,NX
             do j = 1,2
                pos=2*(i-1)+j
-               if (j==1) then
-                 nodeCoords(pos)=xgrd(1,i)
-               else
-                 nodeCoords(pos)=ygrd(1,i)
-               endif
+               if (j==1) nodeCoords(pos)=xgrd(1,i)
+               if (j==1) nodeCoords(pos)=ygrd(1,i)
             enddo
          enddo
 !/PDLIB      else

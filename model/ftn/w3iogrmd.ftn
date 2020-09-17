@@ -512,12 +512,14 @@
                IF ( IAPROC .EQ. NAPERR )                              &
                   WRITE (NDSE,905) 3, FILEXT(:I), FNAME3, TNAME3,     &
                                    MESSAGE
+                  WRITE(*,*) 'TEST TEST TEST', I, FILEXT(:I), FNAMEI, TNAMEI, MESSAGE
                CALL EXTCDE ( 17 )
             END IF
           IF ( FNAMEI .NE. TNAMEI ) THEN
                IF ( IAPROC .EQ. NAPERR )                              &
                   WRITE (NDSE,905) 3, FILEXT(:I), FNAMEI, TNAMEI,     &
                                    MESSAGE
+                  WRITE(*,*) 'TEST TEST TEST', I, FILEXT(:I), FNAMEI, TNAMEI, MESSAGE
                CALL EXTCDE ( 17 )
             END IF
           IF ( FNAME4 .NE. TNAME4 ) THEN
@@ -615,17 +617,9 @@
               !Init COUNTCON to zero, it needs to be set somewhere or
               !removed
               COUNTCON=0
-!#ifndef PDLIB 
-!                WRITE (NDSM)                                            &
-!                X0, Y0, SX, SY, DXYMAX, TRIGP, TRIA,             &
-!                LEN, IEN, ANGLE0, ANGLE, SI, MAXX, MAXY,   &
-!                INDEX_CELL, CCON, COUNTCON, IE_CELL,  &
-!                POS_CELL, IOBP, IOBPA, IOBPD, IAA, JAA, POSI
-!#else 
-                WRITE (NDSM)                                            &
-                X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, TRIGP,    &
-                MAXX, MAXY, IOBPD, IOBP 
-!!#endif
+              WRITE (NDSM)                                            &
+              X0, Y0, SX, SY, DXYMAX, XGRD, YGRD, TRIGP,    &
+              MAXX, MAXY, IOBPD, IOBP 
             END SELECT !GTYPE
 !
           WRITE (NDSM)                                                &
