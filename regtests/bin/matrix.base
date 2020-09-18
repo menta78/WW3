@@ -1,4 +1,4 @@
-#!/bin/bash
+#/bin/bash
 # --------------------------------------------------------------------------- #
 # matrix.base : Core of setting up matrix of regression test (v2).            #
 #                                                                             #
@@ -31,7 +31,8 @@
              prop1D prop2D time fetch hur1mg \
              multi01 multi02 multi03 multi04 multi05 \
              hybd shwtr unstr pdlib smcgr mudice infgrv \
-             uost assim calendar oasis multi06 multi07 multi08
+             uost assim calendar oasis multi06 \
+             dbreak multi07 multi08
   do
     eval " value=\$$par"
 #   echo "$par = $value"
@@ -76,6 +77,7 @@
   echo "  echo '      Hurricane with one moving grid     : $hur1mg'"           >> matrix.head
   echo "  echo '      Mud/Ice and wave interaction tests : $mudice'"           >> matrix.head
   echo "  echo '      Second harmonic generation tests   : $infgrv'"           >> matrix.head
+  echo "  echo '      Depth limited breaking             : $dbreak'"           >> matrix.head
   echo "  echo '      Multi 01 (wet and dry)             : $multi01'"          >> matrix.head
   echo "  echo '      Multi 02 (basic nesting)           : $multi02'"          >> matrix.head
   echo "  echo '      Multi 03 (nesting and overlap)     : $multi03'"          >> matrix.head
@@ -1970,12 +1972,15 @@
  fi
 
  # unstructured grid with PDLIB for domain decomposition and implicit solver, Neumann Bnd, depth breaking & triad interaction ST
- if [ "$pdlib" = 'y' ] && [ "$dist" = 'y' ] && [ "$db1tr1" = 'y' ]
+ if [ "$pdlib" = 'y' ] && [ "$dist" = 'y' ] && [ "$dbreak" = 'y' ]
  then
    echo ' ' >> matrix.body
-   echo "$rtst -s PDLIB -w work_1A -f -p $mpi -n $np -o netcdf -i input_Case1A $ww3 ww3_tp2.19" >> matrix.body
-   echo "$rtst -s PDLIB -w work_1B -f -p $mpi -n $np -o netcdf -i input_Case1B $ww3 ww3_tp2.19" >> matrix.body
-   echo "$rtst -s PDLIB -w work_1C -f -p $mpi -n $np -o netcdf -i input_Case1C $ww3 ww3_tp2.19" >> matrix.body
+   echo "$rtst -s PDLIB -w work_1A_a -f -g a -p $mpi -n $np -o netcdf -i input_Case1A $ww3 ww3_tp2.19" >> matrix.body
+   echo "$rtst -s PDLIB -w work_1A_b -f -g b -p $mpi -n $np -o netcdf -i input_Case1A $ww3 ww3_tp2.19" >> matrix.body
+   echo "$rtst -s PDLIB -w work_1B_a -f -g a -p $mpi -n $np -o netcdf -i input_Case1B $ww3 ww3_tp2.19" >> matrix.body
+   echo "$rtst -s PDLIB -w work_1B_b -f -g b -p $mpi -n $np -o netcdf -i input_Case1B $ww3 ww3_tp2.19" >> matrix.body
+   echo "$rtst -s PDLIB -w work_1C_a -f -g a -p $mpi -n $np -o netcdf -i input_Case1C $ww3 ww3_tp2.19" >> matrix.body
+   echo "$rtst -s PDLIB -w work_1C_b -f -g a -p $mpi -n $np -o netcdf -i input_Case1C $ww3 ww3_tp2.19" >> matrix.body
  fi
 
  #Unresolved Obstacles Source Term (UOST) 

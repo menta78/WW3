@@ -91,14 +91,7 @@ $                                    PHImin.
 $
 $ BAJ (adjusted) 
 $
-&SIN4 BETAMAX = 1.52, Z0MAX = 1.002 /
-$&SDS4 SDSC1 = 1.0, SDSC2 = 0.0 , SDSBCK = 0.100, SDSHCK = 1.0, SDSDTH = 0 /
-$&SDB1 BJGAM = 1.0, BJALFA = 0.001 /
-&SNL1 NLPROP = 3.1E7 /
-$
-$ TEST451
-$
-&SNL1 NLPROP=2.5E7 /
+&SDB1 BJGAM = 0.64, BJALFA = 0.8, DBFLAG = 1.0 /
 $
 $
 &UNST
