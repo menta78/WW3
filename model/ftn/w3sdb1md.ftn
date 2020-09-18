@@ -275,30 +275,30 @@
         ENDIF
         D = - CBJ
         S = D * A
-      ELSE IF (IWB == 2) THEN ! experimental 
-        IF (BB .GT. THR) THEN  ! changed from ETOT to HRMS   
-          HRMS = SQRT(8*EMEAN)
-          FAK  = (1+4./SQRT(PI)*(B*BB+1.5*B)*exp(-BB)-ERF(B))
-          CBJ  = SDBC1*FAK*SQRT(PI)/16.*FMEAN*HRMS**3/DEPTH/HRMS**2 ! removed negative sign TJH
-        ELSE
-          CBJ  = 0.
-        ENDIF
-        D = - CBJ
-        S = D * A 
-      ELSE IF (IWB == 3) THEN  ! Thortnon and guza breaking
-        IF (HRMS .GT. THR) THEN
-          ETOT = SUM(A)
-          GAM = 0.64
-          BETA = 1.0
-          MCON = (HRMS/(GAM*DEPTH))**2.0
-          FAK = (1.0-1.0/(1.0+(HRMS/(GAM*DEPTH))**2)**(5.0/2.0))
-          FAK2 = FMEAN*BETA**3*HRMS**3/DEPTH*MCON
-          CBJ = 3.0*SQRT(PI)/16.0*FAK2*FAK/(HRMS)**2
-        ELSE
-          CBJ = 0.
-        ENDIF
-        D = - CBJ
-        S = D * A
+!      ELSE IF (IWB == 2) THEN ! experimental 
+!        IF (BB .GT. THR) THEN  ! changed from ETOT to HRMS   
+!          HRMS = SQRT(8*EMEAN)
+!          FAK  = (1+4./SQRT(PI)*(B*BB+1.5*B)*exp(-BB)-ERF(B))
+!          CBJ  = SDBC1*FAK*SQRT(PI)/16.*FMEAN*HRMS**3/DEPTH/HRMS**2 ! removed negative sign TJH
+!        ELSE
+!          CBJ  = 0.
+!        ENDIF
+!        D = - CBJ
+!        S = D * A 
+!      ELSE IF (IWB == 3) THEN  ! Thortnon and guza breaking
+!        IF (HRMS .GT. THR) THEN
+!          ETOT = SUM(A)
+!          GAM = 0.64
+!          BETA = 1.0
+!          MCON = (HRMS/(GAM*DEPTH))**2.0
+!          FAK = (1.0-1.0/(1.0+(HRMS/(GAM*DEPTH))**2)**(5.0/2.0))
+!          FAK2 = FMEAN*BETA**3*HRMS**3/DEPTH*MCON
+!          CBJ = 3.0*SQRT(PI)/16.0*FAK2*FAK/(HRMS)**2
+!        ELSE
+!          CBJ = 0.
+!        ENDIF
+!        D = - CBJ
+!        S = D * A
       ELSE IF (IWB == 4) THEN !STWAVE Breaking
         IF (HRMS .GT. THR) THEN
           EM = HM * HM / 16.
@@ -375,8 +375,8 @@
 !     Compute depth-induced breaking using Battjes and Janssen bore
 !     model approach
 !
-!  2. Method : Battjes & Janssen (1978), 
-! 
+!  2. Method : Thornton and Guza (1984), 
+!      NEED TO UPDATE *****************************************
 !           Sbr   = Dtot/Etot*WA = D * WA
 !           Dtot  = 0.25*alpha*Qb*fm*Hmax²
 !           fm    = sigma/2Pi
@@ -398,6 +398,7 @@
 !           1 - QB = HRMS**2
 !           ------   -------
 !            ln QB    HM**2
+!     NEED TO UPDATE *****************************************
 !
 !  3. Parameters :
 !
@@ -523,9 +524,9 @@
 !/DEBUGRUN        WRITE(*,'(I10,20F20.10)') IX, DEPTH, CBJ, BB, QB, SDBC1, SDBC2, FMEAN, FMEAN2, 4*SQRT(ETOT)
 !/DEBUGRUN      ENDIF
 
-!/DEBUGDB2      WRITE(740+IAPROC,*) 'CBJ=', CBJ
-!/DEBUGDB2      WRITE(740+IAPROC,*) 'LBREAK=', LBREAK
-!/DEBUGDB2      FLUSH(740+IAPROC)
+!/DEBUGDB1      WRITE(740+IAPROC,*) 'CBJ=', CBJ
+!/DEBUGDB1      WRITE(740+IAPROC,*) 'LBREAK=', LBREAK
+!/DEBUGDB1      FLUSH(740+IAPROC)
 !
 ! ... Test output of arrays
 !
