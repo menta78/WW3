@@ -760,7 +760,7 @@
 !/NL3      INTEGER                 :: NQDEF
 !/NL3      REAL                    :: MSC, NSC, KDFD, KDFS
 !/NL4      INTEGER                 :: INDTSA, ALTLP
-!/DB1      REAL                    :: BJALFA, BJGAM
+!/DB1      REAL                    :: BJALFA, BJGAM, DBFLAG
 !/DB1      LOGICAL                 :: BJFLAG
 !/PR2      REAL                    :: DTIME
 !
@@ -859,7 +859,7 @@
 !/BT4      NAMELIST /SBT4/ SEDMAPD50, SED_D50_UNIFORM, RIPFAC1,            &
 !/BT4                      RIPFAC2, RIPFAC3, RIPFAC4, SIGDEPTH,            &
 !/BT4                      BOTROUGHMIN, BOTROUGHFAC
-!/DB1      NAMELIST /SDB1/ BJALFA, BJGAM, BJFLAG
+!/DB1      NAMELIST /SDB1/ BJALFA, BJGAM, BJFLAG, DBFLAG
 !/UOST     NAMELIST /UOST/ UOSTFILELOCAL, UOSTFILESHADOW,             &
 !/UOST                     UOSTFACTORLOCAL, UOSTFACTORSHADOW
 !
@@ -1902,6 +1902,7 @@
 !/DB1      BJALFA = 1.
 !/DB1      BJGAM  = 0.73
 !/DB1      BJFLAG = .TRUE.
+!/DB1      DBFLAG = 1.
 !
 !/DB1      CALL READNL ( NDSS, 'SDB1', STATUS )
 !/DB1      WRITE (NDSO,928) STATUS
@@ -1918,6 +1919,7 @@
 !/DB1      SDBC1  = BJALFA
 !/DB1      SDBC2  = BJGAM
 !/DB1      FDONLY = BJFLAG
+!/DB1      SDBSC  = DBFLAG
 !
 !
 !/UOST      UOSTFILELOCAL = 'obstructions_local.'//ADJUSTL(TRIM(GNAME))//'.in'

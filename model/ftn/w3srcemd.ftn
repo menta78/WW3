@@ -326,6 +326,7 @@
 !             viscoelastic sea ice model (Mosig et al. 2015).
 !     !/DB0   No depth-limited breaking.                 ( Choose one )
 !     !/DB1   Battjes-Janssen depth-limited breaking.
+!     !/DB2   Thornton and Guza depth-limited breaking.
 !     !/DBX   User-defined bottom friction.
 !
 !     !/TR0   No triad interactions.                     ( Choose one )
@@ -408,6 +409,8 @@
 !/IS2      USE W3SIS2MD
 !/IS2      USE W3GDATMD, ONLY : IS2PARS
 !/DB1      USE W3SDB1MD
+!/DB1      USE W3GDATMD, ONLY : SDBSC
+!/DB2      USE W3SDB2MD
 !/DBX      USE W3SDBXMD
 !/TR1      USE W3STR1MD
 !/TRX      USE W3STRXMD
@@ -497,6 +500,7 @@
 !/IC4                                 VSIC(NSPEC), VDIC(NSPEC),            &
 !/IC5                                 VSIC(NSPEC), VDIC(NSPEC),            &
 !/DB1                                 VSDB(NSPEC), VDDB(NSPEC),            &
+!/DB2                                 VSDB(NSPEC), VDDB(NSPEC),            &
 !/DBX                                 VSDB(NSPEC), VDDB(NSPEC),            &
 !/TR1                                 VSTR(NSPEC), VDTR(NSPEC),            &
 !/TRX                                 VSTR(NSPEC), VDTR(NSPEC),            &
@@ -573,6 +577,8 @@
       VDBT = 0.
 !/DB1      VSDB = 0.
 !/DB1      VDDB = 0.
+!/DB2      VSDB = 0.
+!/DB2      VDDB = 0.
 !/IC1      VSIC = 0.
 !/IC1      VDIC = 0.
 !/IC2      VSIC = 0.
@@ -840,8 +846,14 @@
 !/STX        CALL W3SDSX
 !
 !/PDLIB    IF (.NOT. FSSOURCE .or. LSLOC) THEN
+!/DB1          SELECT CASE (NINT(SDBSC))
+!/DB1          CASE(1)
 !/DB1          CALL W3SDB1 ( IX, SPEC, DEPTH, EMEAN, FMEAN, WNMEAN, CG1,       &
 !/DB1                                                 LBREAK, VSDB, VDDB )
+!/DB1          CASE(2)
+!/DB1          CALL W3SDB2 ( IX, SPEC, DEPTH, EMEAN, FMEAN, CG1,       &
+!/DB1                                                 LBREAK, VSDB, VDDB )
+!/DB1          END SELECT
 !/DBX          CALL W3SDBX
 !/PDLIB    ENDIF
 !
@@ -1011,6 +1023,8 @@
 !/DEBUGSRC!/ST6          WRITE(740+IAPROC,*) 'min/max/sum(VDWL)=', minval(VDWL), maxval(VDWL), sum(VDWL)
 !/DEBUGSRC!/DB1          WRITE(740+IAPROC,*) 'min/max/sum(VSDB)=', minval(VSDB), maxval(VSDB), sum(VSDB)
 !/DEBUGSRC!/DB1          WRITE(740+IAPROC,*) 'min/max/sum(VDDB)=', minval(VDDB), maxval(VDDB), sum(VDDB)
+!/DEBUGSRC!/DB2          WRITE(740+IAPROC,*) 'min/max/sum(VSDB)=', minval(VSDB), maxval(VSDB), sum(VSDB)
+!/DEBUGSRC!/DB2          WRITE(740+IAPROC,*) 'min/max/sum(VDDB)=', minval(VDDB), maxval(VDDB), sum(VDDB)
 !/DEBUGSRC!/DBX          WRITE(740+IAPROC,*) 'min/max/sum(VSDB)=', minval(VSDB), maxval(VSDB), sum(VSDB)
 !/DEBUGSRC!/DBX          WRITE(740+IAPROC,*) 'min/max/sum(VDDB)=', minval(VDDB), maxval(VDDB), sum(VDDB)
 !/DEBUGSRC!/TR1          WRITE(740+IAPROC,*) 'min/max/sum(VSTR)=', minval(VSTR), maxval(VSTR), sum(VSTR)
@@ -1058,6 +1072,15 @@
 !/DB1                  evS = -evS
 !/DB1                  evD = 2*evD
 !/DB1                ENDIF
+!/DB2                eVS = VSDB(ISP) * JAC
+!/DB2                eVD = MIN(0.,VDDB(ISP))
+!/DB2                IF (eVS .gt. 0.) THEN
+!/DB2                  evS = 2*evS
+!/DB2                  evD = -evD 
+!/DB2                ELSE
+!/DB2                  evS = -evS
+!/DB2                  evD = 2*evD
+!/DB2                ENDIF
 !/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * eVS
 !/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
 !/TR1                eVS = VSTR(ISP) * JAC 
@@ -1108,6 +1131,8 @@
 !/PDLIB              eVD = VD(ISP)
 !/DB1                eVS = eVS + DBLE(VSDB(ISP)) * JAC
 !/DB1                eVD = evD + MIN(0.,DBLE(VDDB(ISP)))
+!/DB2                eVS = eVS + DBLE(VSDB(ISP)) * JAC
+!/DB2                eVD = evD + MIN(0.,DBLE(VDDB(ISP)))
 !!/TR1                eVS = eVS + DBLE(VSTR(ISP)) * JAC
 !!/TR1                eVD = evD + MIN(0.,DBLE(VDTR(ISP)))
 !!/VEG1              eVS = eVS + DBLE(VSVG(ISP)) * JAC
@@ -1203,6 +1228,10 @@
 !/DB1       eInc1 = VSDB(IS) * DT / MAX ( 1. , (1.-HDT*VDDB(IS)))
 !/DB1       SPEC(IS) = MAX ( 0. , SPEC(IS)+eInc1 )
 !/DB1     END DO
+!/DB2     DO IS=IS1, NSPECH
+!/DB2       eInc1 = VSDB(IS) * DT / MAX ( 1. , (1.-HDT*VDDB(IS)))
+!/DB2       SPEC(IS) = MAX ( 0. , SPEC(IS)+eInc1 )
+!/DB2     END DO
 !/TR1     DO IS=IS1, NSPECH
 !/TR1       eInc1 = VSTR(IS) * DT / MAX ( 1. , (1.-HDT*VDTR(IS)))
 !/TR1       SPEC(IS) = MAX ( 0. , SPEC(IS)+eInc1 )

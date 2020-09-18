@@ -1299,14 +1299,24 @@
 
 !/DB1      IF ( WRITE ) THEN
 !/DB1          WRITE (NDSM)                                           &
-!/DB1                 SDBC1, SDBC2, FDONLY
+!/DB1                 SDBC1, SDBC2, FDONLY, SDBSC
 !/DB1        ELSE
 !/DB1          READ (NDSM,END=801 ,IOSTAT=IERR)                &
-!/DB1                 SDBC1, SDBC2, FDONLY
+!/DB1                 SDBC1, SDBC2, FDONLY, SDBSC
 !/DB1        END IF
 !
-!/DB1      IF ( FLTEST ) WRITE (NDST,9053) SDBC1, SDBC2, FDONLY
-
+!/DB1      IF ( FLTEST ) WRITE (NDST,9053) SDBC1, SDBC2, FDONLY, SDBSC
+!
+!/DB2      IF ( WRITE ) THEN
+!/DB2          WRITE (NDSM)                                           &
+!/DB2                 SDBC1, SDBC2
+!/DB2        ELSE
+!/DB2          READ (NDSM,END=801 ,IOSTAT=IERR)                &
+!/DB2                 SDBC1, SDBC2
+!/DB2        END IF
+!
+!/DB2      IF ( FLTEST ) WRITE (NDST,9053) SDBC1, SDBC2
+!
 !/UOST      IF ( WRITE ) THEN
 !/UOST          WRITE (NDSM) UOSTFILELOCAL, UOSTFILESHADOW,            &
 !/UOST                       UOSTFACTORLOCAL, UOSTFACTORSHADOW
@@ -1576,6 +1586,9 @@
 !
 !/DB1 9053 FORMAT (' TEST W3IOGR : MODULE W3GDATMD SDBP'/             &
 !/DB1              '      DATA   : ',2E10.3,L4)
+!
+!/DB2 9053 FORMAT (' TEST W3IOGR : MODULE W3GDATMD SDBP'/             &
+!/DB2              '      DATA   : ',2E10.3,L4)
 !
 !/PR2 9060 FORMAT (' TEST W3IOGR : MODULE W3GDATMD PROP'/             &
 !/PR2              '      DATA   : ',2E10.3)
