@@ -527,7 +527,7 @@
       REAL                    :: eInc1, eInc2, eVS, eVD, JAC
       REAL                    :: DeltaSRC(NSPEC)
       REAL, PARAMETER         :: DTMINTOT = 0.01
-      LOGICAL                 :: LNEWLIMITER = .FALSE. 
+      LOGICAL                 :: LNEWLIMITER = .TRUE. 
 !/PDLIB  REAL                 :: PreVS, FAK, DVS, SIDT, FAKS, MAXDAC
 
 !/NNT      CHARACTER(LEN=17), SAVE :: FNAME = 'test_data_nnn.ww3'
@@ -945,6 +945,7 @@
         IF (LNEWLIMITER) THEN
           DO IK=1, NK
             DAM2(1+(IK-1)*NTH) = 5.0E-07*DTMIN*GRAV/(SIG(IK)*TPIINV)**4*USTAR*MAX(FMEANWS,FMEAN)/TPI/SIG(IK)*CG1(IK)
+            WRITE(*,*) IK, DAM2(1+(IK-1)*NTH), DAM(1+(IK-1)*NTH),SIG(IK)*TPIINV, FMEANWS, FMEAN, TPIINV, SIG(IK),CG1(IK)/CLATS(ISEA)
           END DO
           DO IK=1, NK
             IS0    = (IK-1)*NTH
@@ -1061,8 +1062,8 @@
 !/PDLIB              DVS    = VS(ISP) * FAKS
 !/PDLIB              DVS    = SIGN(MIN(MAXDAC,ABS(DVS)),DVS)
 !/PDLIB              PreVS  = DVS / FAKS
-!/PDLIB              eVS = PreVS / CG1(IK) * CLATSL
-!/PDLIB              eVD = MIN(0.,VD(ISP))
+!/PDLIB              eVS    = PreVS / CG1(IK) * CLATSL
+!/PDLIB              eVD    = MIN(0.,VD(ISP))
 !/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * (eVS - eVD*VA(ISP,JSEA)*JAC)
 !/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
 !/DB1                eVS = VSDB(ISP) * JAC

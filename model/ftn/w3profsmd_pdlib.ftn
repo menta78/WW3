@@ -4015,13 +4015,17 @@
 !/REF1                K1=ZERO
 !/REF1              END IF
               DTK               = KP(POS,IE) * DTG * IB1
-              I3    =  PDLIB_POSI(3,J)
-              ASPAR_JAC(ISP,I3) = ASPAR_JAC(ISP,I3)                          - DTK * DELTAL(POS_TRICK(POS,2),IE)
-              B_JAC(ISP,IP)     = B_JAC(ISP,IP)     + PDLIB_TRIA03(IE) * VA(ISP,IP) * IB2
               I1    =  PDLIB_POSI(1,J)
-              ASPAR_JAC(ISP,I1) = ASPAR_JAC(ISP,I1) + PDLIB_TRIA03(IE) + DTK - DTK * DELTAL(POS,IE)
               I2    =  PDLIB_POSI(2,J)
-              ASPAR_JAC(ISP,I2) = ASPAR_JAC(ISP,I2)                          - DTK * DELTAL(POS_TRICK(POS,1),IE)
+              I3    =  PDLIB_POSI(3,J)
+              B_JAC(ISP,IP)     = B_JAC(ISP,IP)     + PDLIB_TRIA03(IE) * VA(ISP,IP) * IB2
+              IF (FSGEOADVECT) THEN
+                ASPAR_JAC(ISP,I1) = ASPAR_JAC(ISP,I1) + PDLIB_TRIA03(IE) + DTK - DTK * DELTAL(POS,IE)
+                ASPAR_JAC(ISP,I2) = ASPAR_JAC(ISP,I2)                          - DTK * DELTAL(POS_TRICK(POS,1),IE)
+                ASPAR_JAC(ISP,I3) = ASPAR_JAC(ISP,I3)                          - DTK * DELTAL(POS_TRICK(POS,2),IE)
+              ELSE
+                ASPAR_JAC(ISP,I1) = ASPAR_JAC(ISP,I1) + PDLIB_TRIA03(IE)
+              ENDIF
             END DO
           ELSE
             DO I = 1, PDLIB_CCON(IP)
@@ -5259,7 +5263,7 @@
               ELSE
                 PreVS     = VSTOT(ISP,JSEA)
               END IF
-              eVS = PreVS / CG(IK,ISEA) * CLATS(ISEA)
+              eVS = PreVS * CLATS(ISEA) / CG(IK,ISEA) 
               eVD = DBLE(VDTOT(ISP,JSEA))
 !/DB1            eVS = eVS + DBLE(VSDB(ISP)) / CG(IK,ISEA) * CLATS(ISEA)
 !/DB1            eVD = evD + DBLE(VDDB(ISP))
