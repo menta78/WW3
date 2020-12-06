@@ -1345,10 +1345,10 @@
 !/PDLIB       ELSE
 !/PDLIB         DTGpre = DTG
 !/PDLIB       END IF
-!/PDLIB       IF (LSLOC) THEN
-!/PDLIB         B_JAC     = 0.
-!/PDLIB         ASPAR_JAC = 0.
-!/PDLIB       ENDIF
+!!/PDLIB       IF (LSLOC) THEN
+!!/PDLIB         B_JAC     = 0.
+!!/PDLIB         ASPAR_JAC = 0.
+!!/PDLIB       ENDIF
 
 !/MEMCHECK       write(40000+IAPROC,*) 'memcheck_____:', 'WW3_WAVE TIME LOOP 13'
 !/MEMCHECK       call getMallocInfo(mallinfos)
@@ -1365,6 +1365,11 @@
 !/PDLIB            VSTOT = 0.
 !/PDLIB            VDTOT = 0.
 !/PDLIB          ENDIF
+!/PDLIB          IF (LSLOC) THEN
+!/PDLIB            B_JAC     = 0.
+!/PDLIB            ASPAR_JAC = 0.
+!/PDLIB          ENDIF
+
 
 !/PDLIB          DO JSEA = 1, NP
 
@@ -1394,9 +1399,9 @@
 !/DEBUGRUN         ENDDO
 
 !
-!!/PDLIB    IF ((IOBP_LOC(JSEA) .eq. 1 .or. IOBP_LOC(JSEA) .eq. 3) &
-!!/PDLIB       & .and. IOBDP_LOC(JSEA) .eq. 1 .and. IOBPA_LOC(JSEA) .eq. 0) THEN
-!/PDLIB               IF ( MAPSTA(IY,IX) .EQ. 1 .AND. FLAGST(ISEA)) THEN
+!/PDLIB    IF ((IOBP_LOC(JSEA) .eq. 1 .or. IOBP_LOC(JSEA) .eq. 3) &
+!/PDLIB       & .and. IOBDP_LOC(JSEA) .eq. 1 .and. IOBPA_LOC(JSEA) .eq. 0) THEN
+!!/PDLIB               IF ( MAPSTA(IY,IX) .EQ. 1 .AND. FLAGST(ISEA)) THEN
 
 
 !/PDLIB!/DEBUGSRC         IF (IX .eq. DEBUG_NODE) THEN
@@ -2029,7 +2034,7 @@
 #endif
 
 !/DEBUGRUN          IF (JSEA == DEBUG_NODE) WRITE(*,*) 'W3WAVE TEST', ISEA, JSEA, SUM(VA(:,JSEA))
-                IF ( MAPSTA(IY,IX) .EQ. 1 .AND. FLAGST(ISEA)) THEN
+                IF (MAPSTA(IY,IX) .EQ. 1 .AND. FLAGST(ISEA)) THEN
                      TMP1   = WHITECAP(JSEA,1:4)
                      TMP2   = BEDFORMS(JSEA,1:3)
                      TMP3   = TAUBBL(JSEA,1:2)

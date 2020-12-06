@@ -5209,7 +5209,7 @@
         IP_glob = iplg(IP)
         ISEA    = MAPFS(1,IP_glob)
 
-        IF (IOBP_LOC(IP).eq.1..and.IOBDP_LOC(IP).eq.1.and.IOBPA_LOC(IP).eq.0) THEN
+        IF ((IOBP_LOC(IP).eq.1..or.IOBP_LOC(JSEA).eq. 3).and.IOBDP_LOC(IP).eq.1.and.IOBPA_LOC(IP).eq.0) THEN
 
           DO IK=1, NK
             DAM(1+(IK-1)*NTH) = FACP / ( SIG(IK) * WN(IK,ISEA)**3 )
@@ -5274,8 +5274,12 @@
 !/DB2            eVD = evD + DBLE(VDDB(ISP))
               B_JAC(ISP,IP)                   = B_JAC(ISP,IP) + SIDT * (eVS - eVD*VA(ISP,JSEA))
               ASPAR_JAC(ISP,PDLIB_I_DIAG(IP)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(IP)) - SIDT * eVD
+              !IF (ISEA .eq. 100) THEN
+              !  WRITE(*,*) ' A and B', ISP, eVS, eVD, VA(ISP,JSEA), B_JAC(ISP,IP), ASPAR_JAC(ISP,PDLIB_I_DIAG(IP))
+              !ENDIF
             END DO
           END DO
+          !IF (IP .eq. 100) WRITE(*,*) 'SUM A and B', IP, SUM(B_JAC(:,IP)), SUM(ASPAR_JAC(:,PDLIB_I_DIAG(IP)))
         END IF
       END DO
 !!/DEBUGSOLVER     CALL PrintTotalOffContrib("Offdiag after the source terms") !AR: Need to rewrite for IMEM == 2

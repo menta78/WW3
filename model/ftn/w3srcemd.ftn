@@ -1066,8 +1066,11 @@
 !/PDLIB              PreVS  = DVS / FAKS
 !/PDLIB              eVS    = PreVS / CG1(IK) * CLATSL
 !/PDLIB              eVD    = MIN(0.,VD(ISP))
-!/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * (eVS - eVD*VA(ISP,JSEA)*JAC)
+!/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * (eVS - eVD*SPEC(ISP)*JAC)
 !/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
+!        IF (JSEA .eq. 100 .and. IT .gt. 0) THEN
+!          WRITE(*,*) 'A and B', ISP, eVS, eVD, SPEC(ISP)*JAC, B_JAC(ISP,JSEA), ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA))
+!        ENDIF
 !/DB1                eVS = VSDB(ISP) * JAC
 !/DB1                eVD = MIN(0.,VDDB(ISP))
 !/DB1                IF (eVS .gt. 0.) THEN
@@ -1086,8 +1089,8 @@
 !/DB2                  evS = -evS
 !/DB2                  evD = 2*evD
 !/DB2                ENDIF
-!/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * eVS
-!/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
+!!/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * eVS
+!!/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
 !/TR1                eVS = VSTR(ISP) * JAC 
 !/TR1                eVD = VDTR(ISP)
 !/TR1                IF (eVS .gt. 0.) THEN
@@ -1097,19 +1100,23 @@
 !/TR1                  evS = -evS
 !/TR1                  evD = 2*evD
 !/TR1                ENDIF
-!/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * eVS
-!/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
+!!/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * eVS
+!!/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
                      !IF (IX == 1232) write(740+IAPROC,*) IX, ISP, B_JAC(ISP,JSEA), ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)), &
                      !                         & VSLN(ISP), VSIN(ISP), VDIN(ISP), VSDS(ISP), VDDS(ISP), &
                      !                         !& VSTR(ISP), VDTR(ISP), VSDB(ISP), VDDB(ISP), VSNL(ISP), VDNL(ISP), &
                      !                         & SPEC(ISP), U10ABS, U10DIR, USTAR 
                      
-!!/VEG1              eVS = eVS + DBLE(VSVG(ISP)) * JAC 
-!!/VEG1              eVD = evD + MIN(0.,DBLE(VDVG(ISP)))
+!!/VEG1              eVS = eVS + VSVG(ISP) * JAC 
+!!/VEG1              eVD = evD + MIN(0.,VDVG(ISP))
 !!/PDLIB              B_JAC(ISP,JSEA)                   = B_JAC(ISP,JSEA) + SIDT * (eVS - eVD*VA(ISP,JSEA)*JAC)
 !!/PDLIB              ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) = ASPAR_JAC(ISP,PDLIB_I_DIAG(JSEA)) - SIDT * eVD
 !/PDLIB            END DO
+
 !/PDLIB          END DO
+!                 IF (IT .gt. 0 .and. JSEA .eq. 100) THEN
+!                    WRITE(*,*) 'SUM A and B', JSEA, SUM(B_JAC(:,JSEA)), SUM(ASPAR_JAC(:,PDLIB_I_DIAG(JSEA)))
+!                 ENDIF
                  !IF (ISEA == 32) THEN
                  !  write(740+IAPROC,*) IX, ISEA, JSEA, IT, SUM(B_JAC(1:NSPEC,JSEA)), &
                  !                    SUM(ASPAR_JAC(1:NSPEC,PDLIB_I_DIAG(JSEA))), & 
@@ -1148,7 +1155,7 @@
 !/PDLIB          END DO
 !/PDLIB        ENDIF
 !/PDLIB      ENDIF 
-             
+
           PrintDeltaSmDA=.FALSE.
           IF (PrintDeltaSmDA .eqv. .TRUE.) THEN
             DO IS=1,NSPEC
