@@ -6502,8 +6502,7 @@
 !/DEBUGFREQSHIFT        END DO
 !/DEBUGFREQSHIFT        WRITE(740+IAPROC,*) 'sum(eDiff/VAnew/VAold)=', sum(abs(eDiff)), sum(abs(VAnew)), sum(abs(VAold))
 
-
-
+!AR: Must go outside of the iterative loop ...
             IF (B_JGS_LIMITER) THEN
               CALL ACTION_LIMITER_LOCAL(IP, eSum, ACLOC, DTG)
             END IF
