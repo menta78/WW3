@@ -526,7 +526,7 @@
       REAL                    :: eInc1, eInc2, eVS, eVD, JAC
       REAL                    :: DeltaSRC(NSPEC)
       REAL, PARAMETER         :: DTMINTOT = 0.01
-      LOGICAL                 :: LNEWLIMITER = .TRUE. 
+      LOGICAL                 :: LNEWLIMITER = .FALSE. 
 !/PDLIB  REAL                 :: PreVS, FAK, DVS, SIDT, FAKS, MAXDAC
 
 !/NNT      CHARACTER(LEN=17), SAVE :: FNAME = 'test_data_nnn.ww3'
@@ -1658,12 +1658,13 @@
 !/REF1                        BERG, DTG, IX, IY,  VREF )
 !/REF1          IF (GTYPE.EQ.UNGTYPE.AND.REFPARS(3).LT.0.5) THEN 
 !AR: this can be further simplified let's do some simple tests 1st ...
+!AR: Needs to be recoded for pdlib ... makes no sense anymore ...
 !/REF1           IF (LPDLIB) THEN
-!/PDLIB             IOBPIP = IOBP_LOC(IX)
+!!/PDLIB             IOBPIP = IOBP_LOC(JSEA)
 !/REF1              IF (IOBPIP.EQ.0) THEN 
 !/REF1                DO IK=1, NK 
 !/REF1                  DO ITH=1, NTH
-!/PDLIB                   IOBPDIP = IOBPD_LOC(ITH,IX)
+!!/PDLIB                   IOBPDIP = IOBPD_LOC(ITH,JSEA)
 !/REF1                    IF (IOBPDIP.EQ.0) THEN
 !/REF1                     SPEC(ITH+(IK-1)*NTH) = DTG*VREF(ITH+(IK-1)*NTH)!
 !/REF1                    ENDIF 
@@ -1671,7 +1672,7 @@
 !/REF1                END DO 
 !/REF1              ELSE 
 !AR: Todo this cannot work since IOBDP is never -1 
-!/PDLIB               IOBDPIP = IOBDP_LOC(IX)
+!!/PDLIB               IOBDPIP = IOBDP_LOC(JSEA)
 !/REF1                IF (IOBDPIP .EQ. -1) THEN
 !/REF1                  SPEC(:) = SPEC(:) + DTG * VREF(:)
 !/REF1                ENDIF

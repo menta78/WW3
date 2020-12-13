@@ -935,13 +935,6 @@
       ITH    = 1 + MOD(ISP-1,NTH)
       IK     = 1 + (ISP-1)/NTH
       DTMAX  = DBLE(10.E10)
-
-!      DO IP = 1, npa
-!        IP_glob = iplg(IP)
-!        IF (IOBPD(ITH,IP_glob) .EQ. 0) THEN
-!          if ( AC(IP) .gt. 0.) write(*,*) 'TEST w3profs_pdlib 0', ip, ith, ik, AC(IP)
-!        endif
-!      END DO
 !
 !/REF1       IOBPDR(:)=(1-IOBP_LOC(:))*(1-IOBPD_LOC(ITH,:))
 
@@ -6212,7 +6205,7 @@
         ENDIF
         B_JAC = ZERO
       ENDIF
-
+!
 !/DEBUGSOLVER     !WRITE(740+IAPROC,'(A20,20E20.10)') 'SUM BJAC INIT', sum(B_JAC), SUM(ASPAR_JAC)
 
 !/MEMCHECK      write(50000+IAPROC,*) 'memcheck_____:', 'WW3_PROP SECTION 3'
@@ -6371,7 +6364,7 @@
               !WRITE(*,'(A10,10F20.10)') 'JAC3', SUM(ASPAR_DIAG_LOCAL), SUM(ASPAR_OFF_DIAG_LOCAL), SUM(B_JAC_LOCAL)
               eSum(1:NSPEC)       = B_JAC(1:NSPEC,IP)
               ASPAR_DIAG(1:NSPEC) = ASPAR_JAC(1:NSPEC,PDLIB_I_DIAG(IP))
-              !WRITE(*,*) 'TEST ASPAR B_JAC', IP, SUM(B_JAC(1:NSPEC,IP)), SUM(ASPAR_DIAG)
+              !IF (IP_glob == 64058) WRITE(740+IAPROC,*) 'TEST ASPAR B_JAC', IP, SUM(B_JAC(1:NSPEC,IP)), SUM(ASPAR_DIAG)
 !/DEBUGFREQSHIFT      WRITE(740+IAPROC,*) 'eSI=', eSI
 !/DEBUGFREQSHIFT      WRITE(740+IAPROC,*) 'sum(ASPAR_DIAG)=', sum(ASPAR_DIAG)
 !/DEBUGSRC            WRITE(740+IAPROC,*) 'Step 1: sum(eSum)=', sum(eSum)
@@ -6503,12 +6496,13 @@
 !/DEBUGFREQSHIFT        WRITE(740+IAPROC,*) 'sum(eDiff/VAnew/VAold)=', sum(abs(eDiff)), sum(abs(VAnew)), sum(abs(VAold))
 
 !AR: Must go outside of the iterative loop ...
-            IF (B_JGS_LIMITER) THEN
-              CALL ACTION_LIMITER_LOCAL(IP, eSum, ACLOC, DTG)
-            END IF
+            !IF (B_JGS_LIMITER) THEN
+            !  CALL ACTION_LIMITER_LOCAL(IP, eSum, ACLOC, DTG)
+            !END IF
 
             IF (B_JGS_BLOCK_GAUSS_SEIDEL) THEN
-              VA(1:NSPEC,IP) = eSum !* IOBDP_LOC(IP)*DBLE(IOBPD_LOC(ITH,IP))
+              VA(1:NSPEC,IP)    = eSum !* IOBDP_LOC(IP)*DBLE(IOBPD_LOC(ITH,IP))
+              !IF (IP_glob == 64058) WRITE(740+IAPROC,*) 'TEST SUM VA', IP, SUM(VA(1:NSPEC,IP)), DW(ISEA)
             ELSE
               U_JAC(1:NSPEC,IP) = eSum
             END IF
@@ -6700,7 +6694,7 @@
 !/MEMCHECK      call printMallInfo(IAPROC+50000,mallInfos)
 
         nbiter = nbiter + 1 
-
+ 
       END DO ! Open Do Loop ... End of Time Interval 
 
 !/DEBUGSOLVER     WRITE(740+IAPROC,*) 'nbIter=', nbIter, ' B_JGS_MAXITER=', B_JGS_MAXITER

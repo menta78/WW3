@@ -758,7 +758,7 @@
 !/S      CALL STRACE (IENT, 'W3XYP3')
 !
 ! 1.  Preparations --------------------------------------------------- *
-
+!AR: ToDo: u do not want to check this all the time during run time, right? 
       IF ( ICLOSE .EQ. ICLOSE_TRPL ) THEN
 !/ ------------------------------------------------------------------- /
          IF (IAPROC .EQ. NAPERR) &
@@ -845,9 +845,9 @@
       FTH = FGSE * WDTH * DTH * DTLOC
       FCG = FGSE * WDCG * 0.5 * (XFR-1./XFR) * DTLOC
       IF ( FLAGLL ) THEN
-          FTH = FTH / RADIUS / DERA
-          FCG = FCG / RADIUS / DERA
-        END IF
+        FTH = FTH / RADIUS / DERA
+        FCG = FCG / RADIUS / DERA
+      END IF
       FCG = FCG / REAL(NTLOC) !TJC: required to match original (is this correct?)
       FTHX = - FTH * ESIN(ITH)
       FTHY =   FTH * ECOS(ITH)
