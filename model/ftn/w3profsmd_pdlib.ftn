@@ -5770,6 +5770,7 @@
       USE W3ADATMD, ONLY: CG, CX, CY
       USE W3GDATMD, ONLY: NK, NK2, NTH, NSPEC
       USE W3ODATMD, ONLY: TBPI0, TBPIN, FLBPI, IAPROC, BBPI0, BBPIN, ISBPI, NBI
+      USE W3GDATMD, ONLY: IOBP_LOC, IOBPD_LOC, IOBDP_LOC, IOBPA_LOC
 !/DEBUGIOBC      USE W3GDATMD, ONLY: DDEN
 !/
       IMPLICIT NONE
@@ -5817,15 +5818,15 @@
 !/DEBUGSOLVER     sumCG=0
 !/DEBUGSOLVER     sumCLATS=0
         DO IBI=1, NBI
-          ISEA=ISBPI(IBI)
+          ISEA    = ISBPI(IBI)
           IP_glob = MAPSF(ISEA,1)
-          JX=IPGL_npa(IP_glob)
+          JX      = IPGL_npa(IP_glob)
           IF (JX .gt. 0) THEN
             DO ITH=1,NTH
               DO IK=1,NK
                 ISP=ITH + (IK-1)*NTH
-                VA(ISP,JX) = ( RD1*BBPI0(ISP,IBI) + RD2*BBPIN(ISP,IBI) )  &
-                             / CG(IK,ISBPI(IBI)) * CLATS(ISBPI(IBI))
+                VA(ISP,JX) = (( RD1*BBPI0(ISP,IBI) + RD2*BBPIN(ISP,IBI) )  &
+                             / CG(IK,ISBPI(IBI)) * CLATS(ISBPI(IBI))) * IOBDP_LOC(ISEA) 
               END DO
             END DO
 !/DEBUGIOBC       ETOT=0
