@@ -1466,7 +1466,7 @@
 !
             IF (TIDE_NTI.GT.(TIDE_MF*3)) THEN 
               TIDE_LAT = YGRD(IY,IX)
-              IF (ABS(TIDE_LAT).LT.5.) TIDE_LAT=SIGN(5.,TIDE_LAT)
+              IF (ABS(TIDE_LAT).LT.5.) TIDE_LAT=SIGN(REAL(5.,8),TIDE_LAT)
               DO I=1,TIDE_NTI
                 CALL SETVUF(TIDE_HOURS(I),TIDE_LAT,I)
               END DO
