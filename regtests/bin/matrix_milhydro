@@ -34,7 +34,7 @@
 # Compiler option. Choose appropriate compiler and set cmplOption to
 # y if using for the first time or using a different compiler
 
-  cmplr=gnu
+  cmplr=Gnu_matrix
   export cmplOption='y'
 
 # Set batchq queue, choose modules and other custom variables to fit system and 
@@ -49,7 +49,7 @@
 
 # Netcdf and Parmetis modules & variables
 
-  echo "  source $main_dir/bin/setpaths_milhydro3 "    >> matrix.head
+  echo "  source $main_dir/bin/setpaths.milhydro2 "    >> matrix.head
   echo ' ' 
 
   if [ "$batchq" = 'slurm' ]
@@ -58,13 +58,13 @@
   else
     export  mpi='mpirun'
   fi
-    export   np='24'
+    export   np='12'
     export   nr='0'
     export  nth='0'
 # Compile option
   if [ "$cmplOption" = 'y' ]
   then
-     opt="-c $cmplr -S -T -N"
+     opt="-c $cmplr -S -T"
   else
      opt="-S"
   fi
@@ -82,37 +82,39 @@
 # 1.b Flags to do course selection - - - - - - - - - - - - - - - - - - - - - -
 #     Addition selection by commenting out lines as below
 
-  export     shrd='n' # Do shared architecture tests
+  export     shrd='y' # Do shared architecture tests
   export     dist='y' # Do distributed architecture (MPI) tests
-  export      omp='n' # Threaded (OpenMP) tests
-  export     hybd='n' # Hybrid options
+  export      omp='y' # Threaded (OpenMP) tests
+  export     hybd='y' # Hybrid options
 
-  export   prop1D='n' # 1-D propagation tests (ww3_tp1.X)
-  export   prop2D='n' # 2-D propagation tests (ww3_tp2.X)
-  export     time='n' # time linmited growth
-  export    fetch='n' # fetch linmited growth
-  export   hur1mg='n' # Hurricane with one moving grid
-  export    shwtr='n' # shallow water tests
+  export   prop1D='y' # 1-D propagation tests (ww3_tp1.X)
+  export   prop2D='y' # 2-D propagation tests (ww3_tp2.X)
+  export     time='y' # time linmited growth
+  export    fetch='y' # fetch linmited growth
+  export   hur1mg='y' # Hurricane with one moving grid
+  export    shwtr='y' # shallow water tests
   export    unstr='y' # unstructured grid tests
   export    pdlib='y' # unstr with pdlib for domain decomposition and implicit solver
-  export    smcgr='n' # SMC/Rotated grid test
-  export   mudice='n' # Mud/Ice and wave interaction tests 
-  export   infgrv='n' # Second harmonic generation tests
-  export     uost='n' # ww3_ts4 Unresolved Obstacles Source Term (UOST)
-  export    assim='n' # Restart spectra update
-  export    oasis='n'
-  export calendar='n'
-  export   dbreak='y' # depth limited breaking
-#  export   db1tr1='y'
+  export    smcgr='y' # SMC/Rotated grid test
+  export   mudice='y' # Mud/Ice and wave interaction tests 
+  export   infgrv='y' # Second harmonic generation tests
+  export     uost='y' # ww3_ts4 Unresolved Obstacles Source Term (UOST)
+  export    assim='y' # Restart spectra update
+  export      veg='y' # vegetation test
+  export   dbreak='y'
+  export     rtd='y'
+  export   calendar='y'
+  export   confignc='y'
+  export   oasis='n'
 
-  export  multi01='n' # mww3_test_01 (wetting and drying)
-  export  multi02='n' # mww3_test_02 (basic two-way nesting test))
-  export  multi03='n' # mww3_test_03 (three high and three low res grids).
-  export  multi04='n' # mww3_test_04 (swell on sea mount and/or current)
-  export  multi05='n' # mww3_test_05 (three-grid moving hurricane)
-  export  multi06='n' # mww3_test_06 (curvilinear grid tests)
-  export  multi07='n' # mww3_test_07 (unstructured grid tests)
-  export  multi08='n' # mww3_test_08 (wind and ice tests)
+  export  multi01='y' # mww3_test_01 (wetting and drying)
+  export  multi02='y' # mww3_test_02 (basic two-way nesting test))
+  export  multi03='y' # mww3_test_03 (three high and three low res grids).
+  export  multi04='y' # mww3_test_04 (swell on sea mount and/or current)
+  export  multi05='y' # mww3_test_05 (three-grid moving hurricane)
+  export  multi06='y' # mww3_test_06 (curvilinear grid tests)
+  export  multi07='y' # mww3_test_07 (unstructured grid tests)
+  export  multi08='y' # mww3_test_08 (wind and ice tests)
 
 # export   filter='PR3 ST2 UQ'
                       # The filter does a set of consecutinve greps on the 
@@ -122,7 +124,7 @@
 # --------------------------------------------------------------------------- #
 # 2.  Execute matrix.base ...                                                 #
 # --------------------------------------------------------------------------- #
-  echo $main_dir             
+             
   $main_dir/../regtests/bin/matrix.base
 
 # --------------------------------------------------------------------------- #

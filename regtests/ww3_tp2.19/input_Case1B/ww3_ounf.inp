@@ -17,7 +17,7 @@ $ UST CHA CGE FAW TAW TWA WCC WCF WCH WCM SXY TWO BHD FOC TUS USS P2S
 $ USF P2L TWI FIC ABR UBR BED FBB TBB MSS MSC DTD FC CFX CFD CFK U1 U2 
 $
  N
-WLV T02  DIR CUR HS TM10 FP SXX SXY SYY
+WLV DPT T02 DIR CUR HS T0M1 FP SXX SXY SYY
 $--------------------------------------------------------------------- $
 $ netCDF version [3,4]
 $        and variable type 4 [2 = SHORT, 3 = it depends , 4 = REAL]
@@ -69,7 +69,7 @@ $ ITYPE = 4, Netcdf Files
 $            S3: number of characters in date
 $            IX, IY range
 $
-ww3.Boers_1B.
+ww3.Boers_1A.
 4
  1 999999999 1 1 3 2
 $ For each field and time a new file is generated with the file name

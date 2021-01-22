@@ -91,7 +91,7 @@ $                                    PHImin.
 $
 $ BAJ (adjusted) 
 $
-&SDB1 BJGAM = 0.64, BJALFA = 0.8, DBFLAG = 2.0 /
+&SDB1 BJGAM = 0.43, BJALFA = 1.0, DBFLAG = 2.0 /
 $
 $
 &UNST
