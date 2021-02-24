@@ -938,7 +938,7 @@ CONTAINS
 !	 
          INTEGER :: IP, IE
          INTEGER :: I1, I2, I3, I11, I22, I33
-!
+         LOGICAL :: CROSSES_DATELINE
          REAL*8    :: P1(2), P2(2), P3(2)
          REAL*8    :: R1(2), R2(2), R3(2)
          REAL*8    :: N1(2), N2(2), N3(2)
@@ -969,6 +969,15 @@ CONTAINS
             R1 = P3-P2
             R2 = P1-P3
             R3 = P2-P1
+            CALL ELEMENT_CROSSES_DATELINE(R1, R2, R3, CROSSES_DATELINE)
+            IF (CROSSES_DATELINE) THEN
+!             this element crosses the dateline. Adjusting the distances
+              CALL CORRECT_DX_GT180(R1(1))
+              CALL CORRECT_DX_GT180(R2(1))
+              CALL CORRECT_DX_GT180(R3(1))
+!           ELSEIF (R1GT180+R2GT180+R3GT180 .EQ. 1) THEN
+!             this element contains the pole. For the moment doing nothing
+            END IF
         
             N1(1) = (-R1(2))
             N1(2) = ( R1(1))
@@ -2834,6 +2843,37 @@ END SUBROUTINE
 !/DEBUGSETUGIOBP      FLUSH(740+IAPROC)
 !
       RETURN    
-      END SUBROUTINE SET_UG_IOBP
+      END SUBROUTINE SETUGIOBP
+
+
+      SUBROUTINE ELEMENT_CROSSES_DATELINE(R1, R2, R3, CROSSES_DATELINE)
+      IMPLICIT NONE
+      REAL*8,  INTENT(IN)  :: R1(2), R2(2), R3(2)
+      LOGICAL, INTENT(OUT) :: CROSSES_DATELINE
+      INTEGER :: R1GT180, R2GT180, R3GT180
+      R1GT180 = MERGE(1, 0, ABS(R1(1)).GT.180)
+      R2GT180 = MERGE(1, 0, ABS(R2(1)).GT.180)
+      R3GT180 = MERGE(1, 0, ABS(R3(1)).GT.180)
+! if R1GT180+R2GT180+R3GT180 .eq. 0 the element does not cross the dateline
+! if R1GT180+R2GT180+R3GT180 .eq. 1 the element contains the pole
+! if R1GT180+R2GT180+R3GT180 .eq. 2 the element crosses the dateline
+      CROSSES_DATELINE = R1GT180+R2GT180+R3GT180 .EQ. 2
+      END SUBROUTINE
+
+
+      SUBROUTINE CORRECT_DX_GT180(DXP)
+!   Purpose: the absolute zonal distance between 2 points is always <= 180
+!            This subroutine corrects the zonal distance to satifsy
+!            this requirement
+      IMPLICIT NONE
+      DOUBLE PRECISION, INTENT(INOUT) :: DXP
+      IF (DXP .le. -180) THEN
+        DXP=DXP + 360
+      END IF
+      IF (DXP .ge. 180) THEN
+        DXP=DXP - 360
+      END IF
+      END SUBROUTINE
+
 !/ ------------------------------------------------------------------- /
 END MODULE W3TRIAMD
