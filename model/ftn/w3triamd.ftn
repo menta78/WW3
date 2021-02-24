@@ -847,8 +847,11 @@ CONTAINS
 !local parameters	 
 ! 
          REAL              :: TL1, TL2, TL3, TMPTRIGP
+         DOUBLE PRECISION  :: DX13, DX21
          INTEGER           :: I1, I2, I3
          INTEGER           :: K
+         REAL*8            :: R1(2), R2(2), R3(2)
+         LOGICAL           :: CROSSES_DATELINE
 !/S        INTEGER                      ::  IENT = 0          
 !/ ------------------------------------------------------------------- /   
 !/S      CALL STRACE (IENT, 'SPATIAL_GRID')   
@@ -861,10 +864,21 @@ CONTAINS
 !
 ! cross product of edge-vector  (orientated anticlockwise)
 !                                   
+                   DX13 = XGRD(1,I1)-XGRD(1,I3)
+                   DX21 = XGRD(1,I2)-XGRD(1,I1)
+                   R1 = XYB(I3,:)-XYB(I2,:)
+                   R2 = XYB(I1,:)-XYB(I3,:)
+                   R3 = XYB(I2,:)-XYB(I1,:)
+                   CALL ELEMENT_CROSSES_DATELINE(R1, R2, R3, CROSSES_DATELINE)
+                   IF (CROSSES_DATELINE) THEN
+                     CALL CORRECT_DX_GT180(DX13)
+                     CALL CORRECT_DX_GT180(DX21)
+                   ENDIF
+
                    TRIA(K) = REAL( (YGRD(1,I2)-YGRD(1,I1))      &     !  (Y2-Y1)
-                                  *(XGRD(1,I1)-XGRD(1,I3))      &     ! *(X1-X3)
+                                  *DX13                         &     ! *(X1-X3)
                                   +(YGRD(1,I3)-YGRD(1,I1))      &     !  (Y3-Y1)*(X2-X1)
-                                  *(XGRD(1,I2)-XGRD(1,I1))      )*0.5
+                                  *DX21      )*0.5
 !
 ! test on negative triangle area, which means that the orientiation is not as assumed to be anticw. 
 ! therefore we swap the nodes !!! 
