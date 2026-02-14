@@ -620,6 +620,9 @@ CONTAINS
 #ifdef W3_IC5
     USE W3SIC5MD
 #endif
+#ifdef W3_IC6
+    USE W3SIC6MD
+#endif
 #ifdef W3_IS1
     USE W3SIS1MD
 #endif
@@ -1380,6 +1383,9 @@ CONTAINS
 #endif
 #ifdef W3_IC5
         IF (ICE .GT. 0) CALL W3SIC5 ( SPEC,DEPTH, CG1,  WN1, IX, IY, VSIC, VDIC )
+#endif
+#ifdef W3_IC6
+        IF (ICE .GT. 0) CALL W3SIC6 ( SPEC, CG1, IX, IY, VSIC, VDIC )
 #endif
       !
 #ifdef W3_IS1
@@ -2164,6 +2170,9 @@ CONTAINS
 #endif
 #ifdef W3_IC5
         CALL W3SIC5 ( SPEC,DEPTH, CG1,  WN1, IX, IY, VSIC, VDIC )
+#endif
+#ifdef W3_IC6
+        CALL W3SIC6 ( SPEC, CG1, IX, IY, VSIC, VDIC )
 #endif
       !
 #ifdef W3_IS1
