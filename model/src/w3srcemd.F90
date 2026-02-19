@@ -786,7 +786,7 @@ CONTAINS
     REAL :: DTRAW
 #endif
 
-#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5)
+#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5) || defined(W3_IC6)
     REAL :: VSIC(NSPEC), VDIC(NSPEC)
 #endif
 
@@ -911,7 +911,7 @@ CONTAINS
     VDDB = 0.
 #endif
 
-#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5)
+#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5) || defined(W3_IC6)
     VSIC = 0.
     VDIC = 0.
 #endif
@@ -1456,7 +1456,7 @@ CONTAINS
         VSDS(1:NSPECH) = ICESCALEDS * VSDS(1:NSPECH)
         VDDS(1:NSPECH) = ICESCALEDS * VDDS(1:NSPECH)
         IF(IC_NUMERICS) THEN
-#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5)
+#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5) || defined(W3_IC6)
            VSIC(1:NSPECH) = ICE * VSIC(1:NSPECH) ! (see Rogers et al 2016) 
            VDIC(1:NSPECH) = ICE * VDIC(1:NSPECH)
 #endif
@@ -1501,7 +1501,7 @@ CONTAINS
         VS(IS) = VS(IS) + VSUO(IS)
 #endif
         IF ( IC_NUMERICS .AND. ICE.GT.0. ) THEN
-#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5)
+#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5) || defined(W3_IC6)
           VS(IS) = VS(IS) + VSIC(IS)
 #endif
         ENDIF
@@ -1520,7 +1520,7 @@ CONTAINS
         VD(IS) = VD(IS) + VDUO(IS)
 #endif
         IF ( IC_NUMERICS .AND. ICE.GT.0. ) THEN
-#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5)
+#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5) || defined(W3_IC6)
           VD(IS) = VD(IS) + VDIC(IS)
 #endif
         ENDIF
@@ -1836,7 +1836,7 @@ CONTAINS
           PHINL = PHINL + VSNL(IS)* DT * FACTOR                      &
                / MAX ( 1. , (1.-HDT*VDNL(IS))) ! semi-implict integration scheme
           IF ( IC_NUMERICS .AND. ICE.GT.0 ) THEN
-#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5)
+#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5) || defined(W3_IC6)
              PHICE = PHICE + VSIC(IS) * DT * FACTOR             &
                     / MAX ( 1. , (1.-HDT*VDIC(IS))) ! semi-implicit integration
              TAUICE(:) = TAUICE(:) - FACTOR2*COSI(:)*VSIC(IS) * DT &
@@ -2089,7 +2089,7 @@ CONTAINS
     TAUOX=(GRAV*MWXFINISH+TAUWIX-TAUBBL(1))/DTG
     TAUOY=(GRAV*MWYFINISH+TAUWIY-TAUBBL(2))/DTG
     IF (IC_NUMERICS) THEN
-#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5)
+#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5) || defined(W3_IC6)
         TAUICE(:)=TAUICE(:)/DTG
         TAUOX = TAUOX - TAUICE(1)
         TAUOY = TAUOY - TAUICE(2)
@@ -2110,7 +2110,7 @@ CONTAINS
     PHINL =DWAT*GRAV*PHINL /DTG
     PHIBBL=DWAT*GRAV*PHIBBL/DTG
     IF (IC_NUMERICS) THEN
-#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5)
+#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5) || defined(W3_IC6)
        PHICE =-1.*DWAT*GRAV*PHICE/DTG
 #endif
     ENDIF

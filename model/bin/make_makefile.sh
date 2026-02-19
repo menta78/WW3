@@ -382,6 +382,7 @@
          'W3SIC3MD'     ) modtest=w3sic3md.o ;;
          'W3SIC4MD'     ) modtest=w3sic4md.o ;;
          'W3SIC5MD'     ) modtest=w3sic5md.o ;;
+         'W3SIC6MD'     ) modtest=w3sic6md.o ;;
          'W3SIS1MD'     ) modtest=w3sis1md.o ;;
          'W3SIS2MD'     ) modtest=w3sis2md.o ;;
          'W3REF1MD'     ) modtest=w3ref1md.o ;;

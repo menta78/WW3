@@ -426,6 +426,10 @@
             {
                 "name": "IC5",
                 "build_files": ["w3sic5md.F90"]
+            },
+            {
+                "name": "IC6",
+                "build_files": ["w3sic6md.F90"]
             }
         ]
     },
