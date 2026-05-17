@@ -2204,6 +2204,9 @@ CONTAINS
 #ifdef W3_IC5
           ATT=EXP(ICE*VDIC(IS)*DTG)
 #endif
+#ifdef W3_IC6
+          ATT=EXP(VDIC(IS)*DTG)
+#endif
 #ifdef W3_IS1
           ATT=ATT*EXP(ICE*VDIR(IS)*DTG)
 #endif
