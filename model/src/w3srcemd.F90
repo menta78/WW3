@@ -1362,6 +1362,11 @@ CONTAINS
       CALL UOST_SRCTRMCOMPUTE(IX, IY, SPEC, CG1, DT,            &
            U10ABS, U10DIR, VSUO, VDUO)
 #endif
+#ifdef W3_IC6
+      ! IC6 integrated in semi-implicit scheme alongside UOST (no ICE scaling needed:
+      ! ice concentration is already encoded in the source term formula)
+      IF (ICE .GT. 0) CALL W3SIC6 ( SPEC, CG1, IX, IY, VSIC, VDIC )
+#endif
       ! Sea Ice Source Terms if IC_NUMERICS namelist flag = True
       IF (IC_NUMERICS) THEN
 #ifdef W3_IC1
@@ -1383,9 +1388,6 @@ CONTAINS
 #endif
 #ifdef W3_IC5
         IF (ICE .GT. 0) CALL W3SIC5 ( SPEC,DEPTH, CG1,  WN1, IX, IY, VSIC, VDIC )
-#endif
-#ifdef W3_IC6
-        IF (ICE .GT. 0) CALL W3SIC6 ( SPEC, CG1, IX, IY, VSIC, VDIC )
 #endif
       !
 #ifdef W3_IS1
@@ -1456,8 +1458,8 @@ CONTAINS
         VSDS(1:NSPECH) = ICESCALEDS * VSDS(1:NSPECH)
         VDDS(1:NSPECH) = ICESCALEDS * VDDS(1:NSPECH)
         IF(IC_NUMERICS) THEN
-#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5) || defined(W3_IC6)
-           VSIC(1:NSPECH) = ICE * VSIC(1:NSPECH) ! (see Rogers et al 2016) 
+#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5)
+           VSIC(1:NSPECH) = ICE * VSIC(1:NSPECH) ! (see Rogers et al 2016)
            VDIC(1:NSPECH) = ICE * VDIC(1:NSPECH)
 #endif
         ENDIF
@@ -1500,8 +1502,11 @@ CONTAINS
 #ifdef W3_UOST
         VS(IS) = VS(IS) + VSUO(IS)
 #endif
+#if defined(W3_IC6) && !defined(W3_PDLIB)
+        IF (ICE .GT. 0) VS(IS) = VS(IS) + VSIC(IS)
+#endif
         IF ( IC_NUMERICS .AND. ICE.GT.0. ) THEN
-#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5) || defined(W3_IC6)
+#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5)
           VS(IS) = VS(IS) + VSIC(IS)
 #endif
         ENDIF
@@ -1519,8 +1524,11 @@ CONTAINS
 #ifdef W3_UOST
         VD(IS) = VD(IS) + VDUO(IS)
 #endif
+#if defined(W3_IC6) && !defined(W3_PDLIB)
+        IF (ICE .GT. 0) VD(IS) = VD(IS) + VDIC(IS)
+#endif
         IF ( IC_NUMERICS .AND. ICE.GT.0. ) THEN
-#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5) || defined(W3_IC6)
+#if defined(W3_IC1) || defined(W3_IC2) || defined(W3_IC3) || defined(W3_IC4) || defined(W3_IC5)
           VD(IS) = VD(IS) + VDIC(IS)
 #endif
         ENDIF
@@ -2171,9 +2179,6 @@ CONTAINS
 #ifdef W3_IC5
         CALL W3SIC5 ( SPEC,DEPTH, CG1,  WN1, IX, IY, VSIC, VDIC )
 #endif
-#ifdef W3_IC6
-        CALL W3SIC6 ( SPEC, CG1, IX, IY, VSIC, VDIC )
-#endif
       !
 #ifdef W3_IS1
         CALL W3SIS1 ( SPEC, ICE, VSIR )
@@ -2204,8 +2209,8 @@ CONTAINS
 #ifdef W3_IC5
           ATT=EXP(ICE*VDIC(IS)*DTG)
 #endif
-#ifdef W3_IC6
-          ATT=EXP(VDIC(IS)*DTG)
+#if defined(W3_IC6) && defined(W3_PDLIB)
+          IF (ICE .GT. 0) ATT=EXP(VDIC(IS)*DTG)
 #endif
 #ifdef W3_IS1
           ATT=ATT*EXP(ICE*VDIR(IS)*DTG)
