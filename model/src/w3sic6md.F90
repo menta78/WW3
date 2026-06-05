@@ -235,6 +235,7 @@ CONTAINS
     REAL                    :: ICEC, OBSTSECTION, BETA, CELLAREA, CELLSIZE
     REAL                    :: CGI, GAM
     REAL, PARAMETER         :: GAMMAUP = 200.0
+    REAL, PARAMETER         :: BETATHR = 0.005
     REAL, PARAMETER         :: ICETHR = 1.0E-6
     !/
     !/ ------------------------------------------------------------------- /
@@ -290,9 +291,12 @@ CONTAINS
     OBSTSECTION = SQRT(ICEC)
     BETA = 1.0 - OBSTSECTION
     !
-    ! Compute gamma parameter
-    GAM = (1.0 - BETA) / BETA
-    GAM = MIN(GAM, GAMMAUP)
+    ! Compute gamma parameter (mirroring UOST: cap at GAMMAUP for near-full obstruction)
+    IF (BETA > BETATHR) THEN
+      GAM = (1.0 - BETA) / BETA
+    ELSE
+      GAM = GAMMAUP
+    END IF
     !
     ! 2.c Calculate diagonal term ---------------------------------------- /
     !
